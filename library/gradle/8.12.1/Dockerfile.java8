@@ -1,0 +1,35 @@
+FROM kubeop/openjdk:8-jdk
+LABEL maintainer="Sonic Ma <sonic.ma@outlook.com>"
+
+ARG GRADLE_VERSION=8.12.1
+ARG user=jenkins
+ARG group=jenkins
+ARG uid=1000
+ARG gid=1000
+
+ENV GRADLE_HOME=/usr/local/gradle
+
+RUN set -eux; \
+      apt-get update; \
+      apt-get install -y --no-install-recommends \
+            unzip \
+            wget \
+            \
+            bzr \
+            git \
+            git-lfs \
+            mercurial \
+            openssh-client \
+            subversion \
+      ; \
+      rm -rf /var/lib/apt/lists/*; \
+      groupadd -g ${gid} ${group}; \
+      useradd -u ${uid} -g ${gid} -l -m -s /bin/bash ${user}; \
+      curl -fsSL "https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip" -o gradle.zip; \
+      unzip gradle.zip; \
+      rm gradle.zip; \
+      mv "gradle-${GRADLE_VERSION}" "${GRADLE_HOME}/"; \
+      ln --symbolic "${GRADLE_HOME}/bin/gradle" /usr/bin/gradle; \
+      gradle --version
+
+USER jenkins

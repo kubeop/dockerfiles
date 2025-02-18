@@ -1,0 +1,32 @@
+FROM kubeop/openjdk:11-jdk
+LABEL maintainer="Sonic Ma <sonic.ma@outlook.com>"
+
+ARG MAVEN_VERSION=3.9.9
+ARG user=jenkins
+ARG group=jenkins
+ARG uid=1000
+ARG gid=1000
+
+ENV MAVEN_HOME=/usr/share/maven
+
+RUN set -eux; \
+      apt-get update; \
+      apt-get install -y --no-install-recommends \
+            ca-certificates \
+            curl \
+            git \
+            openssh-client \
+      ; \
+      rm -rf /var/lib/apt/lists/*; \
+      groupadd -g ${gid} ${group}; \
+      useradd -u ${uid} -g ${gid} -l -m -s /bin/bash ${user}; \
+      curl -fsSLO --compressed https://downloads.apache.org/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz; \
+      mkdir -p ${MAVEN_HOME}; \
+      tar -xzf apache-maven-${MAVEN_VERSION}-bin.tar.gz -C ${MAVEN_HOME} --strip-components=1; \
+      rm apache-maven-${MAVEN_VERSION}-bin.tar.gz; \
+      ln -s ${MAVEN_HOME}/bin/mvn /usr/bin/mvn; \
+      mvn --version
+
+COPY settings.xml ${MAVEN_HOME}/conf/settings.xml
+
+USER jenkins

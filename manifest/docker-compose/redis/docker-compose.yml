@@ -1,0 +1,13 @@
+services:
+  redis:
+    container_name: redis
+    restart: always
+    image: docker.io/library/redis:7
+    network_mode: host
+    command:
+      - --requirepass Mm852bw7zaMyyjhZAcxr
+      - --appendonly yes
+    environment:
+      - TZ=Asia/Shanghai
+    volumes:
+      - /data/database/redis:/var/lib/redis

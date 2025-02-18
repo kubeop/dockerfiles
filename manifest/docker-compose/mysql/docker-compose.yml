@@ -1,0 +1,23 @@
+services:
+  mysql:
+    container_name: mysql
+    restart: always
+    image: docker.io/library/mysql:8
+    command:
+      - --max-connections=200
+      - --connect-timeout=60
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_general_ci
+      - --default-time-zone=SYSTEM
+      - --log-timestamps=SYSTEM
+    security_opt:
+      - seccomp:unconfined
+    environment:
+      - TZ=Asia/Shanghai
+      - MYSQL_ROOT_PASSWORD=Mm852bw7zaMyyjhZAcxr
+      - MYSQL_USER=agile
+      - MYSQL_PASSWORD=Mm852bw7zaMyyjhZAcxr
+      - MYSQL_DATABASE=agile
+    network_mode: host
+    volumes:
+      - /data/database/mysql:/var/lib/mysql

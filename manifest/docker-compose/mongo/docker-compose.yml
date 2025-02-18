@@ -1,0 +1,16 @@
+services:
+  mongo:
+    container_name: mongo
+    restart: always
+    image: docker.io/library/mongo:7
+    command:
+      - --bind_ip_all
+      - --maxConns=200
+    environment:
+      - TZ=Asia/Shanghai
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=Mm852bw7zaMyyjhZAcxr
+      - MONGO_INITDB_DATABASE=agile
+    network_mode: host
+    volumes:
+      - /data/database/mongo:/data/db

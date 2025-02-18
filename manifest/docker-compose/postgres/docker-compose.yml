@@ -1,0 +1,17 @@
+services:
+  postgres:
+    container_name: postgres
+    restart: always
+    image: docker.io/library/postgres:17
+    command:
+      - --max_connections=200
+      - --timezone=Asia/Shanghai
+      - --log_timezone=Asia/Shanghai
+    environment:
+      - TZ=Asia/Shanghai
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=Mm852bw7zaMyyjhZAcxr
+    network_mode: host
+    volumes:
+      - /data/database/postgres:/var/lib/postgresql/data

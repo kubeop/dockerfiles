@@ -1,0 +1,97 @@
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: nexus3
+  labels:
+    app: nexus3
+spec:
+  replicas: 1
+  serviceName: nexus3
+  podManagementPolicy: OrderedReady
+  updateStrategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: nexus3
+  template:
+    metadata:
+      labels:
+        app: nexus3
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                - 10.10.200.217
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - nexus3
+            topologyKey: "kubernetes.io/hostname"
+      initContainers:
+      - name: volume-mount-hack
+        image: busybox:1.31.1
+        command: ["sh", "-c", "chown -R 200:200 /nexus-data"]
+        volumeMounts:
+        - name: data
+          mountPath: /nexus-data
+      containers:
+      - name: nexus3
+        image: sonatype/nexus3:3.19.1
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8081
+          name: nexus3
+        env:
+        - name:  "INSTALL4J_ADD_VM_PARAMS"
+          value: "-Xms4g -Xmx4g -XX:MaxDirectMemorySize=3g  -Djava.util.prefs.userRoot=${NEXUS_DATA}/javaprefs"
+        resources:
+          requests:
+            cpu: "4"
+            memory: 8Gi
+          limits:
+            cpu: "4"
+            memory: 8Gi
+        livenessProbe:
+          tcpSocket:
+            port: 8081
+          initialDelaySeconds: 20
+          timeoutSeconds: 5
+          periodSeconds: 10
+        readinessProbe:
+          tcpSocket:
+            port: 8081
+          initialDelaySeconds: 20
+          timeoutSeconds: 5
+          periodSeconds: 10
+        volumeMounts:
+        - name: data
+          mountPath: /nexus-data
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      storageClassName: rbd
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 40Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nexus3
+spec:
+  ports:
+  - port: 8081
+  selector:
+    app: nexus3
