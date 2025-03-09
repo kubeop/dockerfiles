@@ -2,7 +2,7 @@ FROM kubeop/openjdk:8-jdk
 LABEL maintainer="Sonic Ma <sonic.ma@outlook.com>"
 
 ARG TOMCAT_MAJOR=9
-ARG TOMCAT_VERSION=9.0.100
+ARG TOMCAT_VERSION=9.0.102
 
 ENV CATALINA_HOME=/usr/local/tomcat
 ENV PATH=${CATALINA_HOME}/bin:${PATH}

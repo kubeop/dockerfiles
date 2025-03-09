@@ -155,8 +155,8 @@ jobs:
           - {name: "maven", tag: "3.9.9", args: "java11"}
           - {name: "gradle", tag: "8.12.1", args: "java8"}
           - {name: "gradle", tag: "8.12.1", args: "java11"}
-          - {name: "tomcat", tag: "9.0.100", args: ""}
-          - {name: "tomcat", tag: "10.1.36", args: ""}
+          - {name: "tomcat", tag: "9.0.102", args: ""}
+          - {name: "tomcat", tag: "10.1.39", args: ""}
 
     steps:
     - name: Checkout
