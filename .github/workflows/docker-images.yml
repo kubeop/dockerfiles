@@ -150,7 +150,7 @@ jobs:
           - {name: "python", tag: "3.11.11", args: ""}
           - {name: "python", tag: "3.12.9", args: ""}
           - {name: "python", tag: "3.13.2", args: ""}
-          - {name: "jenkins", tag: "2.492.1", args: ""}
+          - {name: "jenkins", tag: "2.492.2", args: ""}
           - {name: "maven", tag: "3.9.9", args: "java8"}
           - {name: "maven", tag: "3.9.9", args: "java11"}
           - {name: "gradle", tag: "8.12.1", args: "java8"}
