@@ -43,9 +43,6 @@ RUN set -eux; \
                       gettext-base \
       ; \
       apt-get remove --purge --auto-remove -y && rm -rf /var/lib/apt/lists/* /etc/apt/sources.list.d/nginx.list; \
-      # forward request and error logs to docker log collector
-      ln -sf /dev/stdout /var/log/nginx/access.log; \
-      ln -sf /dev/stderr /var/log/nginx/error.log; \
       # create a docker-entrypoint.d directory
       mkdir /docker-entrypoint.d
 
@@ -57,6 +54,12 @@ COPY 10-listen-on-ipv6-by-default.sh /docker-entrypoint.d
 COPY 15-local-resolvers.envsh /docker-entrypoint.d
 COPY 20-envsubst-on-templates.sh /docker-entrypoint.d
 COPY 30-tune-worker-processes.sh /docker-entrypoint.d
+
+RUN mkdir -p /var/cache/nginx && chown -R nginx:nginx /var/cache/nginx && \
+    chown -R nginx:nginx /etc/nginx && \
+    touch /run/nginx.pid && chown -R nginx:nginx /run/nginx.pid && \
+    chmod u+s /usr/sbin/nginx
+
 ENTRYPOINT ["/docker-entrypoint.sh"]
 
 EXPOSE 8080
