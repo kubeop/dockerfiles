@@ -15,7 +15,7 @@ ARG JENKINS_DIR=/usr/share/jenkins
 ARG REF=${JENKINS_DIR}/ref
 ARG JENKINS_WAR=${JENKINS_DIR}/jenkins.war
 ARG JENKINS_URL="https://mirrors.aliyun.com/jenkins/war-stable/${JENKINS_VERSION}/jenkins.war"
-ARG JENKINS_CA="https://github.com/kubeop/update-center/blob/main/rootCA/update-center.crt"
+ARG JENKINS_CA="https://raw.githubusercontent.com/kubeop/update-center/refs/heads/main/rootCA/update-center.crt"
 ARG PLUGIN_CLI_URL="https://github.com/jenkinsci/plugin-installation-manager-tool/releases/download/${PLUGIN_CLI_VERSION}/jenkins-plugin-manager-${PLUGIN_CLI_VERSION}.jar"
 
 ENV JENKINS_VERSION ${JENKINS_VERSION}
