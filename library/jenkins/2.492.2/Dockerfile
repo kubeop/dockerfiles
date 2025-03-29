@@ -18,11 +18,11 @@ ARG JENKINS_URL="https://mirrors.aliyun.com/jenkins/war-stable/${JENKINS_VERSION
 ARG JENKINS_CA="https://raw.githubusercontent.com/kubeop/update-center/refs/heads/main/rootCA/update-center.crt"
 ARG PLUGIN_CLI_URL="https://github.com/jenkinsci/plugin-installation-manager-tool/releases/download/${PLUGIN_CLI_VERSION}/jenkins-plugin-manager-${PLUGIN_CLI_VERSION}.jar"
 
-ENV JENKINS_VERSION ${JENKINS_VERSION}
-ENV JENKINS_HOME ${JENKINS_HOME}
-ENV JENKINS_SLAVE_AGENT_PORT ${agent_port}
-ENV REF ${REF}
-ENV COPY_REFERENCE_FILE_LOG ${JENKINS_HOME}/copy_reference_file.log
+ENV JENKINS_VERSION=${JENKINS_VERSION}
+ENV JENKINS_HOME=${JENKINS_HOME}
+ENV JENKINS_SLAVE_AGENT_PORT=${agent_port}
+ENV REF=${REF}
+ENV COPY_REFERENCE_FILE_LOG=${JENKINS_HOME}/copy_reference_file.log
 
 ENV JENKINS_UC="https://updates.jenkins.io"
 ENV JENKINS_UC_EXPERIMENTAL="https://updates.jenkins.io/experimental"
