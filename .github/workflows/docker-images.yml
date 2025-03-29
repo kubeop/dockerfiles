@@ -8,7 +8,7 @@ on:
       - main
     paths:
       - 'library/**'
-      - '.github/workflows/*'
+      - '.github/workflows/docker-images.yml'
 
 jobs:
   build-os-images:

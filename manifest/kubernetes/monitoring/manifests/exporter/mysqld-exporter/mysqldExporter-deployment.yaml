@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysqld-exporter
+  namespace: exporter
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: mysqld-exporter
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: mysqld-exporter
+    spec:
+      containers:
+      - name: mysqld-exporter
+        image: registry.cn-hangzhou.aliyuncs.com/devops-system/mysqld-exporter:v0.17.2
+        imagePullPolicy: IfNotPresent
+        args:
+        - --web.listen-address=:9104
+        - --web.telemetry-path=/metrics
+        - --collect.info_schema.innodb_metrics
+        - --collect.info_schema.tables
+        - --collect.info_schema.processlist
+        - --collect.info_schema.tables.databases=*
+        - --config.my-cnf=/etc/mysqld-exporter/exporter.cnf
+        - --log.level=info
+        - --log.format=json
+        ports:
+        - name: metrics
+          containerPort: 9104
+          protocol: TCP
+        resources:
+          limits:
+            cpu: 200m
+            memory: 512Mi
+          requests:
+            cpu: 200m
+            memory: 512Mi
+        livenessProbe:
+          failureThreshold: 1
+          tcpSocket:
+            port: 9104
+          initialDelaySeconds: 3
+          periodSeconds: 30
+          successThreshold: 1
+          timeoutSeconds: 9
+        readinessProbe:
+          failureThreshold: 1
+          tcpSocket:
+            port: 9104
+          initialDelaySeconds: 3
+          periodSeconds: 15
+          successThreshold: 1
+          timeoutSeconds: 9
+        volumeMounts:
+        - mountPath: /etc/mysqld-exporter/
+          name: config
+          readOnly: true
+      volumes:
+      - name: config
+        configMap:
+          name: mysqld-exporter

@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres-exporter
+  namespace: exporter
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: postgres-exporter
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: postgres-exporter
+    spec:
+      containers:
+      - name: postgres-exporter
+        image: registry.cn-hangzhou.aliyuncs.com/devops-system/postgres-exporter:v0.17.1
+        imagePullPolicy: IfNotPresent
+        args:
+        - --web.listen-address=:9187
+        - --web.telemetry-path=/metrics
+        - --config.file=/etc/postgres-exporter/exporter.yml
+        - --log.level=info
+        - --log.format=json
+        ports:
+        - name: metrics
+          containerPort: 9187
+          protocol: TCP
+        resources:
+          limits:
+            cpu: 200m
+            memory: 512Mi
+          requests:
+            cpu: 200m
+            memory: 512Mi
+        livenessProbe:
+          failureThreshold: 1
+          tcpSocket:
+            port: 9187
+          initialDelaySeconds: 3
+          periodSeconds: 30
+          successThreshold: 1
+          timeoutSeconds: 9
+        readinessProbe:
+          failureThreshold: 1
+          tcpSocket:
+            port: 9187
+          initialDelaySeconds: 3
+          periodSeconds: 15
+          successThreshold: 1
+          timeoutSeconds: 9
+        volumeMounts:
+        - mountPath: /etc/postgres-exporter/
+          name: config
+          readOnly: true
+      volumes:
+      - name: config
+        configMap:
+          name: postgres-exporter

@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysqld-exporter
+  namespace: exporter
+data:
+  exporter.cnf: |
+    [client]
+    user = exporter
+    password = exporter

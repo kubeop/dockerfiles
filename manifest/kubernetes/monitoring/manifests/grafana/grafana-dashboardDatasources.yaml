@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  labels:
+    app.kubernetes.io/name: grafana
+  name: grafana-datasources
+  namespace: monitoring
+stringData:
+  datasources.yaml: |-
+    {
+        "apiVersion": 1,
+        "datasources": [
+            {
+                "access": "proxy",
+                "editable": false,
+                "name": "victoriametrics",
+                "orgId": 1,
+                "type": "prometheus",
+                "url": "http://vmselect.monitoring.svc.cluster.local:8481/select/0/prometheus",
+                "version": 1
+            }
+        ]
+    }
+type: Opaque

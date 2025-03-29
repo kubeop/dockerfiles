@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-exporter
+  namespace: exporter
+data:
+  exporter.yml: |
+    auth_modules:
+      exporter:
+        type: userpass
+        userpass:
+          username: exporter
+          password: exporter
+        options:
+          dbname: postgres
+          sslmode: disable

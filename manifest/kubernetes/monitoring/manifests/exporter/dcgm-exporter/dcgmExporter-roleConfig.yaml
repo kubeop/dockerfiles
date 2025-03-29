@@ -1,0 +1,12 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: dcgm-exporter-read-cm
+  namespace: kube-system
+  labels:
+    app.kubernetes.io/name: dcgm-exporter
+rules:
+- apiGroups: [""]
+  resources: ["configmaps"]
+  resourceNames: ["exporter-metrics-config-map"]
+  verbs: ["get"]

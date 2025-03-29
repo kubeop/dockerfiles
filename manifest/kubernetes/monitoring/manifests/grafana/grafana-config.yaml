@@ -1,0 +1,66 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  labels:
+    app.kubernetes.io/name: grafana
+  name: grafana-config
+  namespace: monitoring
+stringData:
+  grafana.ini: |
+    [date_formats]
+    default_timezone = Asia/Shanghai
+
+    [database]
+    type = mysql
+    host = mysql.database.svc.cluster.local:3306
+    name = grafana
+    user = grafana
+    #  If the password contains # or ; you have to wrap it with triple quotes. Ex """#password;"""
+    password = """h0zaJbIb6#e6g4dVw"""
+    ssl_mode = disable
+    
+    [auth.ldap]
+    enabled = false
+    config_file = /etc/grafana/ldap.toml
+    allow_sign_up = true
+    sync_cron = "0 0 1 * * *"
+    active_sync_enabled = true
+
+    [smtp]
+    enabled = false
+    host = localhost:25
+    user = devops@kubeop.com
+    password = "password"
+    from_address = admin@kubeop.com
+    from_name = Grafana
+  ldap.toml: |
+    [[servers]]
+    host = "172.16.0.100"
+    port = 389
+    use_ssl = false
+    start_tls = false
+    ssl_skip_verify = false
+    bind_dn = "CN=devops,OU=ServicesAccounts,OU=company,DC=kubeop,DC=local"
+    bind_password = 'password'
+    search_filter = "(|(sAMAccountName=%s)(userPrincipalName=%s))"
+    search_base_dns = ["OU=company,DC=kubeop,DC=local"]
+
+    [servers.attributes]
+    name = "displayName"
+    username = "sAMAccountName"
+    member_of = "distinguishedName"
+    email =  "mail"
+
+    [[servers.group_mappings]]
+    group_dn = "CN=devops,OU=ServicesAccounts,OU=company,DC=kubeop,DC=local"
+    org_role = "Admin"
+    grafana_admin = true
+    org_id = 1
+
+    [[servers.group_mappings]]
+    group_dn = "*"
+    org_role = "Viewer"
+    grafana_admin = false
+    org_id = 1
+
+type: Opaque
