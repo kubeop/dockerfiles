@@ -1,0 +1,28 @@
+---
+# CREATE USER sonar WITH PASSWORD 'password';
+# CREATE DATABASE sonar OWNER sonar;
+# GRANT ALL PRIVILEGES ON DATABASE sonar TO sonar;
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sonarqube-lts-config
+  labels:
+    app.kubernetes.io/name: sonarqube-lts
+data:
+  SONAR_JDBC_USERNAME: "sonar"
+  SONAR_JDBC_PASSWORD: "password"
+  SONAR_JDBC_URL: "jdbc:postgresql://postgres.database.svc.cluster.local:5432/sonar"
+  SONAR_WEB_JAVAOPTS: "-Xmx1024m -Xms1024m -XX:+HeapDumpOnOutOfMemoryError"
+  SONAR_WEB_HOST: "0.0.0.0"
+  SONAR_WEB_PORT: "9000"
+  SONAR_SECURITY_REALM: "LDAP"
+  SONAR_AUTHENTICATOR_DOWNCASE: "true"
+  LDAP_URL: "ldap://10.43.200.2:389"
+  LDAP_BINDDN: "cn=ops,ou=ServicesAccounts,dc=kubeop,dc=com"
+  LDAP_BINDPASSWORD: "******"
+  LDAP_AUTHENTICATION: "simple"
+  LDAP_REALM: "kubeop.com"
+  LDAP_USER_BASEDN: "ou=it,dc=kubeop,dc=com"
+  LDAP_USER_REQUEST: "(&(objectClass=user)(sAMAccountName={login}))"
+  LDAP_USER_REALNAMEATTRIBUTE: "displayName"
+  LDAP_USER_EMAILATTRIBUTE: "email"

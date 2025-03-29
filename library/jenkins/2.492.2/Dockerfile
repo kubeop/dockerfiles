@@ -14,8 +14,8 @@ ARG JENKINS_HOME=/data/jenkins
 ARG JENKINS_DIR=/usr/share/jenkins
 ARG REF=${JENKINS_DIR}/ref
 ARG JENKINS_WAR=${JENKINS_DIR}/jenkins.war
-ARG JENKINS_URL="https://mirrors.ustc.edu.cn/jenkins/war-stable/${JENKINS_VERSION}/jenkins.war"
-ARG JENKINS_CA="https://cdn.jsdelivr.net/gh/kubeop/update-center/rootCA/update-center.crt"
+ARG JENKINS_URL="https://mirrors.aliyun.com/jenkins/war-stable/${JENKINS_VERSION}/jenkins.war"
+ARG JENKINS_CA="https://github.com/kubeop/update-center/blob/main/rootCA/update-center.crt"
 ARG PLUGIN_CLI_URL="https://github.com/jenkinsci/plugin-installation-manager-tool/releases/download/${PLUGIN_CLI_VERSION}/jenkins-plugin-manager-${PLUGIN_CLI_VERSION}.jar"
 
 ENV JENKINS_VERSION ${JENKINS_VERSION}
@@ -24,11 +24,11 @@ ENV JENKINS_SLAVE_AGENT_PORT ${agent_port}
 ENV REF ${REF}
 ENV COPY_REFERENCE_FILE_LOG ${JENKINS_HOME}/copy_reference_file.log
 
-ENV JENKINS_UC="https://mirrors.ustc.edu.cn/jenkins/updates/stable/update-center.json"
-ENV JENKINS_UC_EXPERIMENTAL="https://mirrors.ustc.edu.cn/jenkins/updates/experimental/update-center.json"
-ENV JENKINS_PLUGIN_INFO="https://mirrors.ustc.edu.cn/jenkins/updates/current/plugin-versions.json"
-ENV JENKINS_UC_DOWNLOAD_URL="https://mirrors.ustc.edu.cn/jenkins/plugins/"
+ENV JENKINS_UC="https://updates.jenkins.io"
+ENV JENKINS_UC_EXPERIMENTAL="https://updates.jenkins.io/experimental"
 ENV JENKINS_INCREMENTALS_REPO_MIRROR="https://repo.jenkins-ci.org/incrementals"
+ENV JENKINS_PLUGIN_INFO="https://updates.jenkins.io/plugin-versions.json"
+ENV JENKINS_UC_DOWNLOAD_URL="https://mirrors.ustc.edu.cn/jenkins/plugins/"
 
 RUN set -eux; \
       apt-get update; \

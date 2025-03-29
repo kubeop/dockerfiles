@@ -3,21 +3,21 @@ kind: Ingress
 metadata:
   annotations:
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
-  name: nexus3
+  name: sonarqube-lts
 spec:
   ingressClassName: nginx
   tls:
   - hosts:
-    - mirrors.kubeop.com
+    - sonar.kubeop.com
     secretName: kubeop.com-ssl
   rules:
-  - host: mirrors.kubeop.com
+  - host: sonar.kubeop.com
     http:
       paths:
         - pathType: Prefix
           path: "/"
           backend:
             service:
-              name: nexus3
+              name: sonarqube-lts
               port:
-                number: 8081
+                number: 9000

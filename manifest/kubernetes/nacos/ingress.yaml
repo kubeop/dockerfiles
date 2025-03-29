@@ -1,0 +1,25 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+  name: nacos-headless
+  namespace: infra
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: nacos.kubeop.com
+    http:
+      paths:
+      - path: /nacos
+        pathType: Prefix
+        backend:
+          service: 
+            name: nacos-headless
+            port:
+              name: server
+  tls:
+    - hosts:
+      - nacos.kubeop.com
+      secretName: kubeop.com-ssl

@@ -1,0 +1,15 @@
+# CREATE DATABASE IF NOT EXISTS nacos DEFAULT CHARSET utf8mb4 COLLATE utf8mb4_general_ci; 
+# CREATE USER 'nacos'@'%' IDENTIFIED BY 'password'; 
+# GRANT ALL PRIVILEGES ON nacos.* TO 'nacos'@'%';
+# FLUSH PRIVILEGES;
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nacos-cm
+  namespace: infra
+data:
+  mysql.host: "mysql.database.svc.cluster.local"
+  mysql.db.name: "nacos"
+  mysql.port: "3306"
+  mysql.user: "nacos"
+  mysql.password: "password"

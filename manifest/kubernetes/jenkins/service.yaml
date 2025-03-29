@@ -1,0 +1,38 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: jenkins
+  namespace: infra
+  labels:
+    app.kubernetes.io/name: "jenkins"
+    app.kubernetes.io/component: "jenkins-controller"
+spec:
+  type: ClusterIP
+  ports:
+  - name: http
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app.kubernetes.io/name: "jenkins"
+    app.kubernetes.io/component: "jenkins-controller"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: jenkins-agent
+  namespace: infra
+  labels:
+    app.kubernetes.io/name: "jenkins"
+    app.kubernetes.io/component: "jenkins-controller"
+spec:
+  type: ClusterIP
+  ports:
+  - name: agent-listener
+    port: 50000
+    protocol: TCP
+    targetPort: 50000
+  selector:
+    app.kubernetes.io/name: "jenkins"
+    app.kubernetes.io/component: "jenkins-controller"

@@ -1,0 +1,94 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: jenkins
+  namespace: infra
+  labels:
+    app.kubernetes.io/name: "jenkins"
+    app.kubernetes.io/component: "jenkins-controller"
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: jenkins-schedule-agents
+  namespace: infra
+  labels:
+    app.kubernetes.io/name: "jenkins"
+    app.kubernetes.io/component: "jenkins-controller"
+rules:
+- apiGroups:
+    - ""
+  resources:
+    - pods
+    - pods/exec
+    - pods/log
+    - persistentvolumeclaims
+    - events
+  verbs:
+    - get
+    - list
+    - watch
+- apiGroups:
+    - ""
+  resources:
+    - pods
+    - pods/exec
+    - persistentvolumeclaims
+  verbs:
+    - create
+    - delete
+    - deletecollection
+    - patch
+    - update
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: jenkins-casc-reload
+  namespace: infra
+  labels:
+    app.kubernetes.io/name: "jenkins"
+    app.kubernetes.io/component: "jenkins-controller"
+rules:
+- apiGroups:
+    - ""
+  resources:
+    - configmaps
+  verbs:
+    - get
+    - watch
+    - list
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: jenkins-schedule-agents
+  namespace: infra
+  labels:
+    app.kubernetes.io/name: "jenkins"
+    app.kubernetes.io/component: "jenkins-controller"
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: jenkins-schedule-agents
+subjects:
+- kind: ServiceAccount
+  name: jenkins
+  namespace: infra
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: jenkins-watch-configmaps
+  namespace: infra
+  labels:
+    app.kubernetes.io/name: "jenkins"
+    app.kubernetes.io/component: "jenkins-controller"
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: jenkins-casc-reload
+subjects:
+- kind: ServiceAccount
+  name: jenkins
+  namespace: infra

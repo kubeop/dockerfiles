@@ -1,0 +1,107 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql
+  labels:
+    app.kubernetes.io/name: mysql
+spec:
+  type: NodePort
+  ports:
+  - port: 3306
+    targetPort: 3306
+  selector:
+    app.kubernetes.io/name: mysql
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mysql
+  labels:
+    app.kubernetes.io/name: mysql
+spec:
+  replicas: 1
+  serviceName: mysql
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: mysql
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: mysql
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                - worker-001
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app.kubernetes.io/name
+                operator: In
+                values:
+                - mysql
+            topologyKey: "kubernetes.io/hostname"
+      containers:
+      - name: mysql
+        image: registry.cn-hangzhou.aliyuncs.com/devops-system/mysql:8.4
+        imagePullPolicy: IfNotPresent
+        args:
+          - --max-connections=200
+          - --connect-timeout=60
+          - --character-set-server=utf8mb4
+          - --collation-server=utf8mb4_general_ci
+          - --default-time-zone=SYSTEM
+          - --log-timestamps=SYSTEM
+        ports:
+        - containerPort: 3306
+        env:
+        - name: TZ
+          value: "Asia/Shanghai"
+        - name: MYSQL_ROOT_PASSWORD
+          value: "PCamTwR4sQkM8T5VhBN2"
+        - name: MYSQL_USER
+          value: "agile"
+        - name: MYSQL_PASSWORD
+          value: "hbmzXkNTtc8pXcQK4yhM"
+        - name: MYSQL_DATABASE
+          value: "agile"
+        resources:
+          requests:
+            cpu: 1
+            memory: 2Gi
+          limits:
+            cpu: 1
+            memory: 2Gi
+        livenessProbe:
+          tcpSocket:
+            port: 3306
+          initialDelaySeconds: 10
+          timeoutSeconds: 5
+          periodSeconds: 20
+        readinessProbe:
+          tcpSocket:
+            port: 3306
+          initialDelaySeconds: 10
+          timeoutSeconds: 5
+          periodSeconds: 20
+        volumeMounts:
+        - name: data
+          mountPath: /var/lib/mysql
+  volumeClaimTemplates:
+  - apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      name: data
+    spec:
+      storageClassName: mysql
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 100Gi

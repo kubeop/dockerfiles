@@ -2,7 +2,7 @@ services:
   redis:
     container_name: redis
     restart: always
-    image: docker.io/library/redis:7
+    image: registry.cn-hangzhou.aliyuncs.com/devops-system/redis:7.4
     network_mode: host
     command:
       - --requirepass Mm852bw7zaMyyjhZAcxr

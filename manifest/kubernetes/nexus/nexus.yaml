@@ -4,7 +4,7 @@ kind: StatefulSet
 metadata:
   name: nexus3
   labels:
-    app: nexus3
+    app.kubernetes.io/name: nexus3
 spec:
   replicas: 1
   serviceName: nexus3
@@ -13,11 +13,11 @@ spec:
     type: RollingUpdate
   selector:
     matchLabels:
-      app: nexus3
+      app.kubernetes.io/name: nexus3
   template:
     metadata:
       labels:
-        app: nexus3
+        app.kubernetes.io/name: nexus3
     spec:
       affinity:
         nodeAffinity:
@@ -27,33 +27,60 @@ spec:
               - key: kubernetes.io/hostname
                 operator: In
                 values:
-                - 10.10.200.217
+                - worker-001
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
           - labelSelector:
               matchExpressions:
-              - key: app
+              - key: app.kubernetes.io/name
                 operator: In
                 values:
                 - nexus3
             topologyKey: "kubernetes.io/hostname"
       initContainers:
       - name: volume-mount-hack
-        image: busybox:1.31.1
-        command: ["sh", "-c", "chown -R 200:200 /nexus-data"]
+        image: registry.cn-hangzhou.aliyuncs.com/kubeop/alpine:3.21
+        command:
+        - sh
+        - -c
+        - chown -R 200:200 /nexus-data
         volumeMounts:
         - name: data
           mountPath: /nexus-data
       containers:
       - name: nexus3
-        image: sonatype/nexus3:3.19.1
+        image: registry.cn-hangzhou.aliyuncs.com/devops-system/nexus3:3.78.2
         imagePullPolicy: IfNotPresent
+        securityContext:
+          runAsUser: 200
         ports:
         - containerPort: 8081
           name: nexus3
         env:
-        - name:  "INSTALL4J_ADD_VM_PARAMS"
-          value: "-Xms4g -Xmx4g -XX:MaxDirectMemorySize=3g  -Djava.util.prefs.userRoot=${NEXUS_DATA}/javaprefs"
+        # CREATE USER nexus WITH PASSWORD 'password';
+        # CREATE DATABASE nexus OWNER nexus;
+        # GRANT ALL PRIVILEGES ON DATABASE nexus TO nexus;
+        - name: DB_HOST
+          value: "postgres.database.svc.cluster.local"
+        - name: DB_NAME
+          value: "nexus"
+        - name: DB_USER
+          value: "nexus"
+        - name: DB_PASSWORD
+          value: "password"
+        - name: NEXUS_SECURITY_INITIAL_PASSWORD
+          value: "admin"
+        - name: NEXUS_SECURITY_RANDOMPASSWORD
+          value: "false"
+        - name: NEXUS_SEARCH_INDEX_REBUILD_ON_STARTUP
+          value: "true"
+        - name: INSTALL4J_ADD_VM_PARAMS
+          value: "-Xms2703m -Xmx2703m \
+              -Dnexus.datastore.clustered.enabled=false \
+              -Djava.util.prefs.userRoot=${NEXUS_DATA}/javaprefs \
+              -Dnexus.datastore.nexus.jdbcUrl=jdbc:postgresql://${DB_HOST}:5432/${DB_NAME} \
+              -Dnexus.datastore.nexus.username=${DB_USER} \
+              -Dnexus.datastore.nexus.password=${DB_PASSWORD}"
         resources:
           requests:
             cpu: "4"
@@ -80,11 +107,11 @@ spec:
   - metadata:
       name: data
     spec:
-      storageClassName: rbd
+      storageClassName: nexus
       accessModes: [ "ReadWriteOnce" ]
       resources:
         requests:
-          storage: 40Gi
+          storage: 100Gi
 ---
 apiVersion: v1
 kind: Service
@@ -94,4 +121,4 @@ spec:
   ports:
   - port: 8081
   selector:
-    app: nexus3
+    app.kubernetes.io/name: nexus3

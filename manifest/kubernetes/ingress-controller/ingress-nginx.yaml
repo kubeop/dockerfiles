@@ -427,11 +427,6 @@ spec:
         app.kubernetes.io/component: controller
         app.kubernetes.io/name: ingress-nginx
     spec:
-      tolerations:
-      - effect: NoSchedule
-        operator: Exists
-      - effect: NoExecute
-        operator: Exists
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -474,7 +469,7 @@ spec:
               fieldPath: metadata.namespace
         - name: LD_PRELOAD
           value: /usr/local/lib/libmimalloc.so
-        image: registry.cn-hangzhou.aliyuncs.com/kubeop/ingress-nginx-controller:v1.11.4
+        image: registry.cn-hangzhou.aliyuncs.com/devops-system/ingress-nginx-controller:v1.12.1
         imagePullPolicy: IfNotPresent
         lifecycle:
           preStop:
@@ -579,7 +574,7 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.namespace
-        image: registry.cn-hangzhou.aliyuncs.com/kubeop/kube-webhook-certgen:v1.5.0
+        image: registry.cn-hangzhou.aliyuncs.com/devops-system/kube-webhook-certgen:v1.5.2
         imagePullPolicy: IfNotPresent
         name: create
         securityContext:
@@ -626,7 +621,7 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.namespace
-        image: registry.cn-hangzhou.aliyuncs.com/kubeop/kube-webhook-certgen:v1.5.0
+        image: registry.cn-hangzhou.aliyuncs.com/devops-system/kube-webhook-certgen:v1.5.2
         imagePullPolicy: IfNotPresent
         name: patch
         securityContext:

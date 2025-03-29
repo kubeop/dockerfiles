@@ -2,7 +2,7 @@ services:
   mongo:
     container_name: mongo
     restart: always
-    image: docker.io/library/mongo:7
+    image: registry.cn-hangzhou.aliyuncs.com/devops-system/mongo:8.0
     command:
       - --bind_ip_all
       - --maxConns=200

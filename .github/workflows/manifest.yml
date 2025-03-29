@@ -1,0 +1,85 @@
+name: Sync manifest Image
+
+on:
+  schedule:
+    - cron: "0 22 * * 0"
+  push:
+    branches:
+      - main
+    paths:
+      - 'manifest/**'
+      - '.github/workflows/manifest.yml'
+
+jobs:
+  manifest:
+    runs-on: ubuntu-latest
+    env:
+      repo: registry.cn-hangzhou.aliyuncs.com/devops-system
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Get manifest image config
+      run: |
+        declare -A vmap
+
+        vmap["ingress-nginx-controller"]="registry.k8s.io/ingress-nginx/controller"
+        vmap["kube-webhook-certgen"]="registry.k8s.io/ingress-nginx/kube-webhook-certgen"
+        vmap["sonar-scanner-cli"]="docker.io/sonarsource/sonar-scanner-cli"
+        vmap["inbound-agent"]="docker.io/jenkins/inbound-agent"
+        vmap["k8s-sidecar"]="docker.io/kiwigrid/k8s-sidecar"
+        vmap["mongo"]="docker.io/library/mongo"
+        vmap["mysql"]="docker.io/library/mysql"
+        vmap["nacos-peer-finder-plugin"]="docker.io/nacos/nacos-peer-finder-plugin"
+        vmap["nacos-server"]="docker.io/nacos/nacos-server"
+        vmap["nexus3"]="docker.io/sonatype/nexus3"
+        vmap["postgres"]="docker.io/library/postgres"
+        vmap["redis"]="docker.io/library/redis"
+        vmap["sonarqube"]="docker.io/library/sonarqube"
+        vmap["vmstorage"]="docker.io/victoriametrics/vmstorage"
+        vmap["vmselect"]="docker.io/victoriametrics/vmselect"
+        vmap["vminsert"]="docker.io/victoriametrics/vminsert"
+        vmap["vmagent"]="docker.io/victoriametrics/vmagent"
+        vmap["prometheus-adapter"]="registry.k8s.io/prometheus-adapter/prometheus-adapter"
+        vmap["nightingale"]="docker.io/flashcatcloud/nightingale"
+        vmap["grafana"]="docker.io/grafana/grafana"
+        vmap["blackbox-exporter"]="quay.io/prometheus/blackbox-exporter"
+        vmap["configmap-reload"]="ghcr.io/jimmidyson/configmap-reload"
+        vmap["kube-rbac-proxy"]="quay.io/brancz/kube-rbac-proxy"
+        vmap["dcgm-exporter"]="nvcr.io/nvidia/k8s/dcgm-exporter"
+        vmap["kube-state-metrics"]="registry.k8s.io/kube-state-metrics/kube-state-metrics"
+        vmap["mysqld-exporter"]="docker.io/prom/mysqld-exporter"
+        vmap["node-exporter"]="quay.io/prometheus/node-exporter"
+        vmap["postgres-exporter"]="quay.io/prometheuscommunity/postgres-exporter"
+        vmap["redis-exporter"]="quay.io/oliver006/redis_exporter"
+
+        cat  >  auth.yaml  << EOF
+        docker.io:
+            username: \${DKH_USERNAME}
+            password: \${DKH_PASSWORD}
+        registry.cn-hangzhou.aliyuncs.com:
+            username: \${ACR_USERNAME}
+            password: \${ACR_PASSWORD}
+        EOF
+
+        for key in "${!vmap[@]}"; do
+            echo "$key: ${vmap[$key]}"
+            tag=$(grep -r "${repo}/${key}" manifest/ | awk -F "${repo}/${key}:" '{print $2}' | head -n 1)
+            echo "tag: $tag"
+            if [ -n "$tag" ]; then
+                echo "${vmap[$key]}:$tag: ${repo}/$key:$tag" >> images.yaml
+            fi
+        done
+
+    - name: Sync Images
+      env:
+        ACR_USERNAME: ${{ secrets.ACR_USERNAME }}
+        ACR_PASSWORD: ${{ secrets.ACR_PASSWORD }}
+        DKH_USERNAME: ${{ secrets.DKH_USERNAME }}
+        DKH_PASSWORD: ${{ secrets.DKH_PASSWORD }}
+      run: |
+        target_tag=$(curl --silent "https://api.github.com/repos/AliyunContainerService/image-syncer/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
+        wget --quiet https://github.com/AliyunContainerService/image-syncer/releases/download/"${target_tag}"/image-syncer-"${target_tag}"-linux-amd64.tar.gz
+        tar -xvf image-syncer-"${target_tag}"-linux-amd64.tar.gz
+        ./image-syncer --auth=./auth.yaml --images=./images.yaml --arch=amd64 --arch=arm64 --os=linux --proc=6 --retries=3

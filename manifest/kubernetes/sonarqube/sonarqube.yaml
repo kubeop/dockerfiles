@@ -1,0 +1,211 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sonarqube-lts-init-fs
+  labels:
+    app.kubernetes.io/name: sonarqube-lts
+data:
+  init_fs.sh: |-
+    chown -R 1000: /opt/sonarqube
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sonarqube-lts-init-sysctl
+  labels:
+    app.kubernetes.io/name: sonarqube-lts
+data:
+  init_sysctl.sh: |-
+    if [[ "$(sysctl -n vm.max_map_count)" -lt 524288 ]]; then
+      sysctl -w vm.max_map_count=524288
+    fi
+    if [[ "$(sysctl -n fs.file-max)" -lt 131072 ]]; then
+      sysctl -w fs.file-max=131072
+    fi
+    if [[ "$(ulimit -n)" != "unlimited" ]]; then
+      if [[ "$(ulimit -n)" -lt 131072 ]]; then
+        echo "ulimit -n 131072"
+        ulimit -n 131072
+      fi
+    fi
+    if [[ "$(ulimit -u)" != "unlimited" ]]; then
+      if [[ "$(ulimit -u)" -lt 8192 ]]; then
+        echo "ulimit -u 8192"
+        ulimit -u 8192
+      fi
+    fi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sonarqube-lts
+  labels:
+    app.kubernetes.io/name: sonarqube-lts
+spec:
+  type: ClusterIP
+  ports:
+    - port: 9000
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: sonarqube-lts
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: sonarqube-lts
+  labels:
+    app.kubernetes.io/name: sonarqube-lts
+spec:
+  replicas: 1
+  serviceName: sonarqube-lts
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: sonarqube-lts
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: sonarqube-lts
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                - worker-001
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app.kubernetes.io/name
+                operator: In
+                values:
+                - sonarqube-lts
+            topologyKey: "kubernetes.io/hostname"
+      initContainers:
+        - name: init-sysctl
+          image: registry.cn-hangzhou.aliyuncs.com/kubeop/alpine:3.21
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            privileged: true
+          command:
+            - sh
+            - -e
+            - /tmp/scripts/init_sysctl.sh
+          volumeMounts:
+            - name: init-sysctl
+              mountPath: /tmp/scripts/
+        - name: init-fs
+          image:  registry.cn-hangzhou.aliyuncs.com/kubeop/alpine:3.21
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            privileged: true
+          command:
+            - sh
+            - -e
+            - /tmp/scripts/init_fs.sh
+          volumeMounts:
+            - name: init-fs
+              mountPath: /tmp/scripts/
+            - mountPath: /opt/sonarqube/data
+              name: sonarqube
+              subPath: data
+            - mountPath: /opt/sonarqube/extensions
+              name: sonarqube
+              subPath: extensions
+            - mountPath: /opt/sonarqube/temp
+              name: sonarqube
+              subPath: temp
+            - mountPath: /opt/sonarqube/logs
+              name: sonarqube
+              subPath: logs
+            - mountPath: /tmp
+              name: tmp-dir
+      containers:
+        - name: sonarqube-lts
+          image: registry.cn-hangzhou.aliyuncs.com/devops-system/sonarqube:25.3.0.104237-community
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 9000
+              protocol: TCP
+          resources:
+            limits:
+              cpu: 2
+              memory: 4Gi
+            requests:
+              cpu: 1
+              memory: 2Gi
+          envFrom:
+            - configMapRef:
+                name: sonarqube-lts-config
+          livenessProbe:
+            httpGet:
+              scheme: HTTP
+              path: /api/system/status
+              port: 9000
+            initialDelaySeconds: 60
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              scheme: HTTP
+              path: /api/system/status
+              port: 9000
+            initialDelaySeconds: 60
+            periodSeconds: 30
+            failureThreshold: 6
+          startupProbe:
+            httpGet:
+              scheme: HTTP
+              path: /api/system/status
+              port: 9000
+            initialDelaySeconds: 60
+            periodSeconds: 10
+            failureThreshold: 24
+          securityContext:
+            runAsUser: 1000
+          volumeMounts:
+            - mountPath: /opt/sonarqube/data
+              name: sonarqube
+              subPath: data
+            - mountPath: /opt/sonarqube/extensions
+              name: sonarqube
+              subPath: extensions
+            - mountPath: /opt/sonarqube/temp
+              name: sonarqube
+              subPath: temp
+            - mountPath: /opt/sonarqube/logs
+              name: sonarqube
+              subPath: logs
+            - mountPath: /tmp
+              name: tmp-dir
+      volumes:
+      - name: init-sysctl
+        configMap:
+          name: sonarqube-lts-init-sysctl
+          items:
+            - key: init_sysctl.sh
+              path: init_sysctl.sh
+      - name: init-fs
+        configMap:
+          name: sonarqube-lts-init-fs
+          items:
+            - key: init_fs.sh
+              path: init_fs.sh
+      - name : tmp-dir
+        emptyDir:
+          {}
+  volumeClaimTemplates:
+  - metadata:
+      name: sonarqube
+    spec:
+      storageClassName: sonarqube
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 100Gi

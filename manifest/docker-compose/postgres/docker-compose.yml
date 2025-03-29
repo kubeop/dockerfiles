@@ -2,7 +2,7 @@ services:
   postgres:
     container_name: postgres
     restart: always
-    image: docker.io/library/postgres:17
+    image: registry.cn-hangzhou.aliyuncs.com/devops-system/postgres:17.4
     command:
       - --max_connections=200
       - --timezone=Asia/Shanghai

@@ -3,21 +3,25 @@ kind: Ingress
 metadata:
   annotations:
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
-  name: nexus3
+  name: jenkins
+  namespace: infra
+  labels:
+    app.kubernetes.io/name: "jenkins"
+    app.kubernetes.io/component: "jenkins-controller"
 spec:
   ingressClassName: nginx
   tls:
   - hosts:
-    - mirrors.kubeop.com
+    - jenkins.kubeop.com
     secretName: kubeop.com-ssl
   rules:
-  - host: mirrors.kubeop.com
+  - host: jenkins.kubeop.com
     http:
       paths:
         - pathType: Prefix
           path: "/"
           backend:
             service:
-              name: nexus3
+              name: jenkins
               port:
-                number: 8081
+                number: 8080

@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: dockerd
+  namespace: infra
+  labels:
+    app.kubernetes.io/name: dockerd
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: dockerd
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: dockerd
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: docker
+                operator: In
+                values:
+                - "true"
+      containers:
+        - name: dockerd
+          image: registry.cn-hangzhou.aliyuncs.com/kubeop/docker:28-dind
+          imagePullPolicy: Always
+          args:
+            - --registry-mirror=https://dytt.online
+            - --registry-mirror=https://func.ink
+            - --registry-mirror=https://lispy.org
+            - --registry-mirror=https://docker.1ms.run
+            - --registry-mirror=https://hub1.nat.tf
+            - --registry-mirror=https://hub2.nat.tf
+            - --insecure-registry=registry.kubeop.com
+            - --bip=192.168.100.1/24
+            - --data-root=/data/docker
+          securityContext:
+            privileged: true
+          env:
+          - name: TZ
+            value: Asia/Shanghai
+          volumeMounts:
+            - mountPath: /var/run
+              name: docker-sock
+            - mountPath: /data/docker
+              name: docker-data
+      volumes:
+        - name: docker-data
+          hostPath:
+            path: /data/docker
+        - name: docker-sock
+          hostPath:
+            path: /var/run

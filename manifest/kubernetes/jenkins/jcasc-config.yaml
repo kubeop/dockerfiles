@@ -1,0 +1,556 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: jenkins-jcasc-config
+  namespace: infra
+  labels:
+    app.kubernetes.io/name: "jenkins"
+    app.kubernetes.io/component: "jenkins-controller"
+    jenkins-config: "true"
+data:
+  jcasc-default-config.yaml: |-
+    credentials:
+      system:
+        domainCredentials:
+        - credentials:
+          - string:
+              description: "sonar"
+              id: "sonar"
+              scope: GLOBAL
+              secret: "a3c16c830d31a60810baba2fc8c0c87a111e8dfd"
+          - usernamePassword:
+              description: "devops"
+              id: "devops"
+              password: "password"
+              scope: GLOBAL
+              username: "devops"
+          - file:
+              description: "jenkins"
+              fileName: "id_rsa"
+              id: "jenkins"
+              scope: GLOBAL
+              secretBytes: "LS0tPUEVOU1NIIFBSSVZBVEUgS0VZLS0tLS0KYjNCbGJuTnphQzFyWlhrdGRqRUFBQUFBQkc1dmJtVUFBQUFFYm05dVpRQUFBQUFBQUFBQkFBQUNGd0FBQUFkemMyZ3RjbgpOaEFBQUFBd0VBQVFBQUFnRUEwOXBXNytTRXdjd3M5ZkFicUJDVlRYU2d2bTU1QzVzUElrNGFEVWxpcGRUbTVDS0RXTUlrCjZRQTR2SUpDYmQyTjU4M2paVXVWZE1BSitUUkpLaTYycSs3YVhCQXgzU2JYZzJhWklhNVlnTzVOQ1hhMndtUG9pNVRCVlQKZFhKTk9hNW1SWjFUYUZvVHU0RDNKMlgxeEpRTjhPYXI4LzZueG5DVC9GMER6bXcwbkUwVXA2cFJxN2FSZXM2Z2QzVXBqeAp0bnFYRGROZXk4OGREY0Z3UjN2U3VnZmcweS9CQ1BMVDlVaFZLcDdBZmNLSVdQY2FmYzNORm83enFsaVRIQ1laWHovbjk0CnE3alJNbk94ejNqWjFxUlpsaGkvZkJndHA2YzIwVkl0eklYQ1I5M1FOZGNwVjBoZEkrYXFvNkxDalE5RE5FMzFRMlhBMTAKRlc0SGpqM21HWFRYWUU5UzRtV1ZFcU9TRDhDS3VlVGhON3FRcCtjT094dEJUelNGUGlGZStkSjJ5Zm9XMkhGSFJYd2R5Qwp1UU5iRS9aL09EVXl0bnJ2OHpZWlgzblovOVBkSS85Q1Q0TStxL0JHRXhxKzRZT1NZTFB1ZCtWeXAzV1BNZXpKUWROc0M3CjB2VjEvS2ErMGpaS3J5Y3NwSlUySk5VaEk3S0dmNVN2SjZxZ1E0ZVI3bXZ3Z1h2akR0WGt4cmlmOHBMNnlXV09PeFFFM1QKdXpCdUFxaEZEdHFtZ3NoYUsyMm1aQzBmbytlc1Y1bmRxNE91MHUzcTViSklmZUdDYW1MUlF1UlFkYmpOd09YSjlNbTJCbQpmcmcydFF4SkI4S2I1Z3RPNWpUWE10T25BVW80SDFpZUNaaTBXUTFERTF5TkFWTmcrZWQ4RGpkdjI0ZmJnb01hUmNBT0N0CkVBQUFkUTU5L1ZmZWZmMVgwQUFBQUhjM05vTFhKellRQUFBZ0VBMDlwVzcrU0V3Y3dzOWZBYnFCQ1ZUWFNndm01NUM1c1AKSWs0YURVbGlwZFRtNUNLRFdNSWs2UUE0dklKQ2JkMk41ODNqWlV1VmRNQUorVFJKS2k2MnErN2FYQkF4M1NiWGcyYVpJYQo1WWdPNU5DWGEyd21Qb2k1VEJWVGRYSk5PYTVtUloxVGFGb1R1NEQzSjJYMXhKUU44T2FyOC82bnhuQ1QvRjBEem13MG5FCjBVcDZwUnE3YVJlczZnZDNVcGp4dG5xWERkTmV5ODhkRGNGd1IzdlN1Z2ZnMHkvQkNQTFQ5VWhWS3A3QWZjS0lXUGNhZmMKM05Gbzd6cWxpVEhDWVpYei9uOTRxN2pSTW5PeHozaloxcVJabGhpL2ZCZ3RwNmMyMFZJdHpJWENSOTNRTmRjcFYwaGRJKwphcW82TENqUTlETkUzMVEyWEExMEZXNEhqajNtR1hUWFlFOVM0bVdWRXFPU0Q4Q0t1ZVRoTjdxUXArY09PeHRCVHpTRlBpCkZlK2RKMnlmb1cySEZIUlh3ZHlDdVFOYkUvWi9PRFV5dG5ydjh6WVpYM25aLzlQZEkvOUNUNE0rcS9CR0V4cSs0WU9TWUwKUHVkK1Z5cDNXUE1lekpRZE5zQzcwdlYxL0thKzBqWktyeWNzcEpVMkpOVWhJN0tHZjVTdko2cWdRNGVSN212d2dYdmpEdApYa3hyaWY4cEw2eVdXT094UUUzVHV6QnVBcWhGRHRxbWdzaGFLMjJtWkMwZm8rZXNWNW5kcTRPdTB1M3E1YkpJZmVHQ2FtCkxSUXVSUWRiak53T1hKOU1tMkJtZnJnMnRReEpCOEtiNWd0TzVqVFhNdE9uQVVvNEgxaWVDWmkwV1ExREUxeU5BVk5nK2UKZDhEamR2MjRmYmdvTWFSY0FPQ3RFQUFBQURBUUFCQUFBQ0FCeUR0ZEhpS3pBK2dBcTJQN0syVUxJMU1YR1FRd0NaNVVhVAp4cFBsUGI3ZVVobUF2N2NSb3BBdDlIVUMvMWYwU3laWkl2TStZaVp0dHFueExLdmR6NzZDanFkM2tvNldyTWxGNVBTUWw5Cjc2dENuQzdjUnFXQ0Y1YXpCQ0c1dWNVNndRODdwcjlUNkhZRFhNRFR5Mm1qRitGRjJ2MGpXSWV3SFdzSlJmcmh1NDhTSE8KYVlXUmZJb2ZvcWw1U2NrM1JzbHQ1S2o2dXphcGNOcXFINmV2ZGVTT0xPZWY5TlowZ0t6eUNHeU5JNUdKdm5wakFCRFF3MwpyMjBMc3I0dGtXRTdJclV0aVJ0cjY5UmptQm81eFBCTC9MYmtLOW5URTBvT2lxVlA3MVFvNk1adGg1bkhsUXZuZEluaGdUClEzTXdKemZITXN6d2M4U2VGdkxQZFhyaXYvYU1kS2RPblpNZWpjTHc2OWZLazNIVG1tbnl0V3V2dXpLSk1NYnVjUnZmMVQKdnUyRVZEZm1xMmhqbElLcFpabTJ0Q3JmVTN5WXI5aFpYV1EwWGUzQVE1TDN3bHIyOTdDRW81bk1LTlVIRnlNanh5ZFppVgpJS01SZGl5R0pIMjFWbnNGSXMrRVJGd3RYV01CU01LazdZUUIyakhnNS84NlVLSzlId0YxRmhSb1MxeXBFTUxCQ0hKOWphCjljWFpCMUswWWdidjRkbXBJdndiRWpTTkhrTVBWU01LT1MzSjFCd01FRGw3aU9pWFhIZ2VlekZaUk5aNGdxdTkrK2tzNGgKVUJGOVhWK1hPMXBzbXlQZW43Z3VZZGlLbm9KdlNjaDNBR1B5aUU2cjFtdDBuVGVQckFVYis3bTZmcE5ZcWtTNmQ3YzVxNQpoTDhGWGU0RUlWSTBESE5UK3hBQUFCQVFDODEveDNENXhUc3RSQm5qODRFK2dmWUVXS29ncWdDb0N3L1F1NVE2ZFFxcXRDCk5La1dxOFNSNG9JcUlRaVU0Wk95cmxZMXhKUU5JZnIveWowajVnbExGc0QvUU9MSk9KQkloY3A2d3R0UnV6d3Q4dFBtVE0Kd2Y0eWZVS29jc2w5R3E2dlBhY1F6ZE5aZTlpR1phVWh3YmVzUFB5eXJVRkUwL010RHFDWFZyVTBYQ1RrM083dlVzQ09oVAprcVg3ZGdtRUI5K1hFUjZ2S0Nkb09LSXVxSVRIbDJDbkZoUDlNazNpeXV6WXJUUjB5TVJ3K1RKZzl5TmJ2NXNGYldIc3c2ClBjemwrSmxiUCtiUzgzOTM0T0NKZjJxR0pPVmZ4eG1oV3ZORngwVEVxcXNWR2M5Mk0zMVFJd1J2UVBuVVM0S0l1MkNWbisKcExiQ0NlcFBhcG5vMElCRUFBQUJBUUR4b1V0ODdjOUxvTkI2NVFSaGpoWWJ5cGRjczcweFVrekNTaFRRNHBJVlowSVRnOAoxYWNsN3JvVlBBRVJIMFdJbWpJb25aOHdqUlpVUEJod25MUm1mSWJNUjQ1VVVZTldrTS9RMnRLL2ovZGkzMyszSVBQNis0CjhFWkZQYVZaOHl2YXRRMGx0UFRqWWFOT0NIOFNCYmJkMk1BSktqSXNZbW43M0UycytOa0swaWZwUWVycXJ0UStLRllLM08KNjBUM3pLcyt2STJHRlhoV3N3c0NKT1VPUkFLUzhQYjNVNjc5OUl5bkZBcW1lNWpOVXFoT3hTeU9KYVZzTEVnaUwzTVZvZApJbjZOdEp6ZVl1ZGQxYWIyNVJSbFM2S1RHQjZUMXknRThMaytwa3FBTXR2UU9CaVQzNzNMT3RUZ0E2bWIvRlhOSi9aaVIyCjZBZDJpSFlSNzh1a0MxQUFBQkFRRGdjN09CSXp0d0VKa2xYNjVZTUYrcm1HeWVFOEdjWDErTXV6VXdIdThBV3hnOW1BQXoKT2hOSHpnN05qYkt5ekdJRW5jamtkZ0RXZnVIaXhqS0dMT1h3aUF4UFM3dWFSdk1YMUpjL3RDQkVaclJwL1h4OTVOcjdxZQpZODVkUjl6dWQ1WjBBeGo0R3BmVVU4QlplNlhpRXdvL1FFQWxEb3UwR3dHejVuTUt5UENobm9BMngyZUIvVnNUWVZJNXF6Ci9HOXBERk8rNUdaMnZiUW13aDZJMTRjc3pZS0hVUWJsY0ljZy9iMlhOV3FoZEZLcUdudEEyT0Z3NHYvQnFnTVdLWUFwSlYKS01JNm1qNTJXSzFabktmU21Jc0pMSTFIQUFiTVVPOUEwWVMwcUprcTVrelFEem9CMWJDa0JPeno2UDhKZWtMOEpLVkRtZwpHV2Fsb3FJUUI5OHRBQUFBRldSbGRtOXdjMEJsWTJGeWVHZHliM1Z3TG1OdmJRRUNBd1FGCi0tLS0tRU5EIE9QRU5TU0ggUFJJVkFURSBLRVktLS0tLQo="
+          - file:
+              description: "k8s-ops-prd"
+              fileName: "config"
+              id: "k8s-ops-prd"
+              scope: GLOBAL
+              secretBytes: "YXBpVmVyc2lvbjogdjEKY2x1c3RlcnM6Ci0gY2x1c3RlcjoKICAgIGNlcnRpZmljYXRlLWF1dGhvcml0eS1kYXRhOiBMUzB0TFMxQ1JVZEpUaUJEUlZKVVNVWkpRMEZVUlMwdExTMHRDazFKU1VSRlZFTkRRV1p0WjBGM1NVSkJaMGxWVG5seE1WaEtTMVptTDFWblRFZFdMM1ZqY1U0M1FuRXpSVGN3ZDBSUldVcExiMXBKYUhaalRrRlJSVXdLUWxGQmQwWlVSVlJOUWtWSFFURlZSVUYzZDB0aE0xWnBXbGhLZFZwWVVteGpla0ZsUm5jd2VVNUVSWGhOVkZGM1QxUkZlazFxVG1GR2R6QjZUa1JGZUFwTlZFbDNUMVJGZWsxcVRtRk5RbFY0UlhwQlVrSm5UbFpDUVUxTlEyMTBNVmx0Vm5saWJWWXdXbGhOZDJkblJXbE5RVEJIUTFOeFIxTkpZak5FVVVWQ0NrRlJWVUZCTkVsQ1JIZEJkMmRuUlV0QmIwbENRVkZEVXpGQmFYRlljR04xTTJkRk1HRkxORTU1YmtoSFVWWnlkbkI2YTJKTlNIZFROMmRGWWtKMFkzSUtNMk5zV1c1M2QwWnpXbWhLUTBwc1FuZGhNbmN5VWxwak9FRXlhMFJVV0hCMmJ6UlhZWGhGYW1OaFMwMDJOVFJ4WWk5YVIxSnNjbmxpVUVsS2JYVTBhZ3BTY1ZwallrVjJiRVUzVWtsTlFXWnZRalIzVmpseVdtaFVVRlJ5VldWTkswbDZLMkp2UTFaMVkzRXdjRWhFVlU1TVprdFlSRVJTWjFwdVluRnlTemx0Q2pkNk5WUlhaRVpFZUd4RFUyd3dkemwwVW1WVVpuZFlVa0ZRU25CT2Jta3ZOVmRRWjBsMlV6aEJUSE5NVVdZdmJEQk9XV3RLYTAxSlpuVTBPVTlIYUZBS09FTnRTWGxQUlhkVlF6UXplVFp6VUdWRVZESkhSMUJZT1dac2FVZFJVMEZFVDFsRWNXWTNSQ3R3VEZwV2RuUXpURzFpTDFScmMxQkRVWGhSYVVoTlp3cDBkekJ2VFZoMVZrbEdORlZxVUVkR1MxZFFRVXRWT1haRlJEWlFSMFJYZFZZdllqWkNlRmQ2UkRaeEwwRm5UVUpCUVVkcVYxUkNXRTFDVlVkQk1WVmtDa1ZSVVU5TlFYbERRMjEwTVZsdFZubGliVll3V2xoTmQwUm5XVVJXVWpCUVFWRklMMEpCVVVSQlowdHJUVUU0UjBFeFZXUkZkMFZDTDNkUlJrMUJUVUlLUVdZNGQwaFJXVVJXVWpCUFFrSlpSVVpETmt4aU5HNUtkSHBzVFZsa2FYWjZhRWwzTmpadFYzWmpOWE5OUVRCSFExTnhSMU5KWWpORVVVVkNRM2RWUVFwQk5FbENRVkZEU0VOVFJscE9PRVJrTWpSeE5UUm9NQ3RqY0hkd05VaFlZakZQWkhCRE5tNDVNV1UyYjB0TVNEUndaMkpRTmpSU1JVOW9jM1F4VTJkeENuYzVMMU5oU1VzMllWaG5lbUozWVVSU1ZIVnRObUpyT1VFd1NUZEVSVTlzZDIwelkzWXlMMFpMUTBwbmFEbEhWRWxMU21OMFJrSllaR1JJY1RReFlUVUtOM2wxY25ncldERTRUaXRrYWpWblNuVTJNelZHZG10Q1VEaFNkMUZxYkVZemFsVkJiRTFNZUZWRlRIZHVNWGxZZUV0SGEzQlZiRk5QWnpsREswb3pjZ29yVm5OV1EyVXZkM3AzWkdsVldFUktSVTAwTm1aaFkyOWFOMVJQYmxoQ1RFVnBlVUV2UkVZd1NEQjFTRmQyVUZsUWVDOUtaRWhTVWtWeWIyWnRXVXhWQ21aUFprOHlSazVzVEZaR05IQjJMekZITm5NMU9XSlFkMUp5VmpVclltVTBOa2N2YWpsc2JERmtaRmh6VUdSWFEyYzVNM0JYY3paS1lrNVFVMDh4TVdJS01ERXhWM0p1Tm1SdlNFNUVVSGgxZVRsa1lXdEZURWhYUW5SdFpnb3RMUzB0TFVWT1JDQkRSVkpVU1VaSlEwRlVSUzB0TFMwdENnPT0KICAgIHNlcnZlcjogaHR0cHM6Ly8xMC40NC4xMDQuMTQxOjY0NDMKICBuYW1lOiBrdWJlcm5ldGVzCmNvbnRleHRzOgotIGNvbnRleHQ6CiAgICBjbHVzdGVyOiBrdWJlcm5ldGVzCiAgICB1c2VyOiBrdWJlcm5ldGVzLWFkbWluCiAgbmFtZToga3ViZXJuZXRlcy02MDcwYjEKY3VycmVudC1jb250ZXh0OiBrdWJlcm5ldGVzLTYwNzBiMQpraW5kOiBDb25maWcKcHJlZmVyZW5jZXM6IHt9CnVzZXJzOgotIG5hbWU6IGt1YmVybmV0ZXMtYWRtaW4KICB1c2VyOgogICAgY2xpZW50LWNlcnRpZmljYXRlLWRhdGE6IExTMHRMUzFDUlVkSlRpQkRSVkpVU1VaSlEwRlVSUzB0TFMwdENrMUpTVVJNVkVORFFXaFhaMEYzU1VKQlowbFZTVWxVTmxwcVYwWlhaVk16U1VKUVRXdHpaelJhVWxwVE9IaHJkMFJSV1VwTGIxcEphSFpqVGtGUlJVd0tRbEZCZDBaVVJWUk5Ra1ZIUVRGVlJVRjNkMHRoTTFacFdsaEtkVnBZVW14amVrRmxSbmN3ZVU1RVJYaE5WRkYzVDFSRmVrMXFaR0ZHZHpCNlRrUkZlQXBOVkVsM1QxUkZlazFxWkdGTlJGRjRSbnBCVmtKblRsWkNRVzlOUkc1T05XTXpVbXhpVkhCMFdWaE9NRnBZU25wTlVtdDNSbmRaUkZaUlVVUkVRa0p5Q21SWFNteGpiVFZzWkVkV2VreFhSbXRpVjJ4MVRVbEpRa2xxUVU1Q1oydHhhR3RwUnpsM01FSkJVVVZHUVVGUFEwRlJPRUZOU1VsQ1EyZExRMEZSUlVFS2RqbEJkVVpNYURGc05FOUhWVE5oYUVONVRrOTVkamc0TURGNWFESkthM05HV0dKSGFFZHlaMVZYY0V4S1JFbHpkakJFU0V0cUwxUTRTVTl6WVdVdlJ3cFNVVU5hV0dSVE5VUm1OSFJVWkdSV1MzSmtXVWRhUW1OTFIwSm5LMWhrVDA1bmFVSnZXRFJTVFZGNFFTOXFSbWRIUVZoSGVHSk5WME50Y1ZWMlJrOUVDa2R6TDBoQlluVjNjMmxNT0dNd09VVXhaVGhFTVd0WVpVcEJNRVY0TVhGSVZHVlNkVzkxU2pkbFJYQnZXaXRMVERGMlpuQTVaV05WYzNoSVp6aHJRMElLWmpOdk0zUlBOMWhETkd4bWVGbGplR0ZNWlRWTFpEUXlibVJ0VjB4VGEyeFdOVFEyUW1SNVF6RjJSRXhZU0U5aFZtd3ZObGxtV2t4TlpXcGtNSFZZTXdwTlVVdEViRGRDTW5kTVVWRXdWMDFEUkdSSlRXRXZaa0pvYTBaNGIycDVibmx5TDFnNVkzaG1Lemt5UWpkTGNFUkxLM0JRUWxOd2FHaFJhMFZPTkhCS0NtTTNiRXhwYWxGMVZVSkthVmczYVhKc1IxQTBiSGRKUkVGUlFVSnZNVmwzVmtSQlQwSm5UbFpJVVRoQ1FXWTRSVUpCVFVOQ1lVRjNSWGRaUkZaU01Hd0tRa0YzZDBObldVbExkMWxDUWxGVlNFRjNTWGRFUVZsRVZsSXdWRUZSU0M5Q1FVbDNRVVJCWmtKblRsWklVMDFGUjBSQlYyZENVWFZwTWl0S2VXSmpOUXBVUjBoWmNqZzBVMDFQZFhCc2NqTlBZa1JCVGtKbmEzRm9hMmxIT1hjd1FrRlJjMFpCUVU5RFFWRkZRVTlOTjNoNmVFbG5hMlUwVUZwRFpUZ3lVa05NQ2xoVmNrMU9ablpvVEc5VlRVVk9RVnBDVkhaRVRuZzRkRUZIUVhkdWNXOXlhVnA2ZWpWMlQxUlRkRGhqZUhGQmVEWnJTRWM0TjJKU01YWXZRVVo0TXpJS2RtOVBTbGxPVEdoaFRrRk1PVlIxYUc1TGRtZHNkbWg0TnpjMGVEZHhTVkozU1V4RksxRlhXbXA1V0ZCQ2ExVnpkVlJHWjBGQ2MxVk1VRFpCUnpCclJncFBRbTlGUzNoNU0zVnVTa0pLTURCWlNHeEdlbVkwYzA5dE5rUnRha3RQVEV0VlJqaFpTMlZCUjJwcWVESkRObU0wWW5oT1V6azRXbUZ1YkV4SmFsbHFDa3hPWVcwd1QzSnpSVlFyT1RkcFRscGtOamt4ZVVkbFF6SjBkamhaV1VFM1ltTnFOa1JqTTJwQ2FWRnVaa3hIZURjNVRtODFRME53SzJJMFoxZG5RVGtLUmtwd1kyZEhLMHg1YWxGdVRtdE9ZV04yTjNkbVkwSXhjM0V5UjJoeFVWQnpNSFI1TkdkS05tMUtRVGhJVmtnMldrdERhMDB3T0hSNU5XMTNWMlJXTlFwRlVUMDlDaTB0TFMwdFJVNUVJRU5GVWxSSlJrbERRVlJGTFMwdExTMEsKICAgIGNsaWVudC1rZXktZGF0YTogTFMwdExTMUNSVWRKVGlCU1UwRWdVRkpKVmtGVVJTQkxSVmt0TFMwdExRcE5TVWxGYjJkSlFrRkJTME5CVVVWQmRqbEJkVVpNYURGc05FOUhWVE5oYUVONVRrOTVkamc0TURGNWFESkthM05HV0dKSGFFZHlaMVZYY0V4S1JFbHpDbll3UkVoTGFpOVVPRWxQYzJGbEwwZFNVVU5hV0dSVE5VUm1OSFJVWkdSV1MzSmtXVWRhUW1OTFIwSm5LMWhrVDA1bmFVSnZXRFJTVFZGNFFTOXFSbWNLUjBGWVIzaGlUVmREYlhGVmRrWlBSRWR6TDBoQlluVjNjMmxNT0dNd09VVXhaVGhFTVd0WVpVcEJNRVY0TVhGSVZHVlNkVzkxU2pkbFJYQnZXaXRMVEFveGRtWndPV1ZqVlhONFNHYzRhME5DWmpOdk0zUlBOMWhETkd4bWVGbGplR0ZNWlRWTFpEUXlibVJ0VjB4VGEyeFdOVFEyUW1SNVF6RjJSRXhZU0U5aENsWnNMelpaWmxwTVRXVnFaREIxV0ROTlVVdEViRGRDTW5kTVVWRXdWMDFEUkdSSlRXRXZaa0pvYTBaNGIycDVibmx5TDFnNVkzaG1Lemt5UWpkTGNFUUtTeXR3VUVKVGNHaG9VV3RGVGpSd1NtTTNiRXhwYWxGMVZVSkthVmczYVhKc1IxQTBiSGRKUkVGUlFVSkJiMGxDUVVGS01EVnpOa000VTJOdWMxaHVZUXBPVlRkRVNHTXdZa2R1TUhWWGQweDVPV2tyYkdsdFdWVXdiR1JZVkZvemJqWmhMMDVqVWpOWlRrNHhhVXBUWlVkWFdHSXhNVkZTTjBaQ1ZUbHNMeXRTQ25neVQyTjJRMk5JYW5JeFVFZDFhelkzUWpkdU1ERlpVbTlvYlRjMmVtRXJNemt2YVZkWE9GSmpMMk5TT0dOT1JVZEJTM05sZEV4UmF6QjBXbll5VGs0S2NVdFJPV2RCY2pGa09VeDVjbEJ6UW10eGNsaHZVVTEwUWxwcGVTOVVXa1pMTUVGT2J5dDVjMmg0YVVkRU9FTnRTV3BZVkVKUWRUVnZMM0U0Y0hCQ2J3cGFNemR5WlZocloxbzFTWE5XVld0RVpISlNOVzVaSzNwTVVubHZkbWxEUXl0WVNXNURMM1ozVUhJdlUwZEpXVGhFTXpkT01IWjJUWFJqY1ZKWVIzVnBDa0ZwTVhoRlQzaDFPRTVFWjBsSGJWVTFjREUyYlU5dUswSk1RMm9yUzFkQ1IyMHhhMEYyWVhoTlZGY3liRmhxVEhkVVprZDNORXRxZEV4cU5FVklTbVVLVDB4SWMzaFVhME5uV1VWQmQxQnBVUzlRTDB0dlVGbG9TM1EzVDA5VEszWjViRGhWWkcxdGNEWkVLemRvYlhwdU5UUnNWWFExVkVVcmRtOXdZU3R3VkFwb01USjZhVUp1V1VnMWVXaGliVE5ZTlZCaGJuVmlVbFEwTlVzMllscDFSVlJZVHpOMU16bG1NVzA1ZWtoaFpUWlNTVk51WkVoT1FqUkZjMnM0YkdsekNpOUtUVVZaVnpkT1NubEJkVzloTURCbGFWVkhjVFpUY2sxMmNqaExWVGQzTlhoT2NuVTJiRmxaYkhFdlZXeDJWa2hNU2tRMUsydERaMWxGUVM5dVlrOEtabVJTUm1sbVJHTkRZa3RVYTJRd00yWTFOVTlUWTBSR04wZGlZbU12YWxCb1psUktWamwzTDI5dU5Ia3ZXamxRZERKcFFXOW9RMjV6YzNScE9EWTFOUXB5V0hwb2RVRk9ZM1IxVVRoUFozbHdTMHhRTVZac1VESXpiVGxETm1zdlJHWXhZemdyUzNwSWNHMVFlakV4TTJWQlFXVnhRa04wUm5oaVVYYzBNbkZwQ20xc2EzbDFTbFF3UkVjek1tdFVUSEZVVmtKbE5VZElkblJHZGxSYVZFeHNjVlpqVGtSSU9FTm5XVUZTUnpObmRrWmlXWFpCZFV3MU1pOXlTVlY0VUhjS2FYWkdWR1JvWVdOQmJIQnliRzFuVVhaTWIwZzVSMXB4U1Zwa1pXVTRNbVkyU1hseUsyazJVWHAwTHpRelJVRlNhV3hTWjFGRU5WaHdTVUp0YVhsNk1RcGxUbUpJUW05dVIyaDFZbUp6UTNwNFQyaHNiVll6YkRGdGRsQlNhMFUzTVhKVmNuTkpSbWxNY1ZkNU5EVktVVTFoUVM5d1ZUVllhREZUU2xwMmVXWlpDazVJTms5cGJuSk9ZbGRKWTNWUmRIaHRaRkYyVlZGTFFtZElkRXRCZFdkNVZtWk1jMnRTTDJSMGRWRm5XVFJvWjI5b2RsZ3lPREppVmtVMlVGTmlWR3NLYTJvd1VXbEpRbkJXY214T1Z5dHNTVW8zVEdWRlVFcDFNbkZYYjJKdGJtaE1UbVpyVVZOTFdESktjR3ByWmpSWWJYaElWbTl5U0VwQ1NXNVZWbUZ6TkFwRlIwZEpSRlFyVVVKQkwyWXJabFJZZDJOak9WWkNVR3BLZVVNMGFFMXVNVEUzTlZrMVVtMHdiVnBrYlV4UFIwTjRSV040VFVaMVdtUm5XRGxOUVhKd0NrVXphSFpCYjBkQldWWnRXVzEwWmpabGNuRnlTMHhJTld0VlkwSkZOV294TTJVMVpEaFJjMWxHZHpSbGMydFBSMkV6YWtWWFJFRjVXRVZPYmtnMWFFOEtWR2R3VVd0Mk0zSk1jQzlUT1dSRWNYQjRSRWcyYUhWcmIzcHVSMVIzTlhWQ2JIaHdiRUp5ZVhoNFMzZFFkbmd2TlhkVkx6aE1aemcwVVhOS1NHWkNkZ3BDTW1GWGNVTXpiR2N2VVc5cVVHZFVjR2w1U2s4d1RpODVSa3RIUjFKM1RsQjFRamcyWVRFNWFFOXBObVpsTUV0Q1pHczlDaTB0TFMwdFJVNUVJRkpUUVNCUVVrbFdRVlJGSUV0RldTMHRMUzB0Q2c9PQo="
+    jenkins:
+      authorizationStrategy:
+        projectMatrix:
+          entries:
+          - group:
+              name: "authenticated"
+              permissions:
+              - "Job/Build"
+              - "Job/Cancel"
+              - "Job/Read"
+              - "Job/Workspace"
+              - "Overall/Read"
+              - "View/Read"
+          - user:
+              name: "admin"
+              permissions:
+              - "Overall/Administer"
+      clouds:
+      - kubernetes:
+          containerCap: 60
+          containerCapStr: "60"
+          connectTimeout: 5
+          readTimeout: 15
+          jenkinsUrl: "http://jenkins.infra.svc.cluster.local:8080"
+          jenkinsTunnel: "jenkins-agent.infra.svc.cluster.local:50000"
+          maxRequestsPerHostStr: "32"
+          name: "kubernetes"
+          namespace: "infra"
+          serverUrl: "https://kubernetes.default.svc.cluster.local"
+          podLabels:
+          - key: "jenkins/jenkins-agent"
+            value: "true"
+          templates:
+          - name: "sonar"
+            namespace: "infra"
+            podRetention: "never"
+            instanceCap: 20
+            instanceCapStr: "20"
+            label: "sonar"
+            nodeSelector: "role=jenkins,member=slave"
+            showRawYaml: false
+            yamlMergeStrategy: "override"
+            volumes:
+            - persistentVolumeClaim:
+                claimName: "jenkins"
+                mountPath: "/data/jenkins"
+                readOnly: false
+            containers:
+            - name: "sonar"
+              image: registry.cn-hangzhou.aliyuncs.com/devops-system/sonar-scanner-cli:11.3
+              envVars:
+              - envVar:
+                  key: "TZ"
+                  value: "Asia/Shanghai"
+              alwaysPullImage: false
+              privileged: "false"
+              command: "/bin/sh -c"
+              args: "cat"
+              runAsUser: 1000
+              runAsGroup: 1000
+              ttyEnabled: true
+              resourceRequestMemory: "512M"
+              resourceRequestCpu: "500m"
+              resourceLimitCpu: "2"
+              resourceLimitMemory: "3072M"
+              workingDir: "/data/jenkins"
+            - name: "jnlp"
+              image: registry.cn-hangzhou.aliyuncs.com/devops-system/inbound-agent:bookworm-jdk17
+              envVars:
+              - envVar:
+                  key: "JAVA_OPTS"
+                  value: "-Xms2048m -Xmx2048m"
+              runAsUser: 1000
+              runAsGroup: 1000
+              resourceRequestMemory: "512M"
+              resourceRequestCpu: "500m"
+              resourceLimitCpu: "2"
+              resourceLimitMemory: "3072M"
+              workingDir: "/data/jenkins"
+          - name: "java"
+            namespace: "infra"
+            podRetention: "never"
+            instanceCap: 20
+            instanceCapStr: "20"
+            label: "java"
+            nodeSelector: "role=jenkins,member=slave"
+            showRawYaml: false
+            yamlMergeStrategy: "override"
+            volumes:
+            - persistentVolumeClaim:
+                claimName: "jenkins"
+                mountPath: "/data/jenkins"
+                readOnly: false
+            containers:
+            - name: "java"
+              image: "registry.cn-hangzhou.aliyuncs.com/kubeop/maven:3.9.9-java8"
+              alwaysPullImage: false
+              privileged: "false"
+              command: "/bin/sh -c"
+              args: "cat"
+              runAsUser: 1000
+              runAsGroup: 1000
+              ttyEnabled: true
+              resourceRequestMemory: "512M"
+              resourceRequestCpu: "500m"
+              resourceLimitCpu: "2"
+              resourceLimitMemory: "3072M"
+              workingDir: "/data/jenkins"
+            - name: "jnlp"
+              image: registry.cn-hangzhou.aliyuncs.com/devops-system/inbound-agent:bookworm-jdk17
+              runAsUser: 1000
+              runAsGroup: 1000
+              resourceRequestMemory: "512M"
+              resourceRequestCpu: "500m"
+              resourceLimitCpu: "2"
+              resourceLimitMemory: "3072M"
+              envVars:
+              - envVar:
+                  key: "JAVA_OPTS"
+                  value: "-Xms2048m -Xmx2048m"
+              workingDir: "/data/jenkins"
+            - name: "java-11"
+              image: "registry.cn-hangzhou.aliyuncs.com/kubeop/maven:3.9.9-java11"
+              alwaysPullImage: false
+              privileged: "false"
+              command: "/bin/sh -c"
+              args: "cat"
+              runAsUser: 1000
+              runAsGroup: 1000
+              ttyEnabled: true
+              resourceRequestMemory: "512M"
+              resourceRequestCpu: "500m"
+              resourceLimitCpu: "2"
+              resourceLimitMemory: "3072M"
+              workingDir: "/data/jenkins"
+            - name: "jnlp"
+              image: registry.cn-hangzhou.aliyuncs.com/devops-system/inbound-agent:bookworm-jdk17
+              runAsUser: 1000
+              runAsGroup: 1000
+              resourceRequestMemory: "512M"
+              resourceRequestCpu: "500m"
+              resourceLimitCpu: "2"
+              resourceLimitMemory: "3072M"
+              envVars:
+              - envVar:
+                  key: "JAVA_OPTS"
+                  value: "-Xms2048m -Xmx2048m"
+              workingDir: "/data/jenkins"
+          - name: "gradle"
+            namespace: "infra"
+            podRetention: "never"
+            instanceCap: 20
+            instanceCapStr: "20"
+            label: "gradle"
+            nodeSelector: "role=jenkins,member=slave"
+            showRawYaml: false
+            yamlMergeStrategy: "override"
+            volumes:
+            - persistentVolumeClaim:
+                claimName: "jenkins"
+                mountPath: "/data/jenkins"
+                readOnly: false
+            containers:
+            - name: "gradle"
+              image: "registry.cn-hangzhou.aliyuncs.com/kubeop/gradle:8.12.1-java8"
+              alwaysPullImage: false
+              privileged: "false"
+              command: "/bin/sh -c"
+              args: "cat"
+              runAsUser: 1000
+              runAsGroup: 1000
+              ttyEnabled: true
+              resourceRequestMemory: "512M"
+              resourceRequestCpu: "500m"
+              resourceLimitCpu: "4"
+              resourceLimitMemory: "8096M"
+              workingDir: "/data/jenkins"
+            - name: "jnlp"
+              image: registry.cn-hangzhou.aliyuncs.com/devops-system/inbound-agent:bookworm-jdk17
+              runAsUser: 1000
+              runAsGroup: 1000
+              resourceRequestMemory: "512M"
+              resourceRequestCpu: "500m"
+              resourceLimitCpu: "4"
+              resourceLimitMemory: "8096M"
+              envVars:
+              - envVar:
+                  key: "JAVA_OPTS"
+                  value: "-Xms8096m -Xmx8096m"
+              workingDir: "/data/jenkins"
+          - name: "golang"
+            namespace: "infra"
+            podRetention: "never"
+            instanceCap: 20
+            instanceCapStr: "20"
+            label: "golang"
+            nodeSelector: "role=jenkins,member=slave"
+            showRawYaml: false
+            yamlMergeStrategy: "override"
+            volumes:
+            - persistentVolumeClaim:
+                claimName: "jenkins"
+                mountPath: "/data/jenkins"
+                readOnly: false
+            containers:
+            - name: "golang"
+              image: registry.cn-hangzhou.aliyuncs.com/kubeop/golang:1.24.1
+              alwaysPullImage: false
+              privileged: "false"
+              command: "/bin/sh -c"
+              args: "cat"
+              runAsUser: 1000
+              runAsGroup: 1000
+              ttyEnabled: true
+              resourceRequestMemory: "512M"
+              resourceRequestCpu: "500m"
+              resourceLimitCpu: "4"
+              resourceLimitMemory: "4096M"
+              workingDir: "/data/jenkins"
+            - name: "jnlp"
+              image: registry.cn-hangzhou.aliyuncs.com/devops-system/inbound-agent:bookworm-jdk17
+              envVars:
+              - envVar:
+                  key: "JAVA_OPTS"
+                  value: "-Xms2048m -Xmx2048m"
+              runAsUser: 1000
+              runAsGroup: 1000
+              resourceRequestMemory: "512M"
+              resourceRequestCpu: "500m"
+              resourceLimitCpu: "2"
+              resourceLimitMemory: "3072M"
+              workingDir: "/data/jenkins"
+          - name: "nodejs"
+            namespace: "infra"
+            podRetention: "never"
+            instanceCap: 20
+            instanceCapStr: "20"
+            label: "nodejs"
+            nodeSelector: "role=jenkins,member=slave"
+            showRawYaml: false
+            yamlMergeStrategy: "override"
+            volumes:
+            - persistentVolumeClaim:
+                claimName: "jenkins"
+                mountPath: "/data/jenkins"
+                readOnly: false
+            containers:
+            - name: "nodejs"
+              image: registry.cn-hangzhou.aliyuncs.com/kubeop/nodejs:20.19.0
+              alwaysPullImage: false
+              privileged: "false"
+              command: "/bin/sh -c"
+              args: "cat"
+              runAsUser: 1000
+              runAsGroup: 1000
+              ttyEnabled: true
+              resourceRequestMemory: "512M"
+              resourceRequestCpu: "500m"
+              resourceLimitCpu: "2"
+              resourceLimitMemory: "3072M"
+              workingDir: "/data/jenkins"
+            - name: "jnlp"
+              image: registry.cn-hangzhou.aliyuncs.com/devops-system/inbound-agent:bookworm-jdk17
+              envVars:
+              - envVar:
+                  key: "JAVA_OPTS"
+                  value: "-Xms2048m -Xmx2048m"
+              runAsUser: 1000
+              runAsGroup: 1000
+              resourceRequestMemory: "512M"
+              resourceRequestCpu: "500m"
+              resourceLimitCpu: "2"
+              resourceLimitMemory: "3072M"
+              workingDir: "/data/jenkins"
+          - name: "docker"
+            namespace: "infra"
+            podRetention: "never"
+            instanceCap: 20
+            instanceCapStr: "20"
+            label: "docker"
+            nodeSelector: "role=jenkins,member=slave"
+            showRawYaml: false
+            yamlMergeStrategy: "override"
+            volumes:
+            - persistentVolumeClaim:
+                claimName: "jenkins"
+                mountPath: "/data/jenkins"
+                readOnly: false
+            - hostPathVolume:
+                hostPath: "/var/run/docker.sock"
+                mountPath: "/var/run/docker.sock"
+                readOnly: false
+            containers:
+            - name: "docker"
+              image: registry.cn-hangzhou.aliyuncs.com/kubeop/docker:28-cli
+              alwaysPullImage: false
+              privileged: "true"
+              runAsUser: 1000
+              runAsGroup: 1000
+              ttyEnabled: true
+              resourceRequestMemory: "512M"
+              resourceRequestCpu: "500m"
+              resourceLimitCpu: "2"
+              resourceLimitMemory: "3072M"
+              workingDir: "/data/jenkins"
+            - name: "jnlp"
+              image: registry.cn-hangzhou.aliyuncs.com/devops-system/inbound-agent:bookworm-jdk17
+              envVars:
+              - envVar:
+                  key: "JAVA_OPTS"
+                  value: "-Xms2048m -Xmx2048m"
+              runAsUser: 1000
+              runAsGroup: 1000
+              resourceRequestMemory: "512M"
+              resourceRequestCpu: "500m"
+              resourceLimitCpu: "2"
+              resourceLimitMemory: "3072M"
+              workingDir: "/data/jenkins"
+          - name: "kubectl"
+            namespace: "infra"
+            podRetention: "never"
+            instanceCap: 20
+            instanceCapStr: "20"
+            label: "kubectl"
+            nodeSelector: "role=jenkins,member=slave"
+            showRawYaml: false
+            yamlMergeStrategy: "override"
+            volumes:
+            - persistentVolumeClaim:
+                claimName: "jenkins"
+                mountPath: "/data/jenkins"
+                readOnly: false
+            containers:
+            - name: "kubectl"
+              image: registry.cn-hangzhou.aliyuncs.com/kubeop/kubectl:v1.32.3
+              alwaysPullImage: false
+              privileged: "false"
+              command: "/bin/sh -c"
+              args: "cat"
+              runAsUser: 1000
+              runAsGroup: 1000
+              ttyEnabled: true
+              resourceRequestMemory: "512M"
+              resourceRequestCpu: "500m"
+              resourceLimitCpu: "2"
+              resourceLimitMemory: "3072M"
+              workingDir: "/data/jenkins"
+            - name: "jnlp"
+              image: registry.cn-hangzhou.aliyuncs.com/devops-system/inbound-agent:bookworm-jdk17
+              envVars:
+              - envVar:
+                  key: "JAVA_OPTS"
+                  value: "-Xms2048m -Xmx2048m"
+              runAsUser: 1000
+              runAsGroup: 1000
+              resourceRequestMemory: "512M"
+              resourceRequestCpu: "500m"
+              resourceLimitCpu: "2"
+              resourceLimitMemory: "3072M"
+              workingDir: "/data/jenkins"
+          - name: "kubedog"
+            namespace: "infra"
+            podRetention: "never"
+            instanceCap: 20
+            instanceCapStr: "20"
+            label: "kubedog"
+            nodeSelector: "role=jenkins,member=slave"
+            showRawYaml: false
+            yamlMergeStrategy: "override"
+            volumes:
+            - persistentVolumeClaim:
+                claimName: "jenkins"
+                mountPath: "/data/jenkins"
+                readOnly: false
+            containers:
+            - name: "kubedog"
+              image: registry.cn-hangzhou.aliyuncs.com/kubeop/kubedog:0.13.0
+              alwaysPullImage: false
+              privileged: "false"
+              command: "/bin/sh -c"
+              args: "cat"
+              runAsUser: 1000
+              runAsGroup: 1000
+              ttyEnabled: true
+              resourceRequestMemory: "512M"
+              resourceRequestCpu: "500m"
+              resourceLimitCpu: "2"
+              resourceLimitMemory: "3072M"
+              workingDir: "/data/jenkins"
+            - name: "jnlp"
+              image: registry.cn-hangzhou.aliyuncs.com/devops-system/inbound-agent:bookworm-jdk17
+              envVars:
+              - envVar:
+                  key: "JAVA_OPTS"
+                  value: "-Xms2048m -Xmx2048m"
+              runAsUser: 1000
+              runAsGroup: 1000
+              resourceRequestMemory: "512M"
+              resourceRequestCpu: "500m"
+              resourceLimitCpu: "2"
+              resourceLimitMemory: "3072M"
+              workingDir: "/data/jenkins"
+          - name: "ansible"
+            namespace: "infra"
+            podRetention: "never"
+            instanceCap: 20
+            instanceCapStr: "20"
+            label: "ansible"
+            nodeSelector: "role=jenkins,member=slave"
+            showRawYaml: false
+            yamlMergeStrategy: "override"
+            volumes:
+            - persistentVolumeClaim:
+                claimName: "jenkins"
+                mountPath: "/data/jenkins"
+                readOnly: false
+            containers:
+            - name: "ansible"
+              image: registry.cn-hangzhou.aliyuncs.com/kubeop/ansible:2.16.14
+              alwaysPullImage: false
+              privileged: "false"
+              command: "/bin/sh -c"
+              args: "cat"
+              runAsUser: 1000
+              runAsGroup: 1000
+              ttyEnabled: true
+              resourceRequestMemory: "512M"
+              resourceRequestCpu: "500m"
+              resourceLimitCpu: "2"
+              resourceLimitMemory: "3072M"
+              workingDir: "/data/jenkins"
+            - name: "jnlp"
+              image: registry.cn-hangzhou.aliyuncs.com/devops-system/inbound-agent:bookworm-jdk17
+              envVars:
+              - envVar:
+                  key: "JAVA_OPTS"
+                  value: "-Xms2048m -Xmx2048m"
+              runAsUser: 1000
+              runAsGroup: 1000
+              resourceRequestMemory: "512M"
+              resourceRequestCpu: "500m"
+              resourceLimitCpu: "2"
+              resourceLimitMemory: "3072M"
+              workingDir: "/data/jenkins"
+      crumbIssuer:
+        standard:
+          excludeClientIPFromCrumb: true
+      disableRememberMe: false
+      labelAtoms:
+      - name: "built-in"
+      markupFormatter:
+        rawHtml:
+          disableSyntaxHighlighting: false
+      mode: NORMAL
+      myViewsTabBar: "standard"
+      numExecutors: 20
+      primaryView:
+        all:
+          name: "all"
+      projectNamingStrategy:
+        pattern:
+          description: "任务命名规范"
+          forceExistingJobs: true
+          namePattern: ".*_.*"
+      quietPeriod: 5
+      scmCheckoutRetryCount: 0
+      securityRealm:
+        local:
+          allowsSignup: false
+          enableCaptcha: false
+          users:
+          - id: "${admin-username}"
+            name: "Admin"
+            password: "${admin-password}"
+      slaveAgentPort: 50000
+      updateCenter:
+        sites:
+        - id: "default"
+          url: "https://mirrors.chenby.cn/https://raw.githubusercontent.com/kubeop/update-center/master/updates/ustc/update-center.json"
+      views:
+      - all:
+          name: "all"
+      - list:
+          columns:
+          - "status"
+          - "weather"
+          - "jobName"
+          - "lastSuccess"
+          - "lastFailure"
+          - "lastDuration"
+          - "buildButton"
+          description: "运维组"
+          includeRegex: "ops_.*"
+          name: "ops"
+      viewsTabBar: "standard"
+    security:
+      apiToken:
+        creationOfLegacyTokenEnabled: false
+        tokenGenerationOnCreationEnabled: false
+        usageStatisticsEnabled: true
+      sSHD:
+        port: -1
+    unclassified:
+      buildUserVars:
+        allBuilds: true
+      location:
+        url: "https://jenkins.kubeop.com/"
+      shell:
+        shell: "/data/jenkins/base-sile"
+      sonarGlobalConfiguration:
+        buildWrapperEnabled: true
+        installations:
+        - credentialsId: "sonar"
+          name: "sonarqube"
+          serverUrl: "https://sonar.kubeop.com"
+          triggers:
+            skipScmCause: false
+            skipUpstreamCause: false
