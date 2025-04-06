@@ -16,7 +16,7 @@ stringData:
     name = grafana
     user = grafana
     #  If the password contains # or ; you have to wrap it with triple quotes. Ex """#password;"""
-    password = """h0zaJbIb6#e6g4dVw"""
+    password = """password"""
     ssl_mode = disable
     
     [auth.ldap]

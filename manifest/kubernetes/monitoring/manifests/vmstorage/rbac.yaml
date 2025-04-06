@@ -1,0 +1,52 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: victoriametrics
+  namespace: monitoring
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: victoriametrics
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - namespaces
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+    - autoscaling
+  resources:
+    - horizontalpodautoscalers
+  verbs:
+    - list
+    - get
+    - delete
+    - create
+    - update
+- apiGroups:
+    - networking.k8s.io
+    - extensions
+  resources:
+  - ingresses
+  - ingresses/finalizers
+  verbs:
+  - get
+  - list
+  - watch
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: victoriametrics
+subjects:
+- kind: ServiceAccount
+  name: victoriametrics
+  namespace: monitoring
+roleRef:
+  kind: ClusterRole
+  name: victoriametrics
+  apiGroup: rbac.authorization.k8s.io

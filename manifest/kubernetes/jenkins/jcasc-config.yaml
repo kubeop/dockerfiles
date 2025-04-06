@@ -90,6 +90,9 @@ data:
               - envVar:
                   key: "TZ"
                   value: "Asia/Shanghai"
+              - envVar:
+                  key: "SONAR_SCANNER_OPTS"
+                  value: "-Xmx2048m"
               alwaysPullImage: false
               privileged: "false"
               command: "/bin/sh -c"
@@ -103,7 +106,7 @@ data:
               resourceLimitMemory: "3072M"
               workingDir: "/data/jenkins"
             - name: "jnlp"
-              image: registry.cn-hangzhou.aliyuncs.com/devops-system/inbound-agent:bookworm-jdk17
+              image: registry.cn-hangzhou.aliyuncs.com/devops-system/inbound-agent:bookworm-jdk21
               envVars:
               - envVar:
                   key: "JAVA_OPTS"
@@ -145,7 +148,7 @@ data:
               resourceLimitMemory: "3072M"
               workingDir: "/data/jenkins"
             - name: "jnlp"
-              image: registry.cn-hangzhou.aliyuncs.com/devops-system/inbound-agent:bookworm-jdk17
+              image: registry.cn-hangzhou.aliyuncs.com/devops-system/inbound-agent:bookworm-jdk21
               runAsUser: 1000
               runAsGroup: 1000
               resourceRequestMemory: "512M"
@@ -172,7 +175,7 @@ data:
               resourceLimitMemory: "3072M"
               workingDir: "/data/jenkins"
             - name: "jnlp"
-              image: registry.cn-hangzhou.aliyuncs.com/devops-system/inbound-agent:bookworm-jdk17
+              image: registry.cn-hangzhou.aliyuncs.com/devops-system/inbound-agent:bookworm-jdk21
               runAsUser: 1000
               runAsGroup: 1000
               resourceRequestMemory: "512M"
@@ -214,7 +217,7 @@ data:
               resourceLimitMemory: "8096M"
               workingDir: "/data/jenkins"
             - name: "jnlp"
-              image: registry.cn-hangzhou.aliyuncs.com/devops-system/inbound-agent:bookworm-jdk17
+              image: registry.cn-hangzhou.aliyuncs.com/devops-system/inbound-agent:bookworm-jdk21
               runAsUser: 1000
               runAsGroup: 1000
               resourceRequestMemory: "512M"
@@ -256,7 +259,7 @@ data:
               resourceLimitMemory: "4096M"
               workingDir: "/data/jenkins"
             - name: "jnlp"
-              image: registry.cn-hangzhou.aliyuncs.com/devops-system/inbound-agent:bookworm-jdk17
+              image: registry.cn-hangzhou.aliyuncs.com/devops-system/inbound-agent:bookworm-jdk21
               envVars:
               - envVar:
                   key: "JAVA_OPTS"
@@ -298,7 +301,7 @@ data:
               resourceLimitMemory: "3072M"
               workingDir: "/data/jenkins"
             - name: "jnlp"
-              image: registry.cn-hangzhou.aliyuncs.com/devops-system/inbound-agent:bookworm-jdk17
+              image: registry.cn-hangzhou.aliyuncs.com/devops-system/inbound-agent:bookworm-jdk21
               envVars:
               - envVar:
                   key: "JAVA_OPTS"
@@ -342,7 +345,7 @@ data:
               resourceLimitMemory: "3072M"
               workingDir: "/data/jenkins"
             - name: "jnlp"
-              image: registry.cn-hangzhou.aliyuncs.com/devops-system/inbound-agent:bookworm-jdk17
+              image: registry.cn-hangzhou.aliyuncs.com/devops-system/inbound-agent:bookworm-jdk21
               envVars:
               - envVar:
                   key: "JAVA_OPTS"
@@ -384,7 +387,7 @@ data:
               resourceLimitMemory: "3072M"
               workingDir: "/data/jenkins"
             - name: "jnlp"
-              image: registry.cn-hangzhou.aliyuncs.com/devops-system/inbound-agent:bookworm-jdk17
+              image: registry.cn-hangzhou.aliyuncs.com/devops-system/inbound-agent:bookworm-jdk21
               envVars:
               - envVar:
                   key: "JAVA_OPTS"
@@ -426,7 +429,7 @@ data:
               resourceLimitMemory: "3072M"
               workingDir: "/data/jenkins"
             - name: "jnlp"
-              image: registry.cn-hangzhou.aliyuncs.com/devops-system/inbound-agent:bookworm-jdk17
+              image: registry.cn-hangzhou.aliyuncs.com/devops-system/inbound-agent:bookworm-jdk21
               envVars:
               - envVar:
                   key: "JAVA_OPTS"
@@ -468,7 +471,7 @@ data:
               resourceLimitMemory: "3072M"
               workingDir: "/data/jenkins"
             - name: "jnlp"
-              image: registry.cn-hangzhou.aliyuncs.com/devops-system/inbound-agent:bookworm-jdk17
+              image: registry.cn-hangzhou.aliyuncs.com/devops-system/inbound-agent:bookworm-jdk21
               envVars:
               - envVar:
                   key: "JAVA_OPTS"

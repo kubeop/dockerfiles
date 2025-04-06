@@ -52,9 +52,6 @@ spec:
         - mountPath: /etc/grafana/provisioning/datasources
           name: grafana-datasources
           readOnly: false
-        - mountPath: /etc/grafana/provisioning/dashboards
-          name: grafana-dashboards
-          readOnly: false
         - mountPath: /usr/share/grafana/public/dashboards/home.json
           name: grafana-dashboard-home
           subPath: home.json
@@ -82,9 +79,6 @@ spec:
       - name: grafana-datasources
         secret:
           secretName: grafana-datasources
-      - name: grafana-dashboards
-        configMap:
-          name: grafana-dashboards
       - name: grafana-dashboard-grafana-overview
         configMap:
           name: grafana-dashboard-grafana-overview

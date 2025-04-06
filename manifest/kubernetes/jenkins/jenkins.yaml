@@ -34,8 +34,21 @@ spec:
       imagePullSecrets:
         - name: hubsecret
       initContainers:
+      - name: hack
+        image: registry.cn-hangzhou.aliyuncs.com/kubeop/jenkins:2.492.3
+        imagePullPolicy: Always
+        securityContext:
+          runAsGroup: 0
+          runAsUser: 0
+        command:
+        - /bin/bash
+        - -c
+        - chown -R 1000:1000 ${JENKINS_HOME}
+        volumeMounts:
+        - name: jenkins-data
+          mountPath: /data/jenkins
       - name: init
-        image: registry.cn-hangzhou.aliyuncs.com/kubeop/jenkins:2.492.2
+        image: registry.cn-hangzhou.aliyuncs.com/kubeop/jenkins:2.492.3
         imagePullPolicy: Always
         securityContext:
           allowPrivilegeEscalation: false
@@ -56,7 +69,7 @@ spec:
           mountPath: /data/jenkins
       containers:
       - name: jenkins
-        image: registry.cn-hangzhou.aliyuncs.com/kubeop/jenkins:2.492.2
+        image: registry.cn-hangzhou.aliyuncs.com/kubeop/jenkins:2.492.3
         imagePullPolicy: Always
         securityContext:
           allowPrivilegeEscalation: false

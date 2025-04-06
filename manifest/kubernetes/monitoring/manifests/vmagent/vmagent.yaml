@@ -1,0 +1,91 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: monitoring
+  labels:
+    app.kubernetes.io/name: vmagent
+  name: vmagent
+spec:
+  type: ClusterIP
+  ports:
+    - name: http
+      port: 8429
+      targetPort: http
+      protocol: TCP
+  selector:
+    app.kubernetes.io/name: vmagent
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: vmagent
+  namespace: monitoring
+  labels:
+    app.kubernetes.io/name: vmagent
+spec:
+  replicas: 2
+  serviceName: vmagent
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: vmagent
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: vmagent
+    spec:
+      serviceAccountName: vmagent
+      containers:
+        - name: vmagent
+          image: registry.cn-hangzhou.aliyuncs.com/devops-system/vmagent:v1.114.0
+          imagePullPolicy: IfNotPresent
+          args:
+            - --promscrape.config=https://vmconfig.kubeop.com/scrape_config/$(CLUSTER).yml
+            - --promscrape.configCheckInterval=30s
+            - --promscrape.maxScrapeSize=20971520
+            - --promscrape.suppressDuplicateScrapeTargetErrors
+            - --promscrape.cluster.membersCount=2
+            - --promscrape.cluster.replicationFactor=2
+            - --promscrape.cluster.memberNum=$(POD_NAME)
+            - --remoteWrite.url=http://vminsert.monitoring.svc.cluster.local:8480/insert/0/prometheus/
+            - --remoteWrite.basicAuth.username=admin
+            - --remoteWrite.basicAuth.password=password
+            - --remoteWrite.tmpDataPath=/tmpData
+            - --envflag.enable=true
+            - --envflag.prefix=VM_
+            - --loggerFormat=json
+          ports:
+            - name: http
+              containerPort: 8429
+          env:
+            - name: CLUSTER
+              value: "k8s-ops-prd"
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 15
+          livenessProbe:
+            tcpSocket:
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 15
+            timeoutSeconds: 5
+          resources:
+            limits:
+              cpu: 1
+              memory: 2Gi
+            requests:
+              cpu: 1
+              memory: 2Gi
+          volumeMounts:
+            - name: tmpdata
+              mountPath: /tmpData
+      volumes:
+        - name: tmpdata
+          emptyDir: {}

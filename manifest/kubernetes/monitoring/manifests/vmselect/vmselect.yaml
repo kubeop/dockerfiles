@@ -1,0 +1,110 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: vmselect
+  namespace: monitoring
+  labels:
+    app.kubernetes.io/name: vmselect
+spec:
+  clusterIP: None
+  ports:
+    - name: http
+      port: 8481
+      protocol: TCP
+      targetPort: http
+  selector:
+    app.kubernetes.io/name: vmselect
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: vmselect
+  namespace: monitoring
+  labels:
+    app.kubernetes.io/name: vmselect
+spec:
+  replicas: 3
+  serviceName: vmselect
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: vmselect
+  podManagementPolicy: 
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: vmselect
+    spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: "app.kubernetes.io/name"
+                operator: In
+                values:
+                - "vmselect"
+            topologyKey: "kubernetes.io/hostname"
+      serviceAccountName: victoriametrics
+      automountServiceAccountToken: true
+      containers:
+        - name: vmselect
+          image: registry.cn-hangzhou.aliyuncs.com/devops-system/vmselect:v1.114.0-cluster
+          imagePullPolicy: IfNotPresent
+          args:
+            - --cacheDataPath=/cache
+            - --search.maxQueryLen=104857
+            - --dedup.minScrapeInterval=30s
+            - --search.logSlowQueryDuration=10s
+            - --search.maxSamplesPerQuery=2000000000
+            - --replicationFactor=1
+
+            - --httpAuth.username=admin
+            - --httpAuth.password=password
+
+            - --storageNode=vmstorage-0.vmstorage.monitoring.svc.cluster.local:8401
+            - --storageNode=vmstorage-1.vmstorage.monitoring.svc.cluster.local:8401
+            - --storageNode=vmstorage-2.vmstorage.monitoring.svc.cluster.local:8401
+            
+            - --selectNode=vmselect-0.vmselect.monitoring.svc.cluster.local:8481
+            - --selectNode=vmselect-1.vmselect.monitoring.svc.cluster.local:8481
+            - --selectNode=vmselect-2.vmselect.monitoring.svc.cluster.local:8481
+            
+            - --envflag.enable=true
+            - --envflag.prefix=VM_
+            - --loggerFormat=json
+          ports:
+            - name: http
+              containerPort: 8481
+          livenessProbe:
+            tcpSocket:
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 15
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 15
+          resources:
+            limits:
+              cpu: 8
+              memory: 16Gi
+            requests:
+              cpu: 8
+              memory: 16Gi
+          volumeMounts:
+            - mountPath: /cache
+              name: cache-volume
+  volumeClaimTemplates:
+    - metadata:
+        name: cache-volume
+      spec:
+        storageClassName: vmselect
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: "50Gi"

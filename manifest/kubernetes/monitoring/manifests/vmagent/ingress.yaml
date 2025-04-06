@@ -1,0 +1,22 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: vmagent
+  namespace: monitoring
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: k8s-ops-prd.kubeop.com
+    http:
+      paths:
+        - pathType: Prefix
+          path: "/"
+          backend:
+            service:
+              name: vmagent
+              port:
+                number: 8429
+  tls:
+  - hosts:
+    - k8s-ops-prd.kubeop.com
+    secretName: kubeop.com-ssl

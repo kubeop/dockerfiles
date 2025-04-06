@@ -5,20 +5,20 @@ metadata:
     app.kubernetes.io/name: grafana
   name: grafana-datasources
   namespace: monitoring
+type: Opaque
 stringData:
   datasources.yaml: |-
-    {
-        "apiVersion": 1,
-        "datasources": [
-            {
-                "access": "proxy",
-                "editable": false,
-                "name": "victoriametrics",
-                "orgId": 1,
-                "type": "prometheus",
-                "url": "http://vmselect.monitoring.svc.cluster.local:8481/select/0/prometheus",
-                "version": 1
-            }
-        ]
-    }
-type: Opaque
+    apiVersion: 1
+    datasources:
+      - name: victoriametrics
+        type: prometheus
+        orgId: 1
+        access: proxy
+        isDefault: true
+        url: 'http://vmselect.monitoring.svc.cluster.local:8481/select/0/prometheus'
+        basicAuth: true
+        basicAuthUser: admin
+        secureJsonData:
+          basicAuthPassword: password
+        version: 1
+        editable: false
