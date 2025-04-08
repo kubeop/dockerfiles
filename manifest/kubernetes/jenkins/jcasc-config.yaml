@@ -160,6 +160,21 @@ data:
                   key: "JAVA_OPTS"
                   value: "-Xms2048m -Xmx2048m"
               workingDir: "/data/jenkins"
+          - name: "java-11"
+            namespace: "infra"
+            podRetention: "never"
+            instanceCap: 20
+            instanceCapStr: "20"
+            label: "java-11"
+            nodeSelector: "role=jenkins,member=slave"
+            showRawYaml: false
+            yamlMergeStrategy: "override"
+            volumes:
+            - persistentVolumeClaim:
+                claimName: "jenkins"
+                mountPath: "/data/jenkins"
+                readOnly: false
+            containers:
             - name: "java-11"
               image: "registry.cn-hangzhou.aliyuncs.com/kubeop/maven:3.9.9-java11"
               alwaysPullImage: false
@@ -333,7 +348,7 @@ data:
                 readOnly: false
             containers:
             - name: "docker"
-              image: registry.cn-hangzhou.aliyuncs.com/kubeop/docker:28-cli
+              image: registry.cn-hangzhou.aliyuncs.com/kubeop/docker:28.0.4
               alwaysPullImage: false
               privileged: "true"
               runAsUser: 1000

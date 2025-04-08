@@ -28,10 +28,10 @@ spec:
           image: registry.cn-hangzhou.aliyuncs.com/kubeop/docker:28-dind
           imagePullPolicy: Always
           args:
-            - --registry-mirror=https://dytt.online
-            - --registry-mirror=https://func.ink
-            - --registry-mirror=https://lispy.org
             - --registry-mirror=https://docker.1ms.run
+            - --registry-mirror=https://docker.mybacc.com
+            - --registry-mirror=https://dytt.online
+            - --registry-mirror=https://lispy.org
             - --registry-mirror=https://hub1.nat.tf
             - --registry-mirror=https://hub2.nat.tf
             - --insecure-registry=registry.kubeop.com

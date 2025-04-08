@@ -55,9 +55,6 @@ spec:
         - mountPath: /usr/share/grafana/public/dashboards/home.json
           name: grafana-dashboard-home
           subPath: home.json
-        - mountPath: /grafana-dashboard-definitions/0/grafana-overview
-          name: grafana-dashboard-grafana-overview
-          readOnly: false
         - mountPath: /tmp
           name: tmp-plugins
           readOnly: false
@@ -79,9 +76,6 @@ spec:
       - name: grafana-datasources
         secret:
           secretName: grafana-datasources
-      - name: grafana-dashboard-grafana-overview
-        configMap:
-          name: grafana-dashboard-grafana-overview
       - name: grafana-dashboard-home
         configMap:
           name: grafana-dashboard-home

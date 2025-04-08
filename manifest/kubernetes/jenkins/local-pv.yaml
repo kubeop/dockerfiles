@@ -18,6 +18,24 @@ spec:
   accessModes:
   - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
-  storageClassName: jenkins
+  storageClassName: local
   local:
     path: /data/jenkins
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: jenkins
+  namespace: infra
+  labels:
+    app.kubernetes.io/name: "jenkins"
+    app.kubernetes.io/component: "jenkins-controller"
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Gi
+  storageClassName: local
+  volumeMode: Filesystem
+  volumeName: jenkins

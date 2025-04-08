@@ -178,14 +178,6 @@ spec:
             secretName: jenkins
         - name: tmp-volume
           emptyDir: {}
-  volumeClaimTemplates:
-  - apiVersion: v1
-    kind: PersistentVolumeClaim
-    metadata:
-      name: jenkins-data
-    spec:
-      storageClassName: jenkins
-      accessModes: [ "ReadWriteOnce" ]
-      resources:
-        requests:
-          storage: 100Gi
+        - name: jenkins-data
+          persistentVolumeClaim:
+            claimName: jenkins
