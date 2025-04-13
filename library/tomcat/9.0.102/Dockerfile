@@ -23,7 +23,7 @@ RUN set -eux; \
 		ca-certificates \
 		curl \
 	; \
-	curl -Ljk "https://mirrors.aliyun.com/apache/tomcat/tomcat-${TOMCAT_MAJOR}/v${TOMCAT_VERSION}/bin/apache-tomcat-${TOMCAT_VERSION}.tar.gz" | tar zxf - --strip-components=1; \
+	curl -Ljk "https://archive.apache.org/dist/tomcat/tomcat-${TOMCAT_MAJOR}/v${TOMCAT_VERSION}/bin/apache-tomcat-${TOMCAT_VERSION}.tar.gz" | tar zxf - --strip-components=1; \
 	rm bin/*.bat; \
 	\
 # https://tomcat.apache.org/tomcat-9.0-doc/security-howto.html#Default_web_applications

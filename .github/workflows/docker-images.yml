@@ -156,7 +156,7 @@ jobs:
           - {name: "gradle", tag: "8.12.1", args: "java8"}
           - {name: "gradle", tag: "8.12.1", args: "java11"}
           - {name: "tomcat", tag: "9.0.102", args: ""}
-          - {name: "tomcat", tag: "10.1.39", args: ""}
+          - {name: "tomcat", tag: "10.1.40", args: ""}
 
     steps:
     - name: Checkout

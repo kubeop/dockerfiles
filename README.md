@@ -52,5 +52,5 @@
 | Python  | kubeop/python:3.13.2        | registry.cn-hangzhou.aliyuncs.com/kubeop/python:3.13.2       |
 | Ansible | kubeop/ansible:2.16.14      | registry.cn-hangzhou.aliyuncs.com/kubeop/ansible:2.16.14     |
 | Tomcat  | kubeop/tomcat:9.0.102       | registry.cn-hangzhou.aliyuncs.com/kubeop/tomcat:9.0.102      |
-| Tomcat  | kubeop/tomcat:10.1.39       | registry.cn-hangzhou.aliyuncs.com/kubeop/tomcat:10.1.39      |
+| Tomcat  | kubeop/tomcat:10.1.40       | registry.cn-hangzhou.aliyuncs.com/kubeop/tomcat:10.1.40      |
 
