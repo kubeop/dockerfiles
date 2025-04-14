@@ -1,0 +1,13 @@
+- job_name: "mysqld-exporter"
+  metrics_path: /probe
+  params:
+    auth_module: [client]
+  http_sd_configs:
+    - url: https://devops.kubeop.com/api/v1/monitor/targets?cluster=%{CLUSTER}&module=mysqld-exporter
+  relabel_configs:
+    - source_labels: [__address__]
+      target_label: __param_target
+    - source_labels: [__param_target]
+      target_label: instance
+    - target_label: __address__
+      replacement: mysqld-exporter.exporter.svc.cluster.local:9104

@@ -1,5 +1,12 @@
-- job_name: 'vminsert'
+- job_name: "node-exporter/0"
   metrics_path: /metrics
+  scheme: https
+  authorization:
+    type: Bearer
+    credentials_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+  tls_config:
+    insecure_skip_verify: true
+  follow_redirects: true
   kubernetes_sd_configs:
   - role: endpoints
     follow_redirects: true
@@ -9,12 +16,12 @@
   relabel_configs:
   - source_labels: [__meta_kubernetes_service_label_app_kubernetes_io_name, __meta_kubernetes_service_labelpresent_app_kubernetes_io_name]
     separator: ;
-    regex: (vminsert);true
+    regex: (node-exporter);true
     replacement: $1
     action: keep
   - source_labels: [__meta_kubernetes_endpoint_port_name]
     separator: ;
-    regex: http
+    regex: https
     replacement: $1
     action: keep
   - source_labels: [__meta_kubernetes_endpoint_address_target_kind, __meta_kubernetes_endpoint_address_target_name]
@@ -59,11 +66,58 @@
     target_label: job
     replacement: ${1}
     action: replace
+  - source_labels: [__meta_kubernetes_service_label_app_kubernetes_io_name]
+    separator: ;
+    regex: (.+)
+    target_label: job
+    replacement: ${1}
+    action: replace
   - separator: ;
     regex: (.*)
     target_label: endpoint
-    replacement: http
+    replacement: https
     action: replace
+  - source_labels: [__meta_kubernetes_pod_node_name]
+    separator: ;
+    regex: (.*)
+    target_label: instance
+    replacement: $1
+    action: replace
+  - source_labels: [__address__]
+    separator: ;
+    regex: (.*)
+    modulus: 1
+    target_label: __tmp_hash
+    replacement: $1
+    action: hashmod
+  - source_labels: [__tmp_hash]
+    separator: ;
+    regex: "0"
+    replacement: $1
+    action: keep
+
+- job_name: "node-exporter"
+  metrics_path: /metrics
+  http_sd_configs:
+    - url: https://devops.kubeop.com/api/v1/monitor/targets?cluster=%{CLUSTER}&module=node-exporter
+  relabel_configs:
+  - source_labels: [__address__]
+    separator: ;
+    regex: (.*)
+    modulus: 1
+    target_label: __tmp_hash
+    replacement: $1
+    action: hashmod
+  - source_labels: [__tmp_hash]
+    separator: ;
+    regex: "0"
+    replacement: $1
+    action: keep
+
+- job_name: "windows-exporter"
+  http_sd_configs:
+    - url: https://devops.kubeop.com/api/v1/monitor/targets?cluster=%{CLUSTER}&module=windows-exporter
+  relabel_configs:
   - source_labels: [__address__]
     separator: ;
     regex: (.*)

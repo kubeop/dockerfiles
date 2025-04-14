@@ -1,0 +1,26 @@
+- job_name: "http-exporter"
+  metrics_path: /probe
+  params:
+    module:
+      - http_2xx
+  http_sd_configs:
+    - url: https://devops.kubeop.com/api/v1/monitor/targets?cluster=%{CLUSTER}&module=http-exporter
+  relabel_configs:
+  - source_labels: [__address__]
+    target_label: __param_target
+  - source_labels: [__param_target]
+    target_label: instance
+  - target_label: __address__
+    replacement: blackbox-exporter:19115
+  - source_labels: [__address__]
+    separator: ;
+    regex: (.*)
+    modulus: 1
+    target_label: __tmp_hash
+    replacement: $1
+    action: hashmod
+  - source_labels: [__tmp_hash]
+    separator: ;
+    regex: "0"
+    replacement: $1
+    action: keep
