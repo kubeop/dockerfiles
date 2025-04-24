@@ -1,0 +1,118 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: proxy-conf
+data:
+  rmq-proxy.json: |
+    {
+      "enableFlowControl": true,
+      "enableFlowLimitAction": true,
+      "grpcClientProducerBackoffInitialMillis": 5,
+      "grpcClientProducerBackoffMaxMillis": 1000,
+      "grpcClientProducerBackoffMultiplier": 5,
+      "longPollingReserveTimeInMillis": 1000,
+      "maxMessageGroupSize": 64,
+      "maxMessageSize": 4194304,
+      "maxUserPropertySize": 16384,
+      "metricCollectorMode": "proxy",
+      "namesrvAddr": "rocketmq-nameserver:9876",
+      "rocketMQClusterName": "DefaultCluster",
+      "transactionHeartbeatBatchNum": 1,
+      "userPropertyMaxNum": 128
+    }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rocketmq-proxy
+  labels:
+    app.kubernetes.io/name: proxy
+    app.kubernetes.io/instance: rocketmq
+spec:
+  clusterIP: None
+  ports:
+    - port: 8080
+      targetPort: 7001
+      protocol: TCP
+      name: remoting-internet
+    - port: 8081
+      targetPort: 8081
+      protocol: TCP
+      name: grpc
+  selector:
+    app.kubernetes.io/name: proxy
+    app.kubernetes.io/instance: rocketmq
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rocketmq-proxy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: proxy
+      app.kubernetes.io/instance: rocketmq
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: proxy
+        app.kubernetes.io/instance: rocketmq
+    spec:
+      containers:
+        - name: proxy
+          image: registry.cn-hangzhou.aliyuncs.com/devops-system/rocketmq:5.3.2
+          imagePullPolicy: "IfNotPresent"
+          command: [ "/bin/sh" ]
+          args: [ "-c", "./mqproxy -pc /home/rocketmq/rocketmq-proxy/configmap/rmq-proxy.json" ]
+          env:
+            - name: RMQ_PROXY_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: NAMESRV_ADDR
+              value: rocketmq-nameserver:9876
+            - name: RMQ_PROXY_CONFIG_PATH
+              value: /home/rocketmq/rocketmq-proxy/configmap
+          lifecycle:
+            preStop:
+              exec:
+                command:
+                  - sh
+                  - ./bin/mqshutdown
+                  - proxy
+          ports:
+            - name: remote
+              containerPort: 8080
+              protocol: TCP
+            - name: grpc
+              containerPort: 8081
+              protocol: TCP
+          startupProbe:
+            tcpSocket:
+              port: grpc
+            initialDelaySeconds: 10
+            failureThreshold: 30
+            periodSeconds: 10
+          readinessProbe:
+            tcpSocket:
+              port: grpc
+            periodSeconds: 5
+          livenessProbe:
+            tcpSocket:
+              port: grpc
+            periodSeconds: 10
+          resources:
+            limits:
+              cpu: 1
+              memory: 8Gi
+            requests:
+              cpu: 1
+              memory: 8Gi
+          volumeMounts:
+            - name: conf
+              mountPath: /home/rocketmq/rocketmq-proxy/configmap/
+      volumes:
+        - name: conf
+          configMap:
+            name: proxy-conf

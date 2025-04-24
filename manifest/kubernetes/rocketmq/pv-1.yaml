@@ -1,0 +1,45 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: rocketmq-broker-1
+spec:
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - worker-002
+  capacity:
+    storage: 100Gi
+  volumeMode: Filesystem
+  accessModes:
+  - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: rocketmq
+  local:
+    path: /data/volume/rocketmq-broker-1
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: rocketmq-controller-1
+spec:
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - worker-002
+  capacity:
+    storage: 100Gi
+  volumeMode: Filesystem
+  accessModes:
+  - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: rocketmq
+  local:
+    path: /data/volume/rocketmq-controller-1

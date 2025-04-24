@@ -31,8 +31,6 @@ spec:
                 - jenkins
       serviceAccountName: "jenkins"
       enableServiceLinks: false
-      imagePullSecrets:
-        - name: hubsecret
       initContainers:
       - name: hack
         image: registry.cn-hangzhou.aliyuncs.com/kubeop/jenkins:2.492.3

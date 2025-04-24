@@ -1,0 +1,243 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: broker-conf
+  labels:
+    app.kubernetes.io/name: broker
+    app.kubernetes.io/instance: rocketmq
+data:
+  rocketmq-broker-0: |
+    brokerClusterName=DefaultCluster
+    brokerName=rocketmq-broker-0
+    enableNameServerAddressResolve=true
+
+    # common configs
+    traceOn=true
+    autoCreateTopicEnable=false
+    autoCreateSubscriptionGroup=true
+    enableIncrementalTopicCreation=true
+    generateConfigForScaleOutEnable=false
+    enableNotifyAfterPopOrderLockRelease=true
+    autoMessageVersionOnTopicLen=true
+
+    # pop config
+    enablePopBufferMerge=true
+    enableConsumePopRetryTopic=true
+    enableConsumePullRetryTopic=true
+    enableSkipLongWaitAck=true
+
+    # Store config
+    flushDiskType=SYNC_FLUSH
+
+    # Enable SQL92
+    enablePropertyFilter=true
+
+    # Transaction config
+    transactionCheckMaxTimeInMs=14400000
+    transactionCheckInterval=60000
+
+    # Delay config
+    timerWheelEnable=true
+    timerMaxDelaySec=86400
+
+    waitTimeMillsInSendQueue=900
+    maxMessageSize=5242880
+
+    # stream
+    litePullMessageEnable=true
+
+  rocketmq-broker-1: |
+    brokerClusterName=DefaultCluster
+    brokerName=rocketmq-broker-1
+    enableNameServerAddressResolve=true
+
+    # common configs
+    traceOn=true
+    autoCreateTopicEnable=false
+    autoCreateSubscriptionGroup=true
+    enableIncrementalTopicCreation=true
+    generateConfigForScaleOutEnable=false
+    enableNotifyAfterPopOrderLockRelease=true
+    autoMessageVersionOnTopicLen=true
+
+    # pop config
+    enablePopBufferMerge=true
+    enableConsumePopRetryTopic=true
+    enableConsumePullRetryTopic=true
+    enableSkipLongWaitAck=true
+
+    # Store config
+    flushDiskType=SYNC_FLUSH
+
+    # Enable SQL92
+    enablePropertyFilter=true
+
+    # Transaction config
+    transactionCheckMaxTimeInMs=14400000
+    transactionCheckInterval=60000
+
+    # Delay config
+    timerWheelEnable=true
+    timerMaxDelaySec=86400
+
+    waitTimeMillsInSendQueue=900
+    maxMessageSize=5242880
+
+    # stream
+    litePullMessageEnable=true
+
+  rocketmq-broker-2: |
+    brokerClusterName=DefaultCluster
+    brokerName=rocketmq-broker-2
+    enableNameServerAddressResolve=true
+
+    # common configs
+    traceOn=true
+    autoCreateTopicEnable=false
+    autoCreateSubscriptionGroup=true
+    enableIncrementalTopicCreation=true
+    generateConfigForScaleOutEnable=false
+    enableNotifyAfterPopOrderLockRelease=true
+    autoMessageVersionOnTopicLen=true
+
+    # pop config
+    enablePopBufferMerge=true
+    enableConsumePopRetryTopic=true
+    enableConsumePullRetryTopic=true
+    enableSkipLongWaitAck=true
+
+    # Store config
+    flushDiskType=SYNC_FLUSH
+
+    # Enable SQL92
+    enablePropertyFilter=true
+
+    # Transaction config
+    transactionCheckMaxTimeInMs=14400000
+    transactionCheckInterval=60000
+
+    # Delay config
+    timerWheelEnable=true
+    timerMaxDelaySec=86400
+
+    waitTimeMillsInSendQueue=900
+    maxMessageSize=5242880
+
+    # stream
+    litePullMessageEnable=true
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rocketmq-broker
+  labels:
+    app.kubernetes.io/name: broker
+    app.kubernetes.io/instance: rocketmq
+spec:
+  ports:
+    - port: 10911
+      targetPort: broker-port
+      protocol: TCP
+      name: broker-port
+  selector:
+    app.kubernetes.io/name: broker
+    app.kubernetes.io/instance: rocketmq
+  clusterIP: None
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: rocketmq-broker
+spec:
+  replicas: 3
+  serviceName: rocketmq-broker
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: broker
+      app.kubernetes.io/instance: rocketmq
+  podManagementPolicy: Parallel
+  updateStrategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: broker
+        app.kubernetes.io/instance: rocketmq
+    spec:
+      containers:
+        - name: broker
+          image: registry.cn-hangzhou.aliyuncs.com/devops-system/rocketmq:5.3.2
+          imagePullPolicy: IfNotPresent
+          command: [ "/bin/sh" ]
+          args: [ "-c", "./mqbroker -c /home/rocketmq/conf/$(POD_NAME)" ]
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: BROKER_MEM
+              value:  -Xms4g -Xmx4g -Xmn2g -XX:MaxDirectMemorySize=8g 
+            - name: NAMESRV_ADDR
+              value: rocketmq-nameserver:9876
+          ports:
+            - name: broker
+              containerPort: 10911
+              protocol: TCP
+            - name: con-nameserver
+              containerPort: 10909
+              protocol: TCP
+            - name: ha
+              containerPort: 10912
+              protocol: TCP
+            - name: proxy
+              containerPort: 8081
+              protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 60
+            periodSeconds: 15
+            successThreshold: 1
+            tcpSocket:
+              port: 10911
+            timeoutSeconds: 1
+          livenessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 60
+            periodSeconds: 15
+            successThreshold: 1
+            tcpSocket:
+              port: 10911
+            timeoutSeconds: 1
+          resources:
+            limits:
+              cpu: 2
+              memory: 4Gi
+            requests:
+              cpu: 2
+              memory: 4Gi
+          volumeMounts:
+            - mountPath: /home/rocketmq/conf
+              name: broker-config
+            - mountPath: /home/rocketmq/logs
+              name: broker-storage
+              subPath: home/rocketmq/rocketmq-broker
+            - mountPath: /root/store
+              name: broker-storage
+              subPath: store/rocketmq-broker
+      volumes:
+        - name: broker-config
+          configMap:
+            name: broker-conf
+  volumeClaimTemplates:
+    - metadata:
+        name: broker-storage
+      spec:
+        storageClassName: rocketmq
+        accessModes: [ "ReadWriteOnce" ]
+        resources:
+          requests:
+            storage: 100Gi

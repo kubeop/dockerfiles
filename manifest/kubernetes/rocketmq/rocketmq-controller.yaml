@@ -1,0 +1,172 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: rocketmq-controller
+  labels:
+    app.kubernetes.io/name: controller
+    app.kubernetes.io/instance: rocketmq
+spec:
+  type: ClusterIP
+  clusterIP: None
+  ports:
+  - name: main
+    port: 9878
+    protocol: TCP
+    targetPort: main
+  - name: internal
+    port: 9888
+    protocol: TCP
+    targetPort: internal
+  publishNotReadyAddresses: true
+  selector:
+    app.kubernetes.io/name: controller
+    app.kubernetes.io/instance: rocketmq
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: rocketmq-controller-conf
+  labels:
+    app.kubernetes.io/name: controller
+    app.kubernetes.io/instance: rocketmq
+data:
+  rocketmq-controller-0: |
+    controllerType=jRaft
+    jRaftGroupId=jRaft-controller-group
+    jRaftServerId = rocketmq-controller-0.rocketmq-controller:9888  
+    jRaftInitConf=rocketmq-controller-0.rocketmq-controller:9888,rocketmq-controller-1.rocketmq-controller:9888,rocketmq-controller-2.rocketmq-controller:9888
+    jRaftControllerRPCAddr=rocketmq-controller-0.rocketmq-controller:9878,rocketmq-controller-1.rocketmq-controller:9878,rocketmq-controller-2.rocketmq-controller:9878
+    jRaftSnapshotIntervalSecs = 3600
+    controllerStorePath=/home/rocketmq/store
+    
+  rocketmq-controller-1: |
+    controllerType=jRaft
+    jRaftGroupId=jRaft-controller-group
+    jRaftServerId = rocketmq-controller-1.rocketmq-controller:9888  
+    jRaftInitConf=rocketmq-controller-0.rocketmq-controller:9888,rocketmq-controller-1.rocketmq-controller:9888,rocketmq-controller-2.rocketmq-controller:9888
+    jRaftControllerRPCAddr=rocketmq-controller-0.rocketmq-controller:9878,rocketmq-controller-1.rocketmq-controller:9878,rocketmq-controller-2.rocketmq-controller:9878
+    jRaftSnapshotIntervalSecs = 3600
+    controllerStorePath=/home/rocketmq/store
+    
+  rocketmq-controller-2: |
+    controllerType=jRaft
+    jRaftGroupId=jRaft-controller-group
+    jRaftServerId = rocketmq-controller-2.rocketmq-controller:9888  
+    jRaftInitConf=rocketmq-controller-0.rocketmq-controller:9888,rocketmq-controller-1.rocketmq-controller:9888,rocketmq-controller-2.rocketmq-controller:9888
+    jRaftControllerRPCAddr=rocketmq-controller-0.rocketmq-controller:9878,rocketmq-controller-1.rocketmq-controller:9878,rocketmq-controller-2.rocketmq-controller:9878
+    jRaftSnapshotIntervalSecs = 3600
+    controllerStorePath=/home/rocketmq/store
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rocketmq-controller
+  labels:
+    app.kubernetes.io/name: controller
+    app.kubernetes.io/instance: rocketmq
+spec:
+  type: ClusterIP
+  clusterIP: None
+  ports:
+  - name: main
+    port: 9878
+    protocol: TCP
+    targetPort: main
+  - name: internal
+    port: 9888
+    protocol: TCP
+    targetPort: internal
+  publishNotReadyAddresses: true
+  selector:
+    app.kubernetes.io/name: controller
+    app.kubernetes.io/instance: rocketmq
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata: 
+  name: rocketmq-controller
+  labels:
+    app.kubernetes.io/name: controller
+    app.kubernetes.io/instance: rocketmq
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: controller
+      app.kubernetes.io/instance: rocketmq
+  serviceName: rocketmq-controller
+  template: 
+    metadata:
+      labels:
+        app.kubernetes.io/name: controller
+        app.kubernetes.io/instance: rocketmq
+    spec:
+      containers: 
+      - name: controller
+        image: registry.cn-hangzhou.aliyuncs.com/devops-system/rocketmq:5.3.2
+        imagePullPolicy: IfNotPresent
+        env: 
+        - name: NODE_ROLE
+          value: controller
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.name
+        command: [ "/bin/sh" ]
+        args: [ "-c", "./mqcontroller -c /home/rocketmq/conf/$(POD_NAME)" ]
+        ports:
+        - name: main
+          containerPort: 9878
+          protocol: TCP
+        - name: internal
+          containerPort: 9888
+          protocol: TCP
+        livenessProbe:
+          periodSeconds: 10
+          tcpSocket:
+            port: 9878
+        readinessProbe:
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          tcpSocket:
+            port: 9878
+        startupProbe:
+          failureThreshold: 30
+          periodSeconds: 10
+          successThreshold: 1
+          tcpSocket:
+            port: 9878
+          timeoutSeconds: 10
+        resources:
+          limits:
+            cpu: 2
+            memory: 4Gi
+          requests:
+            cpu: 1
+            memory: 4Gi
+        volumeMounts:
+        - mountPath: /home/rocketmq/conf
+          name: controller-config
+        - mountPath: /home/rocketmq/logs
+          name: controller-storage
+          subPath: logs
+        - mountPath: /home/rocketmq/store
+          name: controller-storage
+          subPath: store
+      securityContext:
+        fsGroup: 3000
+      volumes:
+      - name: controller-config
+        configMap:
+          name: rocketmq-controller-conf
+  volumeClaimTemplates:
+    - metadata:
+        name: controller-storage
+      spec:
+        storageClassName: rocketmq
+        accessModes: [ "ReadWriteOnce" ]
+        resources:
+          requests:
+            storage: 100Gi
