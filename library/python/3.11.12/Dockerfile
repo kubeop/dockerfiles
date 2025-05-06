@@ -1,7 +1,7 @@
 FROM kubeop/debian:12
 LABEL maintainer="Sonic Ma <sonic.ma@outlook.com>"
 
-ARG PYTHON_VERSION=3.12.9
+ARG PYTHON_VERSION=3.11.12
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONIOENCODING=UTF-8
 
@@ -69,6 +69,14 @@ RUN set -eux; \
         \
         export PYTHONDONTWRITEBYTECODE=1; \
         python3 --version; \
+        \
+        pip3 install \
+                --disable-pip-version-check \
+                --no-cache-dir \
+                --no-compile \
+                'setuptools==65.5.1' \
+                wheel \
+        ; \
         pip3 --version; \
         pip3 config set global.index-url https://mirrors.ustc.edu.cn/pypi/simple; \
         pip3 config set install.trusted-host https://mirrors.ustc.edu.cn  
