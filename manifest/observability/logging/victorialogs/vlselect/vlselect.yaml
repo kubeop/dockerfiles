@@ -1,0 +1,93 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels: 
+    app.kubernetes.io/instance: vlselect
+  name: vlselect
+  namespace: logging
+spec:
+  type: ClusterIP
+  ports: 
+    - name: http
+      port: 9471
+      protocol: TCP
+      targetPort: http
+  selector: 
+    app.kubernetes.io/instance: vlselect
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels: 
+    app.kubernetes.io/instance: vlselect
+  name: vlselect
+  namespace: logging
+spec:
+  selector:
+    matchLabels: 
+      app.kubernetes.io/instance: vlselect
+  replicas: 2
+  template:
+    metadata:
+      labels: 
+        app.kubernetes.io/instance: vlselect
+    spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app.kubernetes.io/name
+                      operator: In
+                      values:
+                        - vlselect
+                topologyKey: kubernetes.io/hostname
+              weight: 100
+      containers:
+        - name: vlselect
+          image: registry.cn-hangzhou.aliyuncs.com/devops-system/victoria-logs:v1.21.0-victorialogs
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            runAsGroup: 1000
+            runAsNonRoot: true
+            runAsUser: 1000
+          args: 
+            - --envflag.enable
+            - --httpListenAddr=:9471
+            - --loggerFormat=json
+            - --httpAuth.username=admin
+            - --httpAuth.password=changeme
+            - --storageNode=vlstorage-0.vlstorage.logging.svc.cluster.local.:9491
+            - --storageNode=vlstorage-1.vlstorage.logging.svc.cluster.local.:9491
+            - --storageNode=vlstorage-2.vlstorage.logging.svc.cluster.local.:9491
+          ports:
+            - name: http
+              containerPort: 9471
+          resources:
+            limits:
+              cpu: 4
+              memory: 8Gi
+            requests:
+              cpu: 4
+              memory: 8Gi
+          readinessProbe: 
+            failureThreshold: 10
+            httpGet:
+              path: /health
+              port: http
+              scheme: HTTP
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 5
+          livenessProbe: 
+            failureThreshold: 3
+            initialDelaySeconds: 5
+            periodSeconds: 15
+            tcpSocket:
+              port: http
+            timeoutSeconds: 5
+      securityContext: 
+        fsGroup: 1000
+      terminationGracePeriodSeconds: 60

@@ -1,0 +1,150 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rabbitmq-management
+  labels:
+    app.kubernetes.io/name: rabbitmq
+spec:
+  ports:
+  - port: 15672
+    name: management
+  selector:
+    app.kubernetes.io/name: rabbitmq
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rabbitmq
+  labels:
+    app.kubernetes.io/name: rabbitmq
+spec:
+  ports:
+  - name: discovery
+    port: 4369
+  - name: amqp
+    port: 5672
+  clusterIP: None
+  selector:
+    app.kubernetes.io/name: rabbitmq
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: rabbitmq
+spec:
+  serviceName: "rabbitmq"
+  replicas: 3
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: rabbitmq
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: rabbitmq
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                - worker-001
+                - worker-002
+                - worker-003
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: app.kubernetes.io/name
+                    operator: In
+                    values:
+                      - rabbitmq
+              topologyKey: "kubernetes.io/hostname"
+      initContainers:
+      - name: config
+        image: registry.cn-hangzhou.aliyuncs.com/kubeop/alpine:3.21
+        command: ['/bin/sh', '-c', 'cp /tmp/config/rabbitmq.conf /config/rabbitmq.conf && ls -l /config/ && cp /tmp/config/enabled_plugins /etc/rabbitmq/enabled_plugins']
+        volumeMounts:
+        - name: config
+          mountPath: /tmp/config/
+          readOnly: false
+        - name: config-file
+          mountPath: /config/
+        - name: plugins-file
+          mountPath: /etc/rabbitmq/
+      containers:
+      - name: rabbitmq
+        image: registry.cn-hangzhou.aliyuncs.com/devops-system/rabbitmq:4.1.0-management
+        env:
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: RABBITMQ_ERLANG_COOKIE
+          value: "p1BLQIWjCADwYnrCvYEazlH8yLSVAIiH"
+        - name: RABBITMQ_NODENAME
+          value: "rabbit@$(POD_NAME).rabbitmq.$(POD_NAMESPACE).svc.cluster.local"
+        - name: RABBITMQ_USE_LONGNAME 
+          value: "true"
+        - name: RABBITMQ_CONFIG_FILE
+          value: "/config/rabbitmq"
+        - name: RABBITMQ_LOGS
+          value: "-"
+        - name: K8S_HOSTNAME_SUFFIX
+          value: ".rabbitmq.$(POD_NAMESPACE).svc.cluster.local"
+        ports:
+        - name: discovery
+          containerPort: 4369
+        - name: amqp
+          containerPort: 5672
+        - name: management
+          containerPort: 15672
+        livenessProbe:
+          exec:
+            command:
+            - rabbitmq-diagnostics
+            - ping
+          initialDelaySeconds: 60
+          periodSeconds: 60
+          timeoutSeconds: 15
+        readinessProbe:
+          exec:
+            command:
+            - rabbitmq-diagnostics
+            - ping
+          initialDelaySeconds: 20
+          periodSeconds: 60
+          timeoutSeconds: 10
+        volumeMounts:
+        - name: data
+          mountPath: /var/lib/rabbitmq
+        - name: config-file
+          mountPath: /config/
+        - name: plugins-file
+          mountPath: /etc/rabbitmq/
+      volumes:
+      - name: config-file
+        emptyDir: {}
+      - name: plugins-file
+        emptyDir: {}
+      - name: config
+        configMap:
+          name: rabbitmq-config
+          defaultMode: 0755
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      storageClassName: rabbitmq
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 100Gi

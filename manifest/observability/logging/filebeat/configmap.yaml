@@ -1,0 +1,45 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: filebeat-config
+  namespace: kube-system
+  labels:
+    k8s-app: filebeat
+data:
+  filebeat.yml: |-
+    filebeat.autodiscover:
+     providers:
+       - type: kubernetes
+         node: ${NODE_NAME}
+         hints.enabled: true
+         hints.default_config:
+           type: filestream
+           id: kubernetes-container-logs-${data.kubernetes.pod.name}-${data.kubernetes.container.id}
+           paths:
+           - /var/log/containers/*-${data.kubernetes.container.id}.log
+           parsers:
+           - container: ~
+           prospector:
+            scanner:
+              fingerprint.enabled: true
+              symlinks: true
+           file_identity.fingerprint: ~
+
+    processors:
+      - add_cloud_metadata:
+      - add_host_metadata:
+
+    cloud.id: ${ELASTIC_CLOUD_ID}
+    cloud.auth: ${ELASTIC_CLOUD_AUTH}
+
+    output.elasticsearch:
+      hosts: ["${ELASTICSEARCH_HOST}"]
+      username: ${ELASTICSEARCH_USERNAME}
+      password: ${ELASTICSEARCH_PASSWORD}
+      parameters:
+        _msg_field: "message"
+        _time_field: "@timestamp"
+        _stream_fields: "host.name,log.file.path"
+        ignore_fields: "log.offset,event.original"
+      compression_level: 1
