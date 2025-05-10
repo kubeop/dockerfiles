@@ -73,8 +73,8 @@ jobs:
       fail-fast: false
       matrix:
         images:
-          - {name: "golang", tag: "1.23.8", args: ""}
-          - {name: "golang", tag: "1.24.2", args: ""}
+          - {name: "golang", tag: "1.23.9", args: ""}
+          - {name: "golang", tag: "1.24.3", args: ""}
           - {name: "openjdk", tag: "8", args: "jdk"}
           - {name: "openjdk", tag: "8", args: "jre"}
           - {name: "openjdk", tag: "11", args: "jdk"}
@@ -89,10 +89,12 @@ jobs:
           - {name: "kubectl", tag: "v1.32.4", args: ""}
           - {name: "kubedog", tag: "0.13.0", args: ""}
           - {name: "nginx", tag: "1.26.3", args: ""}
-          - {name: "nginx", tag: "1.27.4", args: ""}
+          - {name: "nginx", tag: "1.27.5", args: ""}
+          - {name: "nginx", tag: "1.28.0", args: ""}
           - {name: "nodejs", tag: "18.20.8", args: ""}
           - {name: "nodejs", tag: "20.19.1", args: ""}
           - {name: "nodejs", tag: "22.15.0", args: ""}
+          - {name: "nodejs", tag: "24.0.1", args: ""}
 
     steps:
     - name: Checkout
