@@ -74,7 +74,7 @@ https://hub.docker.com/r/kiwigrid/k8s-sidecar/tags
 ### 1.4、部署
 
 ```shell
-kubectl apply -f . -n jenkins
+kubectl apply -f . -n infra
 ```
 
 
