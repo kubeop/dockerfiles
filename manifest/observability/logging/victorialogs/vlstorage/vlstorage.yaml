@@ -50,9 +50,9 @@ spec:
               weight: 100
       containers:
         - name: vlstorage
-          image: registry.cn-hangzhou.aliyuncs.com/devops-system/victoria-logs:v1.21.0-victorialogs
+          image: registry.cn-hangzhou.aliyuncs.com/devops-system/victoria-logs:v1.22.2-victorialogs
           imagePullPolicy: IfNotPresent
-          securityContext: 
+          securityContext:
             runAsGroup: 1000
             runAsNonRoot: true
             runAsUser: 1000

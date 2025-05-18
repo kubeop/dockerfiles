@@ -85,16 +85,16 @@ jobs:
           - {name: "openjdk", tag: "21", args: "jre"}
           - {name: "docker", tag: "27.5.1", args: ""}
           - {name: "docker", tag: "28.1.1", args: ""}
-          - {name: "kubectl", tag: "v1.30.12", args: ""}
-          - {name: "kubectl", tag: "v1.32.4", args: ""}
+          - {name: "kubectl", tag: "v1.30.13", args: ""}
+          - {name: "kubectl", tag: "v1.32.5", args: ""}
           - {name: "kubedog", tag: "0.13.0", args: ""}
           - {name: "nginx", tag: "1.26.3", args: ""}
           - {name: "nginx", tag: "1.27.5", args: ""}
           - {name: "nginx", tag: "1.28.0", args: ""}
           - {name: "nodejs", tag: "18.20.8", args: ""}
-          - {name: "nodejs", tag: "20.19.1", args: ""}
-          - {name: "nodejs", tag: "22.15.0", args: ""}
-          - {name: "nodejs", tag: "24.0.1", args: ""}
+          - {name: "nodejs", tag: "20.19.2", args: ""}
+          - {name: "nodejs", tag: "22.15.1", args: ""}
+          - {name: "nodejs", tag: "24.0.2", args: ""}
 
     steps:
     - name: Checkout
@@ -157,9 +157,9 @@ jobs:
           - {name: "maven", tag: "3.9.9", args: "java11"}
           - {name: "gradle", tag: "8.12.1", args: "java8"}
           - {name: "gradle", tag: "8.12.1", args: "java11"}
-          - {name: "tomcat", tag: "9.0.104", args: ""}
-          - {name: "tomcat", tag: "10.1.40", args: ""}
-          - {name: "tomcat", tag: "11.0.6", args: ""}
+          - {name: "tomcat", tag: "9.0.105", args: ""}
+          - {name: "tomcat", tag: "10.1.41", args: ""}
+          - {name: "tomcat", tag: "11.0.7", args: ""}
 
     steps:
     - name: Checkout
