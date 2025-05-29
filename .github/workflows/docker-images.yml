@@ -93,8 +93,8 @@ jobs:
           - {name: "nginx", tag: "1.28.0", args: ""}
           - {name: "nodejs", tag: "18.20.8", args: ""}
           - {name: "nodejs", tag: "20.19.2", args: ""}
-          - {name: "nodejs", tag: "22.15.1", args: ""}
-          - {name: "nodejs", tag: "24.0.2", args: ""}
+          - {name: "nodejs", tag: "22.16.0", args: ""}
+          - {name: "nodejs", tag: "24.1.0", args: ""}
 
     steps:
     - name: Checkout
@@ -152,7 +152,7 @@ jobs:
           - {name: "python", tag: "3.11.12", args: ""}
           - {name: "python", tag: "3.12.10", args: ""}
           - {name: "python", tag: "3.13.3", args: ""}
-          - {name: "jenkins", tag: "2.504.1", args: ""}
+          - {name: "jenkins", tag: "2.504.2", args: ""}
           - {name: "maven", tag: "3.9.9", args: "java8"}
           - {name: "maven", tag: "3.9.9", args: "java11"}
           - {name: "gradle", tag: "8.12.1", args: "java8"}

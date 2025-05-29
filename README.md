@@ -32,7 +32,7 @@
 | OpenJDK | kubeop/openjdk:11-jre       | registry.cn-hangzhou.aliyuncs.com/kubeop/openjdk:11-jre      |
 | OpenJDK | kubeop/openjdk:8-jdk        | registry.cn-hangzhou.aliyuncs.com/kubeop/openjdk:18-jdk      |
 | OpenJDK | kubeop/openjdk:8-jre        | registry.cn-hangzhou.aliyuncs.com/kubeop/openjdk:8-jre       |
-| Jenkins | kubeop/jenkins:2.504.1      | registry.cn-hangzhou.aliyuncs.com/kubeop/jenkins:2.504.1     |
+| Jenkins | kubeop/jenkins:2.504.2      | registry.cn-hangzhou.aliyuncs.com/kubeop/jenkins:2.504.2     |
 | Docker  | kubeop/docker:27.5.1        | registry.cn-hangzhou.aliyuncs.com/kubeop/docker:27.5.1       |
 | Docker  | kubeop/docker:28.1.1        | registry.cn-hangzhou.aliyuncs.com/kubeop/docker:28.1.1       |
 | Maven   | kubeop/maven:3.9.9-java8    | registry.cn-hangzhou.aliyuncs.com/kubeop/maven:3.9.9-java8   |
@@ -47,8 +47,8 @@
 | Nginx   | kubeop/nginx:1.28.0         | registry.cn-hangzhou.aliyuncs.com/kubeop/nginx:1.28.0        |
 | NodeJs  | kubeop/nodejs:18.20.8       | registry.cn-hangzhou.aliyuncs.com/kubeop/nodejs:18.20.8      |
 | NodeJs  | kubeop/nodejs:20.19.2       | registry.cn-hangzhou.aliyuncs.com/kubeop/nodejs:20.19.2      |
-| NodeJs  | kubeop/nodejs:22.15.1       | registry.cn-hangzhou.aliyuncs.com/kubeop/nodejs:22.15.1      |
-| NodeJs  | kubeop/nodejs:24.0.2        | registry.cn-hangzhou.aliyuncs.com/kubeop/nodejs:24.0.2       |
+| NodeJs  | kubeop/nodejs:22.16.0       | registry.cn-hangzhou.aliyuncs.com/kubeop/nodejs:22.16.0      |
+| NodeJs  | kubeop/nodejs:24.1.0        | registry.cn-hangzhou.aliyuncs.com/kubeop/nodejs:24.1.0       |
 | Python  | kubeop/python:3.11.12       | registry.cn-hangzhou.aliyuncs.com/kubeop/python:3.11.12      |
 | Python  | kubeop/python:3.12.10       | registry.cn-hangzhou.aliyuncs.com/kubeop/python:3.12.10      |
 | Python  | kubeop/python:3.13.3        | registry.cn-hangzhou.aliyuncs.com/kubeop/python:3.13.3       |
