@@ -35,8 +35,8 @@
 | Jenkins | kubeop/jenkins:2.504.2      | registry.cn-hangzhou.aliyuncs.com/kubeop/jenkins:2.504.2     |
 | Docker  | kubeop/docker:27.5.1        | registry.cn-hangzhou.aliyuncs.com/kubeop/docker:27.5.1       |
 | Docker  | kubeop/docker:28.1.1        | registry.cn-hangzhou.aliyuncs.com/kubeop/docker:28.1.1       |
-| Maven   | kubeop/maven:3.9.9-java8    | registry.cn-hangzhou.aliyuncs.com/kubeop/maven:3.9.9-java8   |
-| Maven   | kubeop/maven:3.9.9-java11   | registry.cn-hangzhou.aliyuncs.com/kubeop/maven:3.9.9-java11  |
+| Maven   | kubeop/maven:3.9.10-java8   | registry.cn-hangzhou.aliyuncs.com/kubeop/maven:3.9.10-java8  |
+| Maven   | kubeop/maven:3.9.10-java11  | registry.cn-hangzhou.aliyuncs.com/kubeop/maven:3.9.10-java11 |
 | Gradle  | kubeop/gradle:8.12.1-java8  | registry.cn-hangzhou.aliyuncs.com/kubeop/gradle:8.12.1-java8 |
 | Gradle  | kubeop/gradle:8.12.1-java11 | registry.cn-hangzhou.aliyuncs.com/kubeop/gradle:8.12.1-java11 |
 | Kubectl | kubeop/kubectl:v1.30.13     | registry.cn-hangzhou.aliyuncs.com/kubeop/kubectl:v1.30.13    |
