@@ -94,7 +94,7 @@ jobs:
           - {name: "nodejs", tag: "18.20.8", args: ""}
           - {name: "nodejs", tag: "20.19.2", args: ""}
           - {name: "nodejs", tag: "22.16.0", args: ""}
-          - {name: "nodejs", tag: "24.1.0", args: ""}
+          - {name: "nodejs", tag: "24.2.0", args: ""}
 
     steps:
     - name: Checkout

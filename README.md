@@ -48,7 +48,7 @@
 | NodeJs  | kubeop/nodejs:18.20.8       | registry.cn-hangzhou.aliyuncs.com/kubeop/nodejs:18.20.8      |
 | NodeJs  | kubeop/nodejs:20.19.2       | registry.cn-hangzhou.aliyuncs.com/kubeop/nodejs:20.19.2      |
 | NodeJs  | kubeop/nodejs:22.16.0       | registry.cn-hangzhou.aliyuncs.com/kubeop/nodejs:22.16.0      |
-| NodeJs  | kubeop/nodejs:24.1.0        | registry.cn-hangzhou.aliyuncs.com/kubeop/nodejs:24.1.0       |
+| NodeJs  | kubeop/nodejs:24.2.0        | registry.cn-hangzhou.aliyuncs.com/kubeop/nodejs:24.2.0       |
 | Python  | kubeop/python:3.11.12       | registry.cn-hangzhou.aliyuncs.com/kubeop/python:3.11.12      |
 | Python  | kubeop/python:3.12.10       | registry.cn-hangzhou.aliyuncs.com/kubeop/python:3.12.10      |
 | Python  | kubeop/python:3.13.3        | registry.cn-hangzhou.aliyuncs.com/kubeop/python:3.13.3       |
