@@ -1,4 +1,4 @@
-FROM alpine:3.20
+FROM alpine:3.22
 LABEL maintainer="Sonic Ma <sonic.ma@outlook.com>"
 
 ENV LANG="en_US.UTF-8" 

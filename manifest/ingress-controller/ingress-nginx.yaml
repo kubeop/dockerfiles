@@ -458,6 +458,7 @@ spec:
         - --validating-webhook=:8443
         - --validating-webhook-certificate=/usr/local/certificates/cert
         - --validating-webhook-key=/usr/local/certificates/key
+        - --enable-metrics=true
         env:
         - name: POD_NAME
           valueFrom:

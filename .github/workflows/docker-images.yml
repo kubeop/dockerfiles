@@ -17,8 +17,8 @@ jobs:
       fail-fast: false
       matrix:
         images:
-          - {name: "alpine", tag: "3.20", args: ""}
           - {name: "alpine", tag: "3.21", args: ""}
+          - {name: "alpine", tag: "3.22", args: ""}
           - {name: "debian", tag: "12", args: ""}
 
     steps:
@@ -84,7 +84,7 @@ jobs:
           - {name: "openjdk", tag: "21", args: "jdk"}
           - {name: "openjdk", tag: "21", args: "jre"}
           - {name: "docker", tag: "27.5.1", args: ""}
-          - {name: "docker", tag: "28.1.1", args: ""}
+          - {name: "docker", tag: "28.2.2", args: ""}
           - {name: "kubectl", tag: "v1.30.13", args: ""}
           - {name: "kubectl", tag: "v1.32.5", args: ""}
           - {name: "kubedog", tag: "0.13.0", args: ""}
