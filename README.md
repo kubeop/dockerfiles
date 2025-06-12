@@ -22,8 +22,8 @@
 | Alpine  | kubeop/alpine:3.21          | registry.cn-hangzhou.aliyuncs.com/kubeop/alpine:3.21         |
 | Alpine  | kubeop/alpine:3.22          | registry.cn-hangzhou.aliyuncs.com/kubeop/alpine:3.22         |
 | Debian  | kubeop/debian:12            | registry.cn-hangzhou.aliyuncs.com/kubeop/debian:12           |
-| Golang  | kubeop/golang:1.23.9        | registry.cn-hangzhou.aliyuncs.com/kubeop/golang:1.23.9       |
-| Golang  | kubeop/golang:1.24.3        | registry.cn-hangzhou.aliyuncs.com/kubeop/golang:1.24.3       |
+| Golang  | kubeop/golang:1.23.10       | registry.cn-hangzhou.aliyuncs.com/kubeop/golang:1.23.10      |
+| Golang  | kubeop/golang:1.24.4        | registry.cn-hangzhou.aliyuncs.com/kubeop/golang:1.24.4       |
 | OpenJDK | kubeop/openjdk:21-jdk       | registry.cn-hangzhou.aliyuncs.com/kubeop/openjdk:21-jdk      |
 | OpenJDK | kubeop/openjdk:21-jre       | registry.cn-hangzhou.aliyuncs.com/kubeop/openjdk:21-jre      |
 | OpenJDK | kubeop/openjdk:17-jdk       | registry.cn-hangzhou.aliyuncs.com/kubeop/openjdk:17-jdk      |

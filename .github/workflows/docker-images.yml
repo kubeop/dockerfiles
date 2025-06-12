@@ -73,8 +73,8 @@ jobs:
       fail-fast: false
       matrix:
         images:
-          - {name: "golang", tag: "1.23.9", args: ""}
-          - {name: "golang", tag: "1.24.3", args: ""}
+          - {name: "golang", tag: "1.23.10", args: ""}
+          - {name: "golang", tag: "1.24.4", args: ""}
           - {name: "openjdk", tag: "8", args: "jdk"}
           - {name: "openjdk", tag: "8", args: "jre"}
           - {name: "openjdk", tag: "11", args: "jdk"}
