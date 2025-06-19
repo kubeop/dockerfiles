@@ -532,7 +532,7 @@ data:
       updateCenter:
         sites:
         - id: "default"
-          url: "https://mirrors.chenby.cn/https://raw.githubusercontent.com/kubeop/update-center/master/updates/ustc/update-center.json"
+          url: "https://mirrors.gh-proxy.com/raw.githubusercontent.com/kubeop/update-center/master/updates/ustc/update-center.json"
       views:
       - all:
           name: "all"

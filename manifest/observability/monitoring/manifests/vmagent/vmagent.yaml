@@ -37,7 +37,7 @@ spec:
       serviceAccountName: vmagent
       containers:
         - name: vmagent
-          image: registry.cn-hangzhou.aliyuncs.com/devops-system/vmagent:v1.117.1
+          image: registry.cn-hangzhou.aliyuncs.com/devops-system/vmagent:v1.119.0
           imagePullPolicy: IfNotPresent
           args:
             - --promscrape.config=https://vmconfig.kubeop.com/scrape_config/$(CLUSTER).yml
