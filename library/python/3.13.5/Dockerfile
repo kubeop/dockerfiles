@@ -1,7 +1,7 @@
 FROM kubeop/debian:12
 LABEL maintainer="Sonic Ma <sonic.ma@outlook.com>"
 
-ARG PYTHON_VERSION=3.12.10
+ARG PYTHON_VERSION=3.13.5
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONIOENCODING=UTF-8
 

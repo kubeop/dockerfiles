@@ -39,12 +39,11 @@
 | Maven   | kubeop/maven:3.9.10-java11  | registry.cn-hangzhou.aliyuncs.com/kubeop/maven:3.9.10-java11 |
 | Gradle  | kubeop/gradle:8.12.1-java8  | registry.cn-hangzhou.aliyuncs.com/kubeop/gradle:8.12.1-java8 |
 | Gradle  | kubeop/gradle:8.12.1-java11 | registry.cn-hangzhou.aliyuncs.com/kubeop/gradle:8.12.1-java11 |
-| Kubectl | kubeop/kubectl:v1.30.13     | registry.cn-hangzhou.aliyuncs.com/kubeop/kubectl:v1.30.13    |
-| Kubectl | kubeop/kubectl:v1.32.5      | registry.cn-hangzhou.aliyuncs.com/kubeop/kubectl:v1.32.5     |
+| Kubectl | kubeop/kubectl:v1.30.14     | registry.cn-hangzhou.aliyuncs.com/kubeop/kubectl:v1.30.14    |
+| Kubectl | kubeop/kubectl:v1.32.6      | registry.cn-hangzhou.aliyuncs.com/kubeop/kubectl:v1.32.6     |
 | Kubedog | kubeop/kubedog:0.13.0       | registry.cn-hangzhou.aliyuncs.com/kubeop/kubedog:0.13.0      |
-| Nginx   | kubeop/nginx:1.26.3         | registry.cn-hangzhou.aliyuncs.com/kubeop/nginx:1.26.3        |
-| Nginx   | kubeop/nginx:1.27.5         | registry.cn-hangzhou.aliyuncs.com/kubeop/nginx:1.27.5        |
 | Nginx   | kubeop/nginx:1.28.0         | registry.cn-hangzhou.aliyuncs.com/kubeop/nginx:1.28.0        |
+| Nginx   | kubeop/nginx:1.29.0         | registry.cn-hangzhou.aliyuncs.com/kubeop/nginx:1.29.0        |
 | NodeJs  | kubeop/nodejs:18.20.8       | registry.cn-hangzhou.aliyuncs.com/kubeop/nodejs:18.20.8      |
 | NodeJs  | kubeop/nodejs:20.19.3       | registry.cn-hangzhou.aliyuncs.com/kubeop/nodejs:20.19.3      |
 | NodeJs  | kubeop/nodejs:22.17.0       | registry.cn-hangzhou.aliyuncs.com/kubeop/nodejs:22.17.0      |

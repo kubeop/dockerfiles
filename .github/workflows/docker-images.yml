@@ -85,12 +85,11 @@ jobs:
           - {name: "openjdk", tag: "21", args: "jre"}
           - {name: "docker", tag: "27.5.1", args: ""}
           - {name: "docker", tag: "28.3.0", args: ""}
-          - {name: "kubectl", tag: "v1.30.13", args: ""}
-          - {name: "kubectl", tag: "v1.32.5", args: ""}
+          - {name: "kubectl", tag: "v1.30.14", args: ""}
+          - {name: "kubectl", tag: "v1.32.6", args: ""}
           - {name: "kubedog", tag: "0.13.0", args: ""}
-          - {name: "nginx", tag: "1.26.3", args: ""}
-          - {name: "nginx", tag: "1.27.5", args: ""}
           - {name: "nginx", tag: "1.28.0", args: ""}
+          - {name: "nginx", tag: "1.29.0", args: ""}
           - {name: "nodejs", tag: "18.20.8", args: ""}
           - {name: "nodejs", tag: "20.19.3", args: ""}
           - {name: "nodejs", tag: "22.17.0", args: ""}
