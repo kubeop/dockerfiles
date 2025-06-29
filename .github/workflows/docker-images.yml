@@ -84,7 +84,7 @@ jobs:
           - {name: "openjdk", tag: "21", args: "jdk"}
           - {name: "openjdk", tag: "21", args: "jre"}
           - {name: "docker", tag: "27.5.1", args: ""}
-          - {name: "docker", tag: "28.2.2", args: ""}
+          - {name: "docker", tag: "28.3.0", args: ""}
           - {name: "kubectl", tag: "v1.30.13", args: ""}
           - {name: "kubectl", tag: "v1.32.5", args: ""}
           - {name: "kubedog", tag: "0.13.0", args: ""}
@@ -92,9 +92,9 @@ jobs:
           - {name: "nginx", tag: "1.27.5", args: ""}
           - {name: "nginx", tag: "1.28.0", args: ""}
           - {name: "nodejs", tag: "18.20.8", args: ""}
-          - {name: "nodejs", tag: "20.19.2", args: ""}
-          - {name: "nodejs", tag: "22.16.0", args: ""}
-          - {name: "nodejs", tag: "24.2.0", args: ""}
+          - {name: "nodejs", tag: "20.19.3", args: ""}
+          - {name: "nodejs", tag: "22.17.0", args: ""}
+          - {name: "nodejs", tag: "24.3.0", args: ""}
 
     steps:
     - name: Checkout
@@ -149,10 +149,10 @@ jobs:
       fail-fast: false
       matrix:
         images:
-          - {name: "python", tag: "3.11.12", args: ""}
-          - {name: "python", tag: "3.12.10", args: ""}
-          - {name: "python", tag: "3.13.3", args: ""}
-          - {name: "jenkins", tag: "2.504.2", args: ""}
+          - {name: "python", tag: "3.11.13", args: ""}
+          - {name: "python", tag: "3.12.11", args: ""}
+          - {name: "python", tag: "3.13.5", args: ""}
+          - {name: "jenkins", tag: "2.504.3", args: ""}
           - {name: "maven", tag: "3.9.10", args: "java8"}
           - {name: "maven", tag: "3.9.10", args: "java11"}
           - {name: "gradle", tag: "8.12.1", args: "java8"}
