@@ -29,7 +29,7 @@ spec:
         - --collector.filesystem.mount-points-exclude=^/(dev|proc|sys|run/k3s/containerd/.+|var/lib/docker/.+|var/lib/kubelet/pods/.+)($|/)
         - --collector.netclass.ignored-devices=^(veth.*|[a-f0-9]{15})$
         - --collector.netdev.device-exclude=^(veth.*|[a-f0-9]{15})$
-        image: registry.cn-hangzhou.aliyuncs.com/devops-system/node-exporter:v1.9.0
+        image: registry.cn-hangzhou.aliyuncs.com/devops-system/node-exporter:v1.9.1
         name: node-exporter
         resources:
           limits:
@@ -64,7 +64,7 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: status.podIP
-        image: registry.cn-hangzhou.aliyuncs.com/devops-system/kube-rbac-proxy:v0.19.0
+        image: registry.cn-hangzhou.aliyuncs.com/devops-system/kube-rbac-proxy:v0.19.1
         name: kube-rbac-proxy
         ports:
         - containerPort: 9100

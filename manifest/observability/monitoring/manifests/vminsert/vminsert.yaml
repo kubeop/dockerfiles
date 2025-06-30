@@ -51,7 +51,7 @@ spec:
       automountServiceAccountToken: true
       containers:
         - name: vminsert
-          image: registry.cn-hangzhou.aliyuncs.com/devops-system/vminsert:v1.119.0-cluster
+          image: registry.cn-hangzhou.aliyuncs.com/devops-system/vminsert:v1.120.0-cluster
           imagePullPolicy: IfNotPresent
           args:
             - --replicationFactor=3

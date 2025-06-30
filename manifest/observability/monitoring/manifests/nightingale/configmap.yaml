@@ -1,0 +1,76 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "nightingale-config"
+  namespace: monitoring
+  labels:
+    app.kubernetes.io/name: nightingale
+data:
+  config.toml: |-
+    [global]
+    RunMode = "release"
+
+    [Log]
+    Level = "INFO"
+    Output = "stdout"
+
+    [HTTP]
+    Host = "0.0.0.0"
+    Port = 17000
+    CertFile = ""
+    KeyFile = ""
+    PrintAccessLog = false
+    PProf = true
+    ExposeMetrics = true
+    ShutdownTimeout = 30
+    MaxContentLength = 67108864
+    ReadTimeout = 20
+    WriteTimeout = 40
+    IdleTimeout = 120
+
+    [HTTP.ShowCaptcha]
+    Enable = true
+
+    [HTTP.APIForAgent]
+    Enable = true
+    [HTTP.APIForAgent.BasicAuth]
+    user001 = "ccc26da7b9aba533cbb263a36c07dcc5"
+    [HTTP.APIForService]
+    Enable = false
+    [HTTP.APIForService.BasicAuth]
+    user001 = "ccc26da7b9aba533cbb263a36c07dcc5"
+
+    [HTTP.JWTAuth]
+    SigningKey = "5b94a0fd640fe2765af826acfe42d151"
+    # unit: min
+    AccessExpired = 1500
+    # unit: min
+    RefreshExpired = 10080
+    RedisKeyPrefix = "/jwt/"
+
+    [HTTP.RSA]
+    OpenRSA = true
+
+    [DB]
+    DBType = "mysql"
+    DSN="nightingale:nightingale@tcp(mysql.database.svc.cluster.local:3306)/nightingale?charset=utf8mb4&parseTime=True&loc=Local&allowNativePasswords=true"
+    Debug = false
+    MaxLifetime = 7200
+    MaxOpenConns = 150
+    MaxIdleConns = 50
+    EnableAutoMigrate = true
+
+    [Redis]
+    RedisType = "standalone"
+    Address = "redis.database.svc.cluster.local:6379"
+    Password = "PCamTwR4sQkM8T5VhBN2"
+    DB = 6
+    
+    [Center]
+    MetricsYamlFile = "/app/etc/metrics.yaml"
+    I18NHeaderKey = "X-Language"
+
+    [Center.AnonymousAccess]
+    PromQuerier = true
+    AlertDetail = true

@@ -1,0 +1,60 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nightingale
+  namespace: monitoring
+  labels:
+    app.kubernetes.io/name: nightingale
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: nightingale
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: nightingale
+    spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app.kubernetes.io/name
+                      operator: In
+                      values:
+                        - nightingale
+                topologyKey: kubernetes.io/hostname
+              weight: 100
+      containers:
+        - name: nightingale
+          image: registry.cn-hangzhou.aliyuncs.com/devops-system/nightingale:8.0.0-beta.14
+          name: nightingale
+          args:
+            - /app/n9e
+            - configs
+            - /app/etc
+          env:
+            - name: GIN_MODE
+              value: release
+            - name: TZ
+              value: Asia/Shanghai
+          ports:
+            - containerPort: 17000
+          resources:
+            limits:
+              cpu: 1000m
+              memory: 2048Mi
+            requests:
+              cpu: 1000m
+              memory: 2048Mi
+          volumeMounts:
+            - mountPath: /app/etc
+              name: nightingale-config
+      restartPolicy: Always
+      volumes:
+        - name: nightingale-config
+          configMap:
+            name: nightingale-config

@@ -47,7 +47,7 @@ spec:
               weight: 100
       containers:
         - name: vlselect
-          image: registry.cn-hangzhou.aliyuncs.com/devops-system/victoria-logs:v1.23.3-victorialogs
+          image: registry.cn-hangzhou.aliyuncs.com/devops-system/victoria-logs:v1.24.0-victorialogs
           imagePullPolicy: IfNotPresent
           securityContext:
             runAsGroup: 1000

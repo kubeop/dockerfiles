@@ -1,0 +1,27 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nightingale
+  namespace: monitoring
+  labels:
+    app.kubernetes.io/name: nightingale
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: alerting.kubeop.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: nightingale
+            port:
+              number: 17000
+  tls:
+  - hosts:
+    - alerting.kubeop.com
+    secretName: kubeop.com-ssl
