@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: mysqld-exporter
-  namespace: exporter
+  namespace: monitoring
 data:
   exporter.cnf: |
     [client]
