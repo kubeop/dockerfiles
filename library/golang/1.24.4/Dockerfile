@@ -12,6 +12,7 @@ RUN set -eux; \
         apt-get install -y --no-install-recommends \
             g++ \
             gcc \
+            git \
             libc6-dev \
             make \
             pkg-config \
