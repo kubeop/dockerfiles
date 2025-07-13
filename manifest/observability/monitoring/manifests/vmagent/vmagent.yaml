@@ -37,9 +37,11 @@ spec:
       serviceAccountName: vmagent
       containers:
         - name: vmagent
-          image: registry.cn-hangzhou.aliyuncs.com/devops-system/vmagent:v1.120.0
+          image: registry.cn-hangzhou.aliyuncs.com/devops-system/vmagent:v1.121.0
           imagePullPolicy: IfNotPresent
           args:
+            - --httpAuth.username=admin
+            - --httpAuth.password=changeme
             - --promscrape.config=https://vmconfig.kubeop.com/scrape_config/$(CLUSTER).yml
             - --promscrape.configCheckInterval=30s
             - --promscrape.maxScrapeSize=20971520
@@ -59,7 +61,7 @@ spec:
               containerPort: 8429
           env:
             - name: CLUSTER
-              value: "k8s-ops-prd"
+              value: "ops-pro"
             - name: POD_NAME
               valueFrom:
                 fieldRef:

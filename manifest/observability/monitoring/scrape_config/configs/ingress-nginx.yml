@@ -12,11 +12,6 @@
     regex: (controller);true
     replacement: $1
     action: keep
-  - source_labels: [__meta_kubernetes_service_label_app_kubernetes_io_instance, __meta_kubernetes_service_labelpresent_app_kubernetes_io_instance]
-    separator: ;
-    regex: (ingress-nginx);true
-    replacement: $1
-    action: keep
   - source_labels: [__meta_kubernetes_service_label_app_kubernetes_io_name, __meta_kubernetes_service_labelpresent_app_kubernetes_io_name]
     separator: ;
     regex: (ingress-nginx);true

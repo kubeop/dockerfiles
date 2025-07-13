@@ -59,9 +59,9 @@ spec:
             - --loggerFormat=json
             - --httpAuth.username=admin
             - --httpAuth.password=changeme
-            - --storageNode=vlstorage-0.vlstorage.logging.svc.cluster.local.:9491
-            - --storageNode=vlstorage-1.vlstorage.logging.svc.cluster.local.:9491
-            - --storageNode=vlstorage-2.vlstorage.logging.svc.cluster.local.:9491
+            - --storageNode=vlstorage-0.vlstorage.logging.svc.cluster.local:9491
+            - --storageNode=vlstorage-1.vlstorage.logging.svc.cluster.local:9491
+            - --storageNode=vlstorage-2.vlstorage.logging.svc.cluster.local:9491
           ports:
             - name: http
               containerPort: 9471
