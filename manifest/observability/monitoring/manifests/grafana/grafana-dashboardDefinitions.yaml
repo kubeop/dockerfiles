@@ -250,11 +250,11 @@ items:
               "showSearch": true,
               "showStarred": false,
               "tags": [
-                "monitoring"
+                "observability"
               ]
             },
             "pluginVersion": "11.5.2",
-            "title": "监控组件",
+            "title": "可观测性",
             "type": "dashlist"
           },
           {

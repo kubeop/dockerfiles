@@ -22,7 +22,7 @@ spec:
         imagePullPolicy: IfNotPresent
         env:
         - name: GF_INSTALL_PLUGINS
-          value: "alexanderzobnin-zabbix-app"
+          value: "alexanderzobnin-zabbix-app,victoriametrics-metrics-datasource,victoriametrics-logs-datasource"
         ports:
         - containerPort: 3000
           name: http

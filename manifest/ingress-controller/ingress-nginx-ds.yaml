@@ -314,7 +314,7 @@ metadata:
   namespace: ingress-nginx
 data:
   # https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/configmap/
-  worker-processes: "4"
+  worker-processes: "auto"
   worker-cpu-affinity: "auto"
   proxy-body-size: "50m"
   client-body-buffer-size: "30m"
