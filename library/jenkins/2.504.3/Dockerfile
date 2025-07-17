@@ -41,7 +41,7 @@ RUN set -eux; \
             libfontconfig1 \
             libfreetype6 \
             procps \
-            ssh-client \
+            openssh-client \
             tini \
             unzip \
             rsync \

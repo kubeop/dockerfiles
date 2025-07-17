@@ -1,4 +1,4 @@
-FROM kubeop/python:3.11.11
+FROM kubeop/python:3.11.13
 LABEL maintainer="Sonic Ma <sonic.ma@outlook.com>"
 
 ARG ANSIBLE_VERSION=2.16.14
@@ -16,7 +16,6 @@ RUN set -eux; \
             curl \
             rsync \
             sshpass \
-            ssh-client \
             openssh-client \
         ; \
         rm -rf /var/lib/apt/lists/*; \
