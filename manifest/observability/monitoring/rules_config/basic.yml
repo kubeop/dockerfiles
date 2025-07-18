@@ -1,0 +1,167 @@
+groups:
+- name: blackbox
+  rules:
+  - alert: BlackboxProbeFailed
+    expr: |-
+      probe_success == 0
+    for: 1m
+    labels:
+      severity: P1
+    annotations:
+      description: "实例{{ $labels.job }}/{{ $labels.instance }}拨测失败, 请检查网络或服务是否正常"
+
+  - alert: BlackboxOneHourAvailability
+    expr: |-
+      sum_over_time(probe_success[1h])/count_over_time(probe_success[1h]) * 100 < 90
+    for: 1m
+    labels:
+      severity: P2
+    annotations:
+      description: "实例{{ $labels.job }}/{{ $labels.instance }}在一小时内可用性低于90%, 触发时值为: {{ $value }}%"
+
+  - alert: BlackboxSlowProbe
+    expr: avg_over_time(probe_duration_seconds[1m]) > 5
+    for: 2m
+    labels:
+      severity: P3
+    annotations:
+      description: "实例{{ $labels.job }}/{{ $labels.instance }}拨测响应时间超过5秒, 触发时值为: {{ $value | humanizeDuration }}"
+
+  - alert: BlackboxProbeHttpFailure
+    expr: (probe_success == 0 and probe_http_status_code >= 400)
+    for: 1m
+    labels:
+      severity: P2
+    annotations:
+      description: "实例{{ $labels.job }}/{{ $labels.instance }}返回的状态码不在200-399之间, 触发时值为: {{ $value }}"
+
+  - alert: BlackboxSslCertificateWillExpire
+    expr: probe_ssl_earliest_cert_expiry - time() < 86400 * 30
+    for: 1m
+    labels:
+      severity: P4
+    annotations:
+      description: "实例{{ $labels.job }}/{{ $labels.instance }}的证书即将在{{$value | humanizeDuration}}天内过期"
+
+  - alert: BlackboxSslCertificateWillExpire
+    expr: probe_ssl_earliest_cert_expiry - time() < 86400 * 7
+    for: 1m
+    labels:
+      severity: P3
+    annotations:
+      description: "实例{{ $labels.job }}/{{ $labels.instance }}的证书即将在{{$value | humanizeDuration}}天内过期"
+
+  - alert: BlackboxSslCertificateWillExpire
+    expr: probe_ssl_earliest_cert_expiry - time() < 86400 * 1
+    for: 1m
+    labels:
+      severity: P2
+    annotations:
+      description: "实例{{ $labels.job }}/{{ $labels.instance }}的证书即将在{{$value | humanizeDuration}}天内过期"
+
+  - alert: BlackboxSslCertificateExpired
+    expr: probe_ssl_earliest_cert_expiry - time() <= 0
+    for: 1m
+    labels:
+      severity: P1
+    annotations:
+      description: "实例{{ $labels.job }}/{{ $labels.instance }}的证书已过期{{$value | humanizeDuration}}天"
+
+- name: grafana
+  rules:
+  - alert: GrafanaDown
+    expr: up{job="grafana"} == 0
+    for: 1m
+    labels:
+      severity: P3
+    annotations:
+      description: "Grafana实例{{$labels.job}}/{{ $labels.namespace }}/{{$labels.pod}}停机超过1分钟"
+
+  - alert: GrafanaRequestsFailing
+    expr: |
+      100 * sum without (status_code) (namespace_job_handler_statuscode:grafana_http_request_duration_seconds_count:rate5m{handler!~"/api/datasources/proxy/:id.*|/api/ds/query|/api/tsdb/query", status_code=~"5.."})
+      /
+      sum without (status_code) (namespace_job_handler_statuscode:grafana_http_request_duration_seconds_count:rate5m{handler!~"/api/datasources/proxy/:id.*|/api/ds/query|/api/tsdb/query"})
+      > 50
+    for: 5m
+    labels:
+      severity: P3
+    annotations:
+      description: "Grafana实例{{ $labels.job }}/{ $labels.namespace }}/{{ $labels.handler }}出现了{{ $value | humanize }}%的错误请求"
+
+- name: general
+  rules:
+  - alert: TargetDown
+    expr: 100 * (count(up == 0) BY (cluster, job, namespace, service) / count(up) BY (cluster, job, namespace, service)) > 10
+    for: 10m
+    labels:
+      severity: P2
+    annotations:
+      description: "实例{{ $labels.job }}/{{ $labels.namespace }}/{{ $labels.service }}有超过{{ $value | humanize }}%的采集目标不可用"
+
+- name: ingress
+  rules:
+  - alert: IngressConfigFailed
+    expr: |
+      count(nginx_ingress_controller_config_last_reload_successful == 0) by (cluster, controller_class) > 0
+    for: 1s
+    labels:
+      severity: P2
+    annotations:
+      description: "Ingress控制器{{ $labels.controller_class }}因出现错误的配置导致重载配置失败, 请检查Ingress配置文件"
+
+  - alert: IngressCertificateWillExpire
+    expr: |
+      (avg(nginx_ingress_controller_ssl_expire_time_seconds{host!="_"}) by (cluster, host) - time()) < 86400 * 30
+    for: 1m
+    labels:
+      severity: P4
+    annotations:
+      description: "Ingress域名{{ $labels.host }}的证书即将在{{$value | humanizeDuration}}天内过期"
+
+  - alert: IngressCertificateWillExpire
+    expr: |
+      (avg(nginx_ingress_controller_ssl_expire_time_seconds{host!="_"}) by (cluster, host) - time()) < 86400 * 7
+    for: 1m
+    labels:
+      severity: P3
+    annotations:
+      description: "Ingress域名{{ $labels.host }}的证书即将在{{$value | humanizeDuration}}天内过期"
+
+  - alert: IngressCertificateWillExpire
+    expr: |
+      (avg(nginx_ingress_controller_ssl_expire_time_seconds{host!="_"}) by (cluster, host) - time()) < 86400 * 1
+    for: 1m
+    labels:
+      severity: P2
+    annotations:
+      description: "Ingress域名{{ $labels.host }}的证书即将在{{$value | humanizeDuration}}天内过期"
+
+  - alert: IngressCertificateExpired
+    expr: |
+      (avg(nginx_ingress_controller_ssl_expire_time_seconds{host!="_"}) by (cluster, host) - time()) <= 0
+    for: 1m
+    labels:
+      severity: P1
+    annotations:
+      description: "Ingress域名{{ $labels.host }}的证书已过期{{$value | humanizeDuration}}天"
+
+  - alert: IngressTooMany500s
+    expr: |
+      sum(increase(nginx_ingress_controller_requests{status=~"5.*",host!~"|_|127.0.0.1"}[2m])) by (cluster, exported_namespace, ingress) > 50
+    for: 2m
+    labels:
+      severity: P2
+    annotations:
+      description: "Ingress实例{{ $labels.exported_namespace }}/{{ $labels.ingress }}在最近2分钟有超过50条5xx错误请求, 触发时值为: {{ $value }}"
+
+- name: openresty
+  rules:
+  - alert: OpenrestyTooMany500s
+    expr: |
+      sum(increase(openresty_http_requests_total{status=~"5.*",host!~"|_|127.0.0.1"}[2m])) by (cluster, job, host) > 50
+    for: 2m
+    labels:
+      severity: P2
+    annotations:
+      description: "Openresty域名{{ $labels.host }}在最近2分钟有超过50条5xx错误请求, 触发时值为: {{ $value }}"

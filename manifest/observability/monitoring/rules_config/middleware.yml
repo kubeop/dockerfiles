@@ -1,0 +1,32 @@
+groups:
+- name: kafka
+  rules:
+  - alert: KafkaDown
+    expr: up{job=~"kafka-exporter"} == 0
+    for: 1m
+    labels:
+      severity: P1
+    annotations:
+      description: "Kafka实例{{$labels.job}}/{{$labels.instance}}超过1分钟不可用"
+
+  - alert: KafkaConsumersTopicLag
+    expr: |
+      sum(min_over_time(kafka_consumergroup_lag[5m])) by (cluster,job,service,instance,consumergroup,topic) > 2000
+      and
+      sum(delta(kafka_consumergroup_current_offset[10m])) by (cluster,job,service,instance,consumergroup,topic) > 1
+    for: 5m
+    labels:
+      severity: P2
+    annotations:
+      description: "Kafka实例{{$labels.job}}/{{$labels.instance}}的主题{{ $labels.topic }}消费组{{ $labels.consumergroup }}在最近5分钟出现消费延迟, 触发时值为: {{ $value }}"
+
+- name: nacos
+  rules:
+  - alert: NacosDown
+    expr: |-
+      up{namespace=~"nacos"} == 0
+    for: 15s
+    labels:
+      severity: P1
+    annotations:
+      description: "Nacos实例{{$labels.job}}/{{$labels.instance}}超过1分钟不可用"

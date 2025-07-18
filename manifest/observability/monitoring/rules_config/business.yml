@@ -1,0 +1,43 @@
+groups:
+- name: java
+  rules:
+  - alert: JavaDwon
+    expr: up{job="jvm-exporter"} == 0
+    for: 1m
+    labels:
+      severity: P1
+    annotations:
+      description: "Java应用{{ $labels.namespace }}/{{ $labels.service }}/{{ $labels.pod }}停机超过1分钟"
+
+  - alert: JavaCpuUsage
+    expr: process_cpu_usage{job="jvm-exporter"} * 100 > 85
+    for: 3m
+    labels:
+      severity: P3
+    annotations:
+      description: "Java应用{{ $labels.namespace }}/{{ $labels.service }}/{{ $labels.pod }}的CPU使用率超过85%, 触发时值为: {{ $value | humanize }}%"
+
+  - alert: JavaHeapMemoryUsage
+    expr: |
+      (sum by (cluster,namespace,job,service,application,pod,instance)(jvm_memory_used_bytes{job="jvm-exporter",area="heap",namespace!~"adcloud.*"}) / sum by (cluster,namespace,job,service,application,pod,instance)(jvm_memory_max_bytes{job="jvm-exporter",area="heap",namespace!~"adcloud.*"})) * 100 > 90
+    for: 3m
+    labels:
+      severity: P3
+    annotations:
+      description: "Java应用{{ $labels.namespace }}/{{ $labels.service }}/{{ $labels.pod }}的内存使用率超过90%, 触发时值为: {{ $value | humanize }}%"
+
+  - alert: JavaTooManyErrors
+    expr: increase(logback_events_total{level="error"}[1m]) > 10
+    for: 2m
+    labels:
+      severity: P2
+    annotations:
+      description: "Java应用{{ $labels.namespace }}/{{ $labels.service }}/{{ $labels.pod }}出现较多ERROR级别的日志, 请检查应用日志, 触发时值为: {{ $value }}"
+
+  - alert: JavaMajorGCTooSlow
+    expr: rate(jvm_gc_pause_seconds_sum{job="jvm-exporter",action="end of major GC"}[2m]) *100  > 10
+    for: 1m
+    labels:
+      severity: P4
+    annotations:
+      description: "Java应用{{ $labels.namespace }}/{{ $labels.service }}/{{ $labels.pod }}的MajorGC比例超过10%, 触发时值为: {{ $value | humanize }}%"

@@ -1,0 +1,938 @@
+groups:
+- name: etcd
+  rules:
+  - alert: etcdInsufficientMembers
+    expr: sum(up{job=~".*etcd.*"} == bool 1) by (cluster,job) < ((count(up{job=~".*etcd.*"}) by (cluster,job) + 1) / 2)
+    for: 3m
+    labels:
+      severity: P1
+    annotations:
+      description: "Etcd集群{{ $labels.job }}成员不足{{ $value }}"
+
+  - alert: etcdNoLeader
+    expr: etcd_server_has_leader{job=~".*etcd.*"} == 0
+    for: 1m
+    labels:
+      severity: P1
+    annotations:
+      description: "Etcd集群{{ $labels.job }}成员{{ $labels.instance }}没有Leader"
+
+  - alert: etcdHighNumberOfLeaderChanges
+    expr: rate(etcd_server_leader_changes_seen_total{job=~".*etcd.*"}[15m]) > 3
+    for: 15m
+    labels:
+      severity: P2
+    annotations:
+      description: "Etcd集群实例{{ $labels.job }}/{{ $labels.instance }}在最近一小时发生了{{ $value }}领导者变更"
+
+  - alert: etcdGRPCRequestsSlow
+    expr: |-
+      histogram_quantile(0.99, sum(rate(grpc_server_handling_seconds_bucket{job=~".*etcd.*", grpc_type="unary"}[5m])) by (job, instance, grpc_service, grpc_method, le))
+      > 0.15
+    for: 10m
+    labels:
+      severity: P3
+    annotations:
+      description: "Etcd集群实例{{ $labels.job }}/{{ $labels.instance }}对{{ $labels.grpc_method }}的gRPC请求耗时超过{{ printf \"%.2f\" $value }}秒"
+
+  - alert: etcdMemberCommunicationSlow
+    expr: |-
+      histogram_quantile(0.99, rate(etcd_network_peer_round_trip_time_seconds_bucket{job=~".*etcd.*"}[5m]))
+      > 0.15
+    for: 10m
+    labels:
+      severity: P3
+    annotations:
+      description: "Etcd集群实例{{ $labels.job }}/{{ $labels.instance }}与{{ $labels.To }}的通信耗时超过{{ printf \"%.2f\" $value }}秒"
+
+  - alert: etcdHighNumberOfFailedProposals
+    expr: rate(etcd_server_proposals_failed_total{job=~".*etcd.*"}[15m]) > 5
+    for: 15m
+    labels:
+      severity: P3
+    annotations:
+      description: "Etcd集群实例{{ $labels.job }}/{{ $labels.instance }}在最近15分钟出现{{ $value }}次Proposals失败"
+
+  - alert: etcdHighFsyncDurations
+    expr: |-
+      histogram_quantile(0.99, rate(etcd_disk_wal_fsync_duration_seconds_bucket{job=~".*etcd.*"}[5m]))
+      > 0.5
+    for: 10m
+    labels:
+      severity: P3
+    annotations:
+      description: "Etcd集群实例{{ $labels.job }}/{{ $labels.instance }}的同步耗时超过{{ printf \"%.2f\" $value }}秒"
+
+  - alert: etcdHighCommitDurations
+    expr: |-
+      histogram_quantile(0.99, rate(etcd_disk_backend_commit_duration_seconds_bucket{job=~".*etcd.*"}[5m]))
+      > 0.25
+    for: 10m
+    labels:
+      severity: P3
+    annotations:
+      description: "Etcd集群实例{{ $labels.job }}/{{ $labels.instance }}的提交耗时超过{{ printf \"%.2f\" $value }}秒"
+
+  - alert: etcdHighNumberOfFailedHTTPRequests
+    expr: |-
+      sum(rate(etcd_http_failed_total{job=~".*etcd.*", code!="404"}[5m])) BY (method) / sum(rate(etcd_http_received_total{job=~".*etcd.*"}[5m]))
+      BY (method) > 0.01
+    for: 10m
+    labels:
+      severity: P3
+    annotations:
+      description: "Etcd集群实例{{ $labels.job }}/{{ $labels.instance }}上对{{ $labels.method }}的请求有{{ $value | humanize }}%的失败"
+
+  - alert: etcdHighNumberOfFailedHTTPRequests
+    expr: |-
+      sum(rate(etcd_http_failed_total{job=~".*etcd.*", code!="404"}[5m])) BY (method) / sum(rate(etcd_http_received_total{job=~".*etcd.*"}[5m]))
+      BY (method) > 0.05
+    for: 10m
+    labels:
+      severity: P3
+    annotations:
+      description: "Etcd集群实例{{ $labels.job }}/{{ $labels.instance }}上对{{ $labels.method }}的请求有{{ $value | humanize }}%的失败"
+
+  - alert: etcdHTTPRequestsSlow
+    expr: |-
+      histogram_quantile(0.99, rate(etcd_http_successful_duration_seconds_bucket[5m]))
+      > 0.15
+    for: 10m
+    labels:
+      severity: P3
+    annotations:
+      description: "Etcd集群实例{{ $labels.job }}/{{ $labels.instance }}对{{ $labels.method }}的请求过慢"
+
+- name: coredns
+  rules:
+  - alert: CorednsPanicCount
+    expr: increase(coredns_panics_total[1m]) > 0
+    for: 0m
+    labels:
+      severity: P2
+    annotations:
+      description: "Coredns实例{{ $labels.job }}/{{ $labels.instance }}上出现{{ $value }}次Panic"
+
+- name: kube-state-metrics
+  rules:
+  - alert: KubeStateMetricsListErrors
+    expr: |
+      (sum(rate(kube_state_metrics_list_total{job="kube-state-metrics",result="error"}[5m]))
+        /
+      sum(rate(kube_state_metrics_list_total{job="kube-state-metrics"}[5m])))
+      > 0.01
+    for: 15m
+    labels:
+      severity: P2
+    annotations:
+      description: "kube-state-metrics在List操作中出现较多的错误, 可能导致无法暴露kubernetes对象指标"
+
+  - alert: KubeStateMetricsWatchErrors
+    expr: |
+      (sum(rate(kube_state_metrics_watch_total{job="kube-state-metrics",result="error"}[5m]))
+        /
+      sum(rate(kube_state_metrics_watch_total{job="kube-state-metrics"}[5m])))
+      > 0.01
+    for: 15m
+    labels:
+      severity: P2
+    annotations:
+      description: "kube-state-metrics在Watch操作中出现较多的错误, 可能导致无法暴露kubernetes对象指标"
+
+  - alert: KubeStateMetricsShardingMismatch
+    expr: |
+      stdvar (kube_state_metrics_total_shards{job="kube-state-metrics"}) != 0
+    for: 15m
+    labels:
+      severity: P3
+    annotations:
+      description: "kube-state-metrics的容器组正在使用不同的--total-shards配置, 某些kubernetes对象可能会被暴露多次或者没有暴露"
+
+  - alert: KubeStateMetricsShardsMissing
+    expr: |
+      2^max(kube_state_metrics_total_shards{job="kube-state-metrics"}) - 1
+        -
+      sum( 2 ^ max by (shard_ordinal) (kube_state_metrics_shard_ordinal{job="kube-state-metrics"}) )
+      != 0
+    for: 15m
+    labels:
+      severity: P3
+    annotations:
+      description: "kube-state-metrics分片丢失, 一些kubernetes对象没有暴露"
+
+- name: kubernetes
+  rules:
+  - alert: KubeDiskPressure
+    expr: |-
+      kube_node_status_condition{condition="DiskPressure",status="true"} == 1
+    for: 2m
+    labels:
+      severity: P3
+    annotations:
+      description: "Kubernetes节点实例{{ $labels.node }}出现磁盘压力, 请检查节点磁盘"
+
+  - alert: KubeMemoryPressure
+    expr: |-
+      kube_node_status_condition{condition="MemoryPressure",status="true"} == 1
+    for: 2m
+    labels:
+      severity: P2
+    annotations:
+      description: "Kubernetes节点实例{{ $labels.node }}出现内存压力, 请检查节点内存"
+
+  - alert: KubeNodeNetworkUnavailable
+    expr: |-
+      kube_node_status_condition{condition="NetworkUnavailable",status="true"} == 1
+    for: 2m
+    labels:
+      severity: P1
+    annotations:
+      description: "Kubernetes节点实例{{ $labels.node }}网络不可用, 请检查节点网络"
+
+  - alert: KubePersistentvolumeclaimPending
+    expr: |-
+      kube_persistentvolumeclaim_status_phase{phase="Pending"} == 1
+    for: 2m
+    labels:
+      severity: P4
+    annotations:
+      description: "Kubernetes存储声明实例{{ $labels.namespace }}/{{ $labels.persistentvolumeclaim }}处于Pending状态"
+
+- name: kubernetes-apps
+  rules:
+  - alert: KubePodOomKiller
+    expr: |-
+      (kube_pod_container_status_restarts_total - kube_pod_container_status_restarts_total offset 10m >= 1) and ignoring (reason) min_over_time(kube_pod_container_status_last_terminated_reason{reason="OOMKilled"}[10m]) == 1
+    for: 0m
+    labels:
+      severity: P1
+    annotations:
+      description: "Kubernetes容器实例{{ $labels.namespace }}/{{ $labels.pod }}/{{ $labels.container }}在最近10分钟被OOMKilled了{{ $value }}次"
+
+  - alert: KubePodMemory
+    expr: |-
+      sum(container_memory_working_set_bytes{job="kubelet", metrics_path="/metrics/cadvisor", container!="", image!=""}) by (container,pod,namespace,cluster) / sum(cluster:namespace:pod_memory:active:kube_pod_container_resource_limits) by (container ,pod,namespace,cluster) * 100 > 90
+    for: 5m
+    labels:
+      severity: P2
+    annotations:
+      description: "Kubernetes容器实例{{ $labels.namespace }}/{{ $labels.pod }}/{{ $labels.container }}内存使用率超过了90%, 触发时值为: {{ $value | humanize }}%"
+
+  - alert: KubePodCrashLooping
+    expr: |-
+      max_over_time(kube_pod_container_status_waiting_reason{reason="CrashLoopBackOff", job="kube-state-metrics", namespace!~"risklayer-task-argo|.*.-dev|.*.-test"}[5m]) >= 1
+    for: 15m
+    labels:
+      severity: P1
+    annotations:
+      description: "Kubernetes容器实例{{ $labels.namespace }}/{{ $labels.pod }}/{{ $labels.container }}处于CrashLoopBackOff状态, 请尽快检查容器以避免影响业务"
+
+  - alert: KubeCronjobSuspended
+    expr: kube_cronjob_spec_suspend != 0
+    for: 1m
+    labels:
+      severity: P3
+    annotations:
+      description: "Kubernetes定时任务实例{{ $labels.namespace }}/{{ $labels.cronjob }}执行失败"
+
+  - alert: KubePodNotReady
+    expr: |-
+      sum by (namespace, pod, cluster) (
+        max by(namespace, pod, cluster) (
+          kube_pod_status_phase{job="kube-state-metrics", phase=~"Pending|Unknown|Failed", namespace!~"risklayer-task-argo|.*.-dev|.*.-test"}
+        ) * on(namespace, pod, cluster) group_left(owner_kind) topk by(namespace, pod, cluster) (
+          1, max by(namespace, pod, owner_kind, cluster) (kube_pod_owner{owner_kind!="Job"})
+        )
+      ) > 0
+    for: 15m
+    labels:
+      severity: P1
+    annotations:
+      description: "Kubernetes容器组实例{{ $labels.namespace }}/{{ $labels.pod }}处于未就绪状态超过15分钟"
+
+  - alert: KubeDeploymentGenerationMismatch
+    expr: |-
+      kube_deployment_status_observed_generation{job="kube-state-metrics"}
+        !=
+      kube_deployment_metadata_generation{job="kube-state-metrics"}
+    for: 15m
+    labels:
+      severity: P2
+    annotations:
+      description: "Kubernetes无状态实例{{ $labels.namespace }}/{{ $labels.deployment }}部署配置不一致, 可能部署失败, 请尽快处理以避免影响业务"
+
+  - alert: KubeDeploymentReplicasMismatch
+    expr: |-
+      (
+        kube_deployment_spec_replicas{job="kube-state-metrics"}
+          >
+        kube_deployment_status_replicas_available{job="kube-state-metrics"}
+      ) and (
+        changes(kube_deployment_status_replicas_updated{job="kube-state-metrics"}[10m])
+          ==
+        0
+      )
+    for: 15m
+    labels:
+      severity: P2
+    annotations:
+      description: "Kubernetes无状态实例{{ $labels.namespace }}/{{ $labels.deployment }}持续超过15分钟跟预期的副本数量不一致"
+
+  - alert: KubeStatefulSetReplicasMismatch
+    expr: |-
+      (
+        kube_statefulset_status_replicas_ready{job="kube-state-metrics"}
+          !=
+        kube_statefulset_status_replicas{job="kube-state-metrics"}
+      ) and (
+        changes(kube_statefulset_status_replicas_updated{job="kube-state-metrics"}[10m])
+          ==
+        0
+      )
+    for: 15m
+    labels:
+      severity: P2
+    annotations:
+      description: "Kubernetes有状态实例{{ $labels.namespace }}/{{ $labels.statefulset }}持续超过15分钟跟预期的副本数量不一致"
+
+  - alert: KubeStatefulSetGenerationMismatch
+    expr: |-
+      kube_statefulset_status_observed_generation{job="kube-state-metrics"}
+        !=
+      kube_statefulset_metadata_generation{job="kube-state-metrics"}
+    for: 15m
+    labels:
+      severity: P3
+    annotations:
+      description: "Kubernetes有状态实例{{ $labels.namespace }}/{{ $labels.statefulset }} 部署配置不匹配，可能部署失败, 请尽快处理以避免影响业务"
+
+  - alert: KubeStatefulSetUpdateNotRolledOut
+    expr: |-
+      (
+        max without (revision) (
+          kube_statefulset_status_current_revision{job="kube-state-metrics"}
+            unless
+          kube_statefulset_status_update_revision{job="kube-state-metrics"}
+        )
+          *
+        (
+          kube_statefulset_replicas{job="kube-state-metrics"}
+            !=
+          kube_statefulset_status_replicas_updated{job="kube-state-metrics"}
+        )
+      )  and (
+        changes(kube_statefulset_status_replicas_updated{job="kube-state-metrics"}[5m])
+          ==
+        0
+      )
+    for: 15m
+    labels:
+      severity: P3
+    annotations:
+      description: "Kubernetes有状态实例{{ $labels.namespace }}/{{ $labels.statefulset }}的更新尚未执行"
+
+  - alert: KubeDaemonSetRolloutStuck
+    expr: |-
+      (
+        (
+          kube_daemonset_status_current_number_scheduled{job="kube-state-metrics"}
+           !=
+          kube_daemonset_status_desired_number_scheduled{job="kube-state-metrics"}
+        ) or (
+          kube_daemonset_status_number_misscheduled{job="kube-state-metrics"}
+           !=
+          0
+        ) or (
+          kube_daemonset_status_updated_number_scheduled{job="kube-state-metrics"}
+           !=
+          kube_daemonset_status_desired_number_scheduled{job="kube-state-metrics"}
+        ) or (
+          kube_daemonset_status_number_available{job="kube-state-metrics"}
+           !=
+          kube_daemonset_status_desired_number_scheduled{job="kube-state-metrics"}
+        )
+      ) and (
+        changes(kube_daemonset_status_updated_number_scheduled{job="kube-state-metrics"}[5m])
+          ==
+        0
+      )
+    for: 15m
+    labels:
+      severity: P3
+    annotations:
+      description: "Kubernetes守护进程集实例{{ $labels.namespace }}/{{ $labels.daemonset }}超过15分钟没有完成或进展"
+
+  - alert: KubeContainerWaiting
+    expr: |-
+      sum by (namespace, pod, container, cluster) (kube_pod_container_status_waiting_reason{job="kube-state-metrics",  namespace!~"risklayer-task-argo"}) 
+      > 0
+    for: 1h
+    labels:
+      severity: P3
+    annotations:
+      description: "Kubernetes容器实例{{ $labels.namespace }}/{{ $labels.pod }}/{{ $labels.container }}处于等待状态超过1小时"
+
+  - alert: KubeDaemonSetNotScheduled
+    expr: |-
+      kube_daemonset_status_desired_number_scheduled{job="kube-state-metrics"}
+        -
+      kube_daemonset_status_current_number_scheduled{job="kube-state-metrics"} > 0
+    for: 10m
+    labels:
+      severity: P3
+    annotations:
+      description: "Kubernetes守护进程集实例{{ $labels.namespace }}/{{ $labels.daemonset }}有{{ $value }}容器组未调度"
+
+  - alert: KubeDaemonSetMisScheduled
+    expr: |-
+      kube_daemonset_status_number_misscheduled{job="kube-state-metrics"} > 0
+    for: 15m
+    labels:
+      severity: P3
+    annotations:
+      description: "Kubernetes守护进程集实例{{ $labels.namespace }}/{{ $labels.daemonset }}有{{ $value }}容器组在不应该运行的节点运行"
+
+  - alert: KubeJobNotCompleted
+    expr: |-
+      time() - max by(namespace, job_name, cluster) (kube_job_status_start_time{job="kube-state-metrics"}
+        and
+      kube_job_status_active{job="kube-state-metrics"} > 0) > 43200
+    labels:
+      severity: P3
+    annotations:
+      description: "Kubernetes任务实例{{ $labels.namespace }}/{{ $labels.job_name }}超过12小时没有执行完成"
+
+  - alert: KubeJobFailed
+    expr: |-
+      kube_job_failed{job="kube-state-metrics"}  > 0
+    for: 15m
+    labels:
+      severity: P3
+    annotations:
+      description: "Kubernetes任务实例{{ $labels.namespace }}/{{ $labels.job_name }}未能正确执行完成"
+
+  - alert: KubeHpaReplicasMismatch
+    expr: |-
+      (kube_horizontalpodautoscaler_status_desired_replicas{job="kube-state-metrics"}
+        !=
+      kube_horizontalpodautoscaler_status_current_replicas{job="kube-state-metrics"})
+        and
+      (kube_horizontalpodautoscaler_status_current_replicas{job="kube-state-metrics"}
+        >
+      kube_horizontalpodautoscaler_spec_min_replicas{job="kube-state-metrics"})
+        and
+      (kube_horizontalpodautoscaler_status_current_replicas{job="kube-state-metrics"}
+        <
+      kube_horizontalpodautoscaler_spec_max_replicas{job="kube-state-metrics"})
+        and
+      changes(kube_horizontalpodautoscaler_status_current_replicas{job="kube-state-metrics"}[15m]) == 0
+    for: 15m
+    labels:
+      severity: P3
+    annotations:
+      description: "Kubernetes弹性扩缩容实例{{ $labels.namespace }}/{{ $labels.horizontalpodautoscaler }}与所需副本数量不匹配的时间超过15分钟"
+
+  - alert: KubeHpaMaxedOut
+    expr: |-
+      kube_horizontalpodautoscaler_status_current_replicas{job="kube-state-metrics"}
+        ==
+      kube_horizontalpodautoscaler_spec_max_replicas{job="kube-state-metrics"}
+    for: 15m
+    labels:
+      severity: P3
+    annotations:
+      description: "Kubernetes弹性扩缩容实例{{ $labels.namespace }}/{{ $labels.horizontalpodautoscaler }}已以最大副本数运行超过15分钟"
+
+  - alert: KubeHpaMetricsUnavailability
+    expr: kube_horizontalpodautoscaler_status_condition{status="false", condition="ScalingActive"} == 1
+    for: 1m
+    labels:
+      severity: P4
+    annotations:
+      description: "Kubernetes弹性扩缩容实例{{ $labels.namespace }}/{{ $labels.horizontalpodautoscaler }}无法采集指标, 可能会影响服务弹性扩缩容执行"
+
+- name: kubernetes-resources
+  rules:
+  - alert: KubeCPUOvercommit
+    expr: |-
+      sum(namespace_cpu:kube_pod_container_resource_requests:sum{}) by (cluster) - (sum(kube_node_status_allocatable{resource="cpu"}) by (cluster) - max(kube_node_status_allocatable{resource="cpu"})) > 0
+      and
+      (sum(kube_node_status_allocatable{resource="cpu"}) by (cluster) - max(kube_node_status_allocatable{resource="cpu"})) > 0
+    for: 0m
+    labels:
+      severity: P2
+    annotations:
+      description: Cluster has overcommitted CPU resource requests for Pods by {{ $value }}
+        CPU shares and cannot tolerate node failure.
+
+  - alert: KubeMemoryOvercommit
+    expr: |
+      sum(namespace_memory:kube_pod_container_resource_requests:sum{}) by (cluster) - (sum(kube_node_status_allocatable{resource="memory"}) by (cluster) - max(kube_node_status_allocatable{resource="memory"})) > 0
+      and
+      (sum(kube_node_status_allocatable{resource="memory"}) by (cluster) - max(kube_node_status_allocatable{resource="memory"})) > 0
+    for: 10m
+    labels:
+      severity: P3
+    annotations:
+      description: Cluster has overcommitted memory resource requests for Pods by
+        {{ $value | humanize }} bytes and cannot tolerate node failure.
+
+  - alert: KubeCPUQuotaOvercommit
+    expr: |
+      sum(min without(resource) (kube_resourcequota{job="kube-state-metrics", type="hard", resource=~"(cpu|requests.cpu)"}))
+        /
+      sum(kube_node_status_allocatable{resource="cpu", job="kube-state-metrics"})
+        > 1.5
+    for: 5m
+    labels:
+      severity: P3
+    annotations:
+      description: Cluster has overcommitted CPU resource requests for Namespaces.
+
+  - alert: KubeMemoryQuotaOvercommit
+    expr: |
+      sum(min without(resource) (kube_resourcequota{job="kube-state-metrics", type="hard", resource=~"(memory|requests.memory)"}))
+        /
+      sum(kube_node_status_allocatable{resource="memory", job="kube-state-metrics"})
+        > 1.5
+    for: 5m
+    labels:
+      severity: P3
+    annotations:
+      description: Cluster has overcommitted memory resource requests for Namespaces.
+
+  - alert: KubeQuotaAlmostFull
+    expr: |
+      kube_resourcequota{job="kube-state-metrics", type="used"}
+        / ignoring(instance, job, type)
+      (kube_resourcequota{job="kube-state-metrics", type="hard"} > 0)
+        > 0.9 < 1
+    for: 15m
+    labels:
+      severity: P3
+    annotations:
+      description: Namespace {{ $labels.namespace }} is using {{ $value | humanizePercentage
+        }} of its {{ $labels.resource }} quota, Namespace quota is going to be full.
+
+  - alert: KubeQuotaFullyUsed
+    expr: |
+      kube_resourcequota{job="kube-state-metrics", type="used"}
+        / ignoring(instance, job, type)
+      (kube_resourcequota{job="kube-state-metrics", type="hard"} > 0)
+        == 1
+    for: 15m
+    labels:
+      severity: P3
+    annotations:
+      description: Namespace {{ $labels.namespace }} is using {{ $value | humanizePercentage
+        }} of its {{ $labels.resource }} quota, Namespace quota is fully used.
+
+  - alert: KubeQuotaExceeded
+    expr: |
+      kube_resourcequota{job="kube-state-metrics", type="used"}
+        / ignoring(instance, job, type)
+      (kube_resourcequota{job="kube-state-metrics", type="hard"} > 0)
+        > 1
+    for: 15m
+    labels:
+      severity: P2
+    annotations:
+      description: Namespace {{ $labels.namespace }} is using {{ $value | humanizePercentage
+        }} of its {{ $labels.resource }} quota, Namespace quota has exceeded the limits.
+
+  #- alert: CPUThrottlingHigh
+  #  expr: |
+  #    sum(increase(container_cpu_cfs_throttled_periods_total{container!="", }[5m])) by (cluster, container, pod, namespace)
+  #      /
+  #    sum(increase(container_cpu_cfs_periods_total{}[5m])) by (cluster, container, pod, namespace)
+  #      > ( 25 / 100 )
+  #  for: 15m
+  #  labels:
+  #    severity: P4
+  #  annotations:
+  #    description: {{ $value | humanizePercentage }} throttling of CPU in namespace
+  #      {{ $labels.namespace }} for container {{ $labels.container }} in pod {{
+  #      $labels.pod }}, Processes experience elevated CPU throttling.
+
+- name: kubernetes-storage
+  rules:
+  - alert: KubePersistentVolumeFillingUp
+    expr: |
+      (
+        kubelet_volume_stats_available_bytes{job="kubelet", metrics_path="/metrics"}
+          /
+        kubelet_volume_stats_capacity_bytes{job="kubelet", metrics_path="/metrics"}
+      ) < 0.03
+      and
+      kubelet_volume_stats_used_bytes{job="kubelet", metrics_path="/metrics"} > 0
+      unless on(namespace, persistentvolumeclaim)
+      kube_persistentvolumeclaim_access_mode{ access_mode="ReadOnlyMany"} == 1
+      unless on(namespace, persistentvolumeclaim)
+      kube_persistentvolumeclaim_labels{label_excluded_from_alerts="true"} == 1
+    for: 1m
+    labels:
+      severity: P1
+    annotations:
+      description: The PersistentVolume claimed by {{ $labels.persistentvolumeclaim
+        }} in Namespace {{ $labels.namespace }} is only {{ $value | humanizePercentage
+        }} free, PersistentVolume is filling up.
+
+  - alert: KubePersistentVolumeFillingUp
+    expr: |
+      (
+        kubelet_volume_stats_available_bytes{job="kubelet", metrics_path="/metrics"}
+          /
+        kubelet_volume_stats_capacity_bytes{job="kubelet", metrics_path="/metrics"}
+      ) < 0.15
+      and
+      kubelet_volume_stats_used_bytes{job="kubelet", metrics_path="/metrics"} > 0
+      and
+      predict_linear(kubelet_volume_stats_available_bytes{job="kubelet", metrics_path="/metrics"}[6h], 4 * 24 * 3600) < 0
+      unless on(namespace, persistentvolumeclaim)
+      kube_persistentvolumeclaim_access_mode{ access_mode="ReadOnlyMany"} == 1
+      unless on(namespace, persistentvolumeclaim)
+      kube_persistentvolumeclaim_labels{label_excluded_from_alerts="true"} == 1
+    for: 1h
+    labels:
+      severity: P3
+    annotations:
+      description: Based on recent sampling, the PersistentVolume claimed by {{
+        $labels.persistentvolumeclaim }} in Namespace {{ $labels.namespace }} is
+        expected to fill up within four days. Currently {{ $value | humanizePercentage
+        }} is available, PersistentVolume is filling up.
+
+  - alert: KubePersistentVolumeInodesFillingUp
+    expr: |
+      (
+        kubelet_volume_stats_inodes_free{job="kubelet", metrics_path="/metrics"}
+          /
+        kubelet_volume_stats_inodes{job="kubelet", metrics_path="/metrics"}
+      ) < 0.03
+      and
+      kubelet_volume_stats_inodes_used{job="kubelet", metrics_path="/metrics"} > 0
+      unless on(namespace, persistentvolumeclaim)
+      kube_persistentvolumeclaim_access_mode{ access_mode="ReadOnlyMany"} == 1
+      unless on(namespace, persistentvolumeclaim)
+      kube_persistentvolumeclaim_labels{label_excluded_from_alerts="true"} == 1
+    for: 1m
+    labels:
+      severity: P1
+    annotations:
+      description: The PersistentVolume claimed by {{ $labels.persistentvolumeclaim
+        }} in Namespace {{ $labels.namespace }} only has {{ $value | humanizePercentage
+        }} free inodes, PersistentVolumeInodes are filling up.
+
+  - alert: KubePersistentVolumeInodesFillingUp
+    expr: |
+      (
+        kubelet_volume_stats_inodes_free{job="kubelet", metrics_path="/metrics"}
+          /
+        kubelet_volume_stats_inodes{job="kubelet", metrics_path="/metrics"}
+      ) < 0.15
+      and
+      kubelet_volume_stats_inodes_used{job="kubelet", metrics_path="/metrics"} > 0
+      and
+      predict_linear(kubelet_volume_stats_inodes_free{job="kubelet", metrics_path="/metrics"}[6h], 4 * 24 * 3600) < 0
+      unless on(namespace, persistentvolumeclaim)
+      kube_persistentvolumeclaim_access_mode{ access_mode="ReadOnlyMany"} == 1
+      unless on(namespace, persistentvolumeclaim)
+      kube_persistentvolumeclaim_labels{label_excluded_from_alerts="true"} == 1
+    for: 1h
+    labels:
+      severity: P3
+    annotations:
+      description: Based on recent sampling, the PersistentVolume claimed by {{
+        $labels.persistentvolumeclaim }} in Namespace {{ $labels.namespace }} is
+        expected to run out of inodes within four days. Currently {{ $value | humanizePercentage
+        }} of its inodes are free, PersistentVolumeInodes are filling up.
+
+  - alert: KubePersistentVolumeErrors
+    expr: |
+      kube_persistentvolume_status_phase{phase=~"Failed|Pending",job="kube-state-metrics"} > 0
+    for: 5m
+    labels:
+      severity: P1
+    annotations:
+      description: The persistent volume {{ $labels.persistentvolume }} has status
+        {{ $labels.phase }}, PersistentVolume is having issues with provisioning.
+
+- name: kubernetes-system
+  rules:
+  - alert: KubeVersionMismatch
+    expr: |
+      count by (cluster) (count by (git_version, cluster) (label_replace(kubernetes_build_info{job!~"kube-dns|coredns"},"git_version","$1","git_version","(v[0-9]*.[0-9]*).*"))) > 1
+    for: 15m
+    labels:
+      severity: P3
+    annotations:
+      description: There are {{ $value }} different semantic versions of Kubernetes
+        components running.
+
+  - alert: KubeClientErrors
+    expr: |
+      (sum(rate(rest_client_requests_total{code=~"5.."}[5m])) by (cluster, instance, job, namespace)
+        /
+      sum(rate(rest_client_requests_total[5m])) by (cluster, instance, job, namespace))
+      > 0.01
+    for: 15m
+    labels:
+      severity: P3
+    annotations:
+      description: Kubernetes API server client {{ $labels.job }}/{{ $labels.instance
+        }} is experiencing {{ $value | humanizePercentage }} errors.
+
+- name: kube-apiserver-slos
+  rules:
+  - alert: KubeAPIErrorBudgetBurn
+    expr: |
+      sum(apiserver_request:burnrate1h) by (cluster,verb) > (14.40 * 0.01000)
+      and
+      sum(apiserver_request:burnrate5m) by (cluster,verb) > (14.40 * 0.01000)
+    for: 2m
+    labels:
+      long: 1h
+      severity: P1
+      short: 5m
+    annotations:
+      description: The API server is burning too much error budget.
+
+  - alert: KubeAPIErrorBudgetBurn
+    expr: |
+      sum(apiserver_request:burnrate6h) by (cluster,verb) > (6.00 * 0.01000)
+      and
+      sum(apiserver_request:burnrate30m) by (cluster,verb) > (6.00 * 0.01000)
+    for: 15m
+    labels:
+      long: 6h
+      severity: P2
+      short: 30m
+    annotations:
+      description: The API server is burning too much error budget.
+
+  - alert: KubeAPIErrorBudgetBurn
+    expr: |
+      sum(apiserver_request:burnrate1d) by (cluster,verb) > (3.00 * 0.01000)
+      and
+      sum(apiserver_request:burnrate2h) by (cluster,verb) > (3.00 * 0.01000)
+    for: 1h
+    labels:
+      long: 1d
+      severity: P1
+      short: 2h
+    annotations:
+      description: The API server is burning too much error budget.
+
+  - alert: KubeAPIErrorBudgetBurn
+    expr: |
+      sum(apiserver_request:burnrate3d) by (cluster,verb) > (1.00 * 0.01000)
+      and
+      sum(apiserver_request:burnrate6h) by (cluster,verb) > (1.00 * 0.01000)
+    for: 3h
+    labels:
+      long: 3d
+      severity: P2
+      short: 6h
+    annotations:
+      description: The API server is burning too much error budget.
+
+- name: kubernetes-system-apiserver
+  rules:
+  - alert: KubeClientCertificateExpiration
+    expr: |
+      apiserver_client_certificate_expiration_seconds_count{job="apiserver"} > 0 and on(job) histogram_quantile(0.01, sum by (job, le) (rate(apiserver_client_certificate_expiration_seconds_bucket{job="apiserver"}[5m]))) < 604800
+    labels:
+      severity: P1
+    annotations:
+      description: A client certificate used to authenticate to kubernetes apiserver
+        is expiring in less than 7.0 days.
+
+  - alert: KubeClientCertificateExpiration
+    expr: |
+      apiserver_client_certificate_expiration_seconds_count{job="apiserver"} > 0 and on(job) histogram_quantile(0.01, sum by (job, le) (rate(apiserver_client_certificate_expiration_seconds_bucket{job="apiserver"}[5m]))) < 86400
+    labels:
+      severity: P2
+    annotations:
+      description: A client certificate used to authenticate to kubernetes apiserver
+        is expiring in less than 24.0 hours.
+
+  - alert: KubeAggregatedAPIErrors
+    expr: |
+      sum by(name, namespace, cluster)(increase(aggregator_unavailable_apiservice_total[10m])) > 4
+    labels:
+      severity: P3
+    annotations:
+      description: Kubernetes aggregated API {{ $labels.name }}/{{ $labels.namespace
+        }} has reported errors. It has appeared unavailable {{ $value | humanize
+        }} times averaged over the past 10m.
+
+  - alert: KubeAggregatedAPIDown
+    expr: |
+      (1 - max by(name, namespace, cluster)(avg_over_time(aggregator_unavailable_apiservice[10m]))) * 100 < 85
+    for: 5m
+    labels:
+      severity: P3
+    annotations:
+      description: Kubernetes aggregated API {{ $labels.name }}/{{ $labels.namespace
+        }} has been only {{ $value | humanize }}% available over the last 10m.
+
+  - alert: KubeAPIDown
+    expr: |
+      up{job="apiserver"} == 0
+    for: 15m
+    labels:
+      severity: P1
+    annotations:
+      description: KubeAPI instance {{ $labels.instance }} has disappeared from Prometheus target discovery.
+
+  - alert: KubeAPITerminatedRequests
+    expr: |
+      sum(rate(apiserver_request_terminations_total{job="apiserver"}[10m]))  / (  sum(rate(apiserver_request_total{job="apiserver"}[10m])) + sum(rate(apiserver_request_terminations_total{job="apiserver"}[10m])) ) > 0.20
+    for: 5m
+    labels:
+      severity: P3
+    annotations:
+      description: The kubernetes apiserver has terminated {{ $value | humanizePercentage
+        }} of its incoming requests.
+
+- name: kubernetes-system-kubelet
+  rules:
+  - alert: KubeNodeNotReady
+    expr: |
+      kube_node_status_condition{job="kube-state-metrics",condition="Ready",status="true"} == 0
+    for: 15m
+    labels:
+      severity: P3
+    annotations:
+      description: "Kubernetes节点实例{{ $labels.node }}已超过15分钟未就绪"
+
+  - alert: KubeNodeUnreachable
+    expr: |
+      (kube_node_spec_taint{job="kube-state-metrics",key="node.kubernetes.io/unreachable",effect="NoSchedule"} unless ignoring(key,value) kube_node_spec_taint{job="kube-state-metrics",key=~"ToBeDeletedByClusterAutoscaler|cloud.google.com/impending-node-termination|aws-node-termination-handler/spot-itn"}) == 1
+    for: 15m
+    labels:
+      severity: P1
+    annotations:
+      description: "Kubernetes节点实例{{ $labels.node }}无法访问，某些工作负载可能无法访问或重新调度"
+
+  - alert: KubeletTooManyPods
+    expr: |
+      count by(cluster, node) (
+        (kube_pod_status_phase{job="kube-state-metrics",phase="Running"} == 1) * on(instance,pod,namespace,cluster) group_left(node) topk by(instance,pod,namespace,cluster) (1, kube_pod_info{job="kube-state-metrics"})
+      )
+      /
+      max by(cluster, node) (
+        kube_node_status_capacity{job="kube-state-metrics",resource="pods"} != 1
+      ) > 0.95
+    for: 15m
+    labels:
+      severity: P3
+    annotations:
+      description: "Kubernetes节点实例{{ $labels.node }}的kubelet运行的容器组数量已经超过总数的{{ $value | humanizePercentage }}"
+
+  - alert: KubeNodeReadinessFlapping
+    expr: |
+      sum(changes(kube_node_status_condition{status="true",condition="Ready"}[15m])) by (cluster, node) > 2
+    for: 15m
+    labels:
+      severity: P3
+    annotations:
+      description: "Kubernetes节点实例{{ $labels.node }}的就绪状态在最近15分钟已更改{{ $value }}次"
+
+  - alert: KubeletPlegDurationHigh
+    expr: |
+      node_quantile:kubelet_pleg_relist_duration_seconds:histogram_quantile{quantile="0.99"} >= 10
+    for: 5m
+    labels:
+      severity: P3
+    annotations:
+      description: "Kubernetes节点实例{{ $labels.node }}上kubelet容器组的生命周期生成器耗时超过{{ $value }}s"
+
+  - alert: KubeletPodStartUpLatencyHigh
+    expr: |
+      histogram_quantile(0.99, sum(rate(kubelet_pod_worker_duration_seconds_bucket{job="kubelet", metrics_path="/metrics"}[5m])) by (cluster, instance, le)) * on(cluster, instance) group_left(node) kubelet_node_name{job="kubelet", metrics_path="/metrics"} > 60
+    for: 15m
+    labels:
+      severity: P3
+    annotations:
+      description: "Kubernetes节点实例{{ $labels.node }}上的kubelet启动容器组的耗时超过了{{ $value }}s"
+
+  - alert: KubeletClientCertificateExpiration
+    expr: |
+      kubelet_certificate_manager_client_ttl_seconds < 604800
+    labels:
+      severity: P2
+    annotations:
+      description: "Kubernetes节点实例{{ $labels.node }}上的kubelet客户端证书将在{{ $value | humanizeDuration }}后过期"
+
+  - alert: KubeletClientCertificateExpiration
+    expr: |
+      kubelet_certificate_manager_client_ttl_seconds < 86400
+    labels:
+      severity: P1
+    annotations:
+      description: "Kubernetes节点实例{{ $labels.node }}上的kubelet客户端证书将在{{ $value | humanizeDuration }}后过期"
+
+  - alert: KubeletServerCertificateExpiration
+    expr: |
+      kubelet_certificate_manager_server_ttl_seconds < 604800
+    labels:
+      severity: P2
+    annotations:
+      description: "Kubernetes节点实例{{ $labels.node }}上的kubelet服务端证书将在{{ $value | humanizeDuration }}后过期"
+
+  - alert: KubeletServerCertificateExpiration
+    expr: |
+      kubelet_certificate_manager_server_ttl_seconds < 86400
+    labels:
+      severity: P1
+    annotations:
+      description: "Kubernetes节点实例{{ $labels.node }}上的kubelet服务端证书将在{{ $value | humanizeDuration }}后过期"
+
+  - alert: KubeletClientCertificateRenewalErrors
+    expr: |
+      increase(kubelet_certificate_manager_client_expiration_renew_errors[5m]) > 0
+    for: 15m
+    labels:
+      severity: P3
+    annotations:
+      description: "Kubernetes节点实例{{ $labels.node }}上kubelet客户端证书在最近5分钟有{{ $value | humanize }}条错误, 导致证书更新失败"
+
+  - alert: KubeletServerCertificateRenewalErrors
+    expr: |
+      increase(kubelet_server_expiration_renew_errors[5m]) > 0
+    for: 15m
+    labels:
+      severity: P3
+    annotations:
+      description: "Kubernetes节点实例{{ $labels.node }}上kubelet服务端证书在最近5分钟有{{ $value | humanize }}条错误, 导致证书更新失败"
+
+  - alert: KubeletDown
+    expr: |
+      up{job="kubelet", metrics_path="/metrics"} == 0
+    for: 15m
+    labels:
+      severity: P1
+    annotations:
+      description: "Kubernetes节点实例{{ $labels.instance }}上的kubelet组件已从监控目标中消失"
+
+- name: kubernetes-system-scheduler
+  rules:
+  - alert: KubeSchedulerDown
+    expr: |
+      up{job="kube-scheduler"} == 0
+    for: 15m
+    labels:
+      severity: P1
+    annotations:
+      description: "Kubernetes节点实例{{ $labels.instance }}上的kube-scheduler组件已从监控目标中消失"
+
+- name: kubernetes-system-controller-manager
+  rules:
+  - alert: KubeControllerManagerDown
+    expr: |
+      up{job="kube-controller-manager"} == 0
+    for: 15m
+    labels:
+      severity: P1
+    annotations:
+      description: "Kubernetes节点实例{{ $labels.instance }}上的kube-controller-manager组件已从监控目标中消失"
