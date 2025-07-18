@@ -1,4 +1,4 @@
-- job_name: 'vminsert'
+- job_name: 'vlinsert'
   metrics_path: /metrics
   basic_auth:
     username: admin
@@ -8,11 +8,11 @@
     follow_redirects: true
     namespaces:
       names:
-      - monitoring
+      - logging
   relabel_configs:
   - source_labels: [__meta_kubernetes_service_label_app_kubernetes_io_name, __meta_kubernetes_service_labelpresent_app_kubernetes_io_name]
     separator: ;
-    regex: (vminsert);true
+    regex: (vlinsert);true
     replacement: $1
     action: keep
   - source_labels: [__meta_kubernetes_endpoint_port_name]

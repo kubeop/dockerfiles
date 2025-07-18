@@ -60,8 +60,8 @@ spec:
             - --replicationFactor=1
 
             - --httpAuth.username=admin
-            - --httpAuth.password=password
-
+            - --httpAuth.password=changeme
+            
             - --storageNode=vmstorage-0.vmstorage.monitoring.svc.cluster.local:8401
             - --storageNode=vmstorage-1.vmstorage.monitoring.svc.cluster.local:8401
             - --storageNode=vmstorage-2.vmstorage.monitoring.svc.cluster.local:8401

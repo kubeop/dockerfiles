@@ -30,7 +30,7 @@ spec:
               weight: 100
       containers:
         - name: nightingale
-          image: registry.cn-hangzhou.aliyuncs.com/devops-system/nightingale:8.0.0-beta.14
+          image: registry.cn-hangzhou.aliyuncs.com/devops-system/nightingale:8.1.0
           name: nightingale
           args:
             - /app/n9e

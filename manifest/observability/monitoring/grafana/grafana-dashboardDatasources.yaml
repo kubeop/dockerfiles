@@ -19,6 +19,6 @@ stringData:
         basicAuth: true
         basicAuthUser: admin
         secureJsonData:
-          basicAuthPassword: password
+          basicAuthPassword: changeme
         version: 1
         editable: false

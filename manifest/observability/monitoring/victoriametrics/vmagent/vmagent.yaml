@@ -40,8 +40,6 @@ spec:
           image: registry.cn-hangzhou.aliyuncs.com/devops-system/vmagent:v1.121.0
           imagePullPolicy: IfNotPresent
           args:
-            - --httpAuth.username=admin
-            - --httpAuth.password=changeme
             - --promscrape.config=https://vmconfig.kubeop.com/scrape_config/$(CLUSTER).yml
             - --promscrape.configCheckInterval=30s
             - --promscrape.maxScrapeSize=20971520
@@ -51,7 +49,7 @@ spec:
             - --promscrape.cluster.memberNum=$(POD_NAME)
             - --remoteWrite.url=http://vminsert.monitoring.svc.cluster.local:8480/insert/0/prometheus/
             - --remoteWrite.basicAuth.username=admin
-            - --remoteWrite.basicAuth.password=password
+            - --remoteWrite.basicAuth.password=changeme
             - --remoteWrite.tmpDataPath=/tmpData
             - --envflag.enable=true
             - --envflag.prefix=VM_
