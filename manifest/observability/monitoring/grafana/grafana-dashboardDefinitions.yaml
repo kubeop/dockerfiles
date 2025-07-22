@@ -126,7 +126,7 @@ items:
               "showSearch": true,
               "showStarred": false,
               "tags": [
-                "resource"
+                "kubernetes-resource"
               ]
             },
             "pluginVersion": "11.5.2",
@@ -157,7 +157,7 @@ items:
               "showSearch": true,
               "showStarred": false,
               "tags": [
-                "addons"
+                "kubernetes-addons"
               ]
             },
             "pluginVersion": "11.5.2",
@@ -250,11 +250,11 @@ items:
               "showSearch": true,
               "showStarred": false,
               "tags": [
-                "monitoring"
+                "observability"
               ]
             },
             "pluginVersion": "11.5.2",
-            "title": "监控组件",
+            "title": "可观测性",
             "type": "dashlist"
           },
           {
