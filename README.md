@@ -32,7 +32,7 @@
 | OpenJDK | kubeop/openjdk:11-jre       | registry.cn-hangzhou.aliyuncs.com/kubeop/openjdk:11-jre      |
 | OpenJDK | kubeop/openjdk:8-jdk        | registry.cn-hangzhou.aliyuncs.com/kubeop/openjdk:8-jdk       |
 | OpenJDK | kubeop/openjdk:8-jre        | registry.cn-hangzhou.aliyuncs.com/kubeop/openjdk:8-jre       |
-| Jenkins | kubeop/jenkins:2.504.3      | registry.cn-hangzhou.aliyuncs.com/kubeop/jenkins:2.504.3     |
+| Jenkins | kubeop/jenkins:2.516.1      | registry.cn-hangzhou.aliyuncs.com/kubeop/jenkins:2.516.1     |
 | Docker  | kubeop/docker:27.5.1        | registry.cn-hangzhou.aliyuncs.com/kubeop/docker:27.5.1       |
 | Docker  | kubeop/docker:28.3.2        | registry.cn-hangzhou.aliyuncs.com/kubeop/docker:28.3.2       |
 | Maven   | kubeop/maven:3.9.11-java8   | registry.cn-hangzhou.aliyuncs.com/kubeop/maven:3.9.11-java8  |
