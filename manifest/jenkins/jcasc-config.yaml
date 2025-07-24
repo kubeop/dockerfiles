@@ -508,7 +508,6 @@ data:
         rawHtml:
           disableSyntaxHighlighting: false
       mode: NORMAL
-      myViewsTabBar: "standard"
       numExecutors: 20
       primaryView:
         all:
