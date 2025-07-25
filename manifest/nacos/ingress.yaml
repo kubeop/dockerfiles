@@ -4,7 +4,7 @@ kind: Ingress
 metadata:
   annotations:
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
-  name: nacos-headless
+  name: nacos
   namespace: infra
 spec:
   ingressClassName: nginx
@@ -12,13 +12,20 @@ spec:
   - host: nacos.kubeop.com
     http:
       paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service: 
+            name: nacos-cs
+            port:
+              name: console
       - path: /nacos
         pathType: Prefix
         backend:
           service: 
-            name: nacos-headless
+            name: nacos-cs
             port:
-              name: server
+              name: client-http
   tls:
     - hosts:
       - nacos.kubeop.com

@@ -1,0 +1,171 @@
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: nacos
+  namespace: infra
+spec:
+  serviceName: nacos-hs
+  replicas: 3
+  podManagementPolicy: Parallel
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: nacos
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: nacos
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                - worker-001
+                - worker-002
+                - worker-003
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: app.kubernetes.io/name
+                    operator: In
+                    values:
+                      - nacos
+              topologyKey: "kubernetes.io/hostname"
+      initContainers:
+        - name: peer-finder-plugin-install
+          image: registry.cn-hangzhou.aliyuncs.com/devops-system/nacos-peer-finder-plugin:1.1
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+          - name: data
+            mountPath: /home/nacos/plugins/peer-finder
+            subPath: peer-finder
+      containers:
+        - name: nacos
+          image: registry.cn-hangzhou.aliyuncs.com/devops-system/nacos-server:v3.0.2
+          imagePullPolicy: IfNotPresent
+          resources:
+            requests:
+              cpu: 4
+              memory: "8Gi"
+            limits:
+              cpu: 4
+              memory: "8Gi"
+          ports:
+            - name: client-http
+              containerPort: 8848
+              protocol: TCP
+            - name: client-rpc
+              containerPort: 9848
+            - name: raft-rpc
+              containerPort: 9849
+            - name: old-raft-rpc
+              containerPort: 7848
+            - name: console
+              containerPort: 8080
+              protocol: TCP
+            - name: mcp
+              containerPort: 9080
+          env:
+            - name: NACOS_SERVER_PORT
+              value: "8848"
+            - name: NACOS_APPLICATION_PORT
+              value: "8848"
+            - name: PREFER_HOST_MODE
+              value: "hostname"
+            - name: SERVICE_NAME
+              value: "nacos-hs"
+            - name: DOMAIN_NAME
+              value: "cluster.local"
+            - name: NACOS_AUTH_TOKEN
+              value: "cHRYS2tKZHJFTGxEM0dlY2dVcFpkNUtCNUZMYkU0N1oK"
+            - name: NACOS_AUTH_IDENTITY_KEY
+              value: "CBYuIoyaiA3WzwhqoEnWYHJCYA7hQuYL"
+            - name: NACOS_AUTH_IDENTITY_VALUE
+              value: "KwBgUt9CQGa5SK2g1RliIdvsbN1kG3P5"
+            - name: MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE
+              value: "*"
+            - name: JVM_XMS
+              value: "5g"
+            - name: JVM_XMX
+              value: "5g"
+            - name: JVM_XMN
+              value: "2g"
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.namespace
+            - name: SPRING_DATASOURCE_PLATFORM
+              value: "mysql"
+            - name: MYSQL_SERVICE_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: nacos-cm
+                  key: mysql.db.host
+            - name: MYSQL_SERVICE_DB_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: nacos-cm
+                  key: mysql.db.name
+            - name: MYSQL_SERVICE_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: nacos-cm
+                  key: mysql.port
+            - name: MYSQL_SERVICE_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: nacos-cm
+                  key: mysql.user
+            - name: MYSQL_SERVICE_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  name: nacos-cm
+                  key: mysql.password
+            - name: MYSQL_SERVICE_DB_PARAM
+              valueFrom:
+                configMapKeyRef:
+                  name: nacos-cm
+                  key: mysql.param
+          startupProbe:
+            initialDelaySeconds: 180
+            periodSeconds: 5
+            timeoutSeconds: 10
+            httpGet:
+              scheme: HTTP
+              port: 8080
+              path: /v3/console/health/readiness
+          livenessProbe:
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            timeoutSeconds: 10
+            httpGet:
+              scheme: HTTP
+              port: 8080
+              path: /v3/console/health/liveness
+          volumeMounts:
+            - name: data
+              mountPath: /home/nacos/plugins/peer-finder
+              subPath: peer-finder
+            - name: data
+              mountPath: /home/nacos/data
+              subPath: data
+            - name: data
+              mountPath: /home/nacos/logs
+              subPath: logs
+  volumeClaimTemplates:
+  - apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      name: data
+    spec:
+      storageClassName: nacos
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 100Gi

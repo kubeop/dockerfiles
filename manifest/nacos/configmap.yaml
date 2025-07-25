@@ -8,8 +8,9 @@ metadata:
   name: nacos-cm
   namespace: infra
 data:
-  mysql.host: "mysql.database.svc.cluster.local"
+  mysql.db.host: "mysql.database.svc.cluster.local"
   mysql.db.name: "nacos"
   mysql.port: "3306"
   mysql.user: "nacos"
   mysql.password: "password"
+  mysql.param: characterEncoding=utf8&connectTimeout=1000&socketTimeout=3000&autoReconnect=true&useUnicode=true&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
