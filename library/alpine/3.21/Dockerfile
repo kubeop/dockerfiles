@@ -7,7 +7,7 @@ ENV LC_ALL="en_US.UTF-8"
 ENV TZ="Asia/Shanghai"
 
 RUN set -eux; \
-        sed -i s@dl-cdn.alpinelinux.org@mirrors.aliyun.com@g /etc/apk/repositories; \
+        sed -i s@dl-cdn.alpinelinux.org@mirrors.ustc.edu.cn@g /etc/apk/repositories; \
         apk upgrade --update; \
         apk add --no-cache \
             acl \
