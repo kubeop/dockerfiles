@@ -55,7 +55,7 @@ spec:
       automountServiceAccountToken: true
       containers:
         - name: vmstorage
-          image: registry.cn-hangzhou.aliyuncs.com/devops-system/vmstorage:v1.121.0-cluster
+          image: registry.cn-hangzhou.aliyuncs.com/devops-system/vmstorage:v1.122.0-cluster
           imagePullPolicy: IfNotPresent
           args:
             - --retentionPeriod=3
