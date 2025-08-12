@@ -30,6 +30,7 @@ jobs:
         vmap["inbound-agent"]="docker.io/jenkins/inbound-agent"
         vmap["k8s-sidecar"]="docker.io/kiwigrid/k8s-sidecar"
         vmap["kafka"]="docker.io/apache/kafka"
+        vmap["kafka-ui"]="ghcr.io/kafbat/kafka-ui"
         vmap["mongo"]="docker.io/library/mongo"
         vmap["mysql"]="docker.io/library/mysql"
         vmap["nacos-peer-finder-plugin"]="docker.io/nacos/nacos-peer-finder-plugin"
