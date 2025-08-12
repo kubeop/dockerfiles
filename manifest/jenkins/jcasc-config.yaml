@@ -85,7 +85,7 @@ data:
                 readOnly: false
             containers:
             - name: "sonar"
-              image: registry.cn-hangzhou.aliyuncs.com/devops-system/sonar-scanner-cli:11.3
+              image: registry.cn-hangzhou.aliyuncs.com/devops-system/sonar-scanner-cli:11.4
               envVars:
               - envVar:
                   key: "TZ"
@@ -260,7 +260,7 @@ data:
                 readOnly: false
             containers:
             - name: "golang"
-              image: registry.cn-hangzhou.aliyuncs.com/kubeop/golang:1.24.5
+              image: registry.cn-hangzhou.aliyuncs.com/kubeop/golang:1.24.6
               alwaysPullImage: false
               privileged: "false"
               command: "/bin/sh -c"
@@ -328,6 +328,48 @@ data:
               resourceLimitCpu: "2"
               resourceLimitMemory: "3072M"
               workingDir: "/data/jenkins"
+          - name: "nodejs-22"
+            namespace: "infra"
+            podRetention: "never"
+            instanceCap: 20
+            instanceCapStr: "20"
+            label: "nodejs-22"
+            nodeSelector: "role=jenkins,member=slave"
+            showRawYaml: false
+            yamlMergeStrategy: "override"
+            volumes:
+            - persistentVolumeClaim:
+                claimName: "jenkins"
+                mountPath: "/data/jenkins"
+                readOnly: false
+            containers:
+            - name: "nodejs-22"
+              image: registry.cn-hangzhou.aliyuncs.com/kubeop/nodejs:22.18.0
+              alwaysPullImage: false
+              privileged: "false"
+              command: "/bin/sh -c"
+              args: "cat"
+              runAsUser: 1000
+              runAsGroup: 1000
+              ttyEnabled: true
+              resourceRequestMemory: "512M"
+              resourceRequestCpu: "500m"
+              resourceLimitCpu: "4"
+              resourceLimitMemory: "4096M"
+              workingDir: "/data/jenkins"
+            - name: "jnlp"
+              image: registry.cn-hangzhou.aliyuncs.com/devops-system/inbound-agent:bookworm-jdk21
+              envVars:
+              - envVar:
+                  key: "JAVA_OPTS"
+                  value: "-Xms2048m -Xmx2048m"
+              runAsUser: 1000
+              runAsGroup: 1000
+              resourceRequestMemory: "512M"
+              resourceRequestCpu: "500m"
+              resourceLimitCpu: "2"
+              resourceLimitMemory: "3072M"
+              workingDir: "/data/jenkins"
           - name: "docker"
             namespace: "infra"
             podRetention: "never"
@@ -348,7 +390,7 @@ data:
                 readOnly: false
             containers:
             - name: "docker"
-              image: registry.cn-hangzhou.aliyuncs.com/kubeop/docker:28.3.2
+              image: registry.cn-hangzhou.aliyuncs.com/kubeop/docker:28.3.3
               alwaysPullImage: false
               privileged: "true"
               runAsUser: 1000
@@ -388,7 +430,7 @@ data:
                 readOnly: false
             containers:
             - name: "kubectl"
-              image: registry.cn-hangzhou.aliyuncs.com/kubeop/kubectl:v1.32.6
+              image: registry.cn-hangzhou.aliyuncs.com/kubeop/kubectl:v1.32.7
               alwaysPullImage: false
               privileged: "false"
               command: "/bin/sh -c"

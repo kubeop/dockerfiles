@@ -53,12 +53,10 @@ spec:
             runAsGroup: 1000
             runAsNonRoot: true
             runAsUser: 1000
-          args: 
+          args:
             - --envflag.enable
             - --httpListenAddr=:9481
             - --loggerFormat=json
-            - --httpAuth.username=admin
-            - --httpAuth.password=changeme
             - --storageNode=vlstorage-0.vlstorage.logging.svc.cluster.local:9491
             - --storageNode=vlstorage-1.vlstorage.logging.svc.cluster.local:9491
             - --storageNode=vlstorage-2.vlstorage.logging.svc.cluster.local:9491

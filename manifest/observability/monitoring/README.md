@@ -1,17 +1,63 @@
 # 1、安装服务端
 
-## 1.1、部署服务
+## 1.1、配置basic-auth
 
-```bash
-kubectl apply -f vmstorage
-kubectl apply -f vmselect
-kubectl apply -f vminsert
-kubectl apply -f grafana
+### 1.1.1、生成htpassword
+
+```shell
+docker run --rm --entrypoint htpasswd httpd -Bbn admin password | base64 -w 0
 ```
 
 
 
-## 1.2、配置图表
+### 1.1.2、创建secret
+
+```shell
+cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: Secret
+type: Opaque
+metadata:
+  namespace: monitoring
+  name: basic-auth
+data:
+  # 替换为上一步骤生成的值
+  auth: "xxxxxxxxxxxxxxxxxxxxxx"
+EOF
+```
+
+
+
+### 1.1.3、修改Ingress配置
+
+参考以下配置，修改相关yaml中的ingress.yaml配置，增加annotations配置
+
+```yaml
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/auth-type: basic
+    nginx.ingress.kubernetes.io/auth-secret: basic-auth
+    nginx.ingress.kubernetes.io/auth-realm: Authentication Required
+...
+```
+
+
+
+
+
+## 1.2、部署服务
+
+```bash
+kubectl apply -f victoriametrics/vmstorage
+kubectl apply -f victoriametrics/vmselect
+kubectl apply -f victoriametrics/vminsert
+kubectl apply -f victoriametrics/grafana
+```
+
+
+
+## 1.3、配置图表
 
 ```bash
 登录Grafana导入dashboard，并根据实际情况进行调整，建议每个图表至少支持datasource、cluster、job、instance筛选
@@ -24,10 +70,11 @@ kubectl apply -f grafana
 ## 2.1、修改配置文件
 
 ```bash
-1、修改vmagent.yaml中的--promscrape.config配置项和CLUSTER变量，获取指定集群采集配置
-2、修改vmagent-ingress.yaml，改为从对应集群域名
-3、在scrape_config/configs中添加采集配置
-4、可根据实际情况在${cluster}.yml中的调整加载的采集配置
+1、修改victoriametrics/vmagent/vmagent.yaml中的--promscrape.config配置项和CLUSTER变量，获取指定集群采集配置
+2、跨集群使用域名上报数据时,需开启basicAuth,增加--remoteWrite.basicAuth.username和--remoteWrite.basicAuth.password参数
+3、修改victoriametrics/vmagent/ingress.yaml，改为从对应集群域名
+4、在victoriametrics/scrape_config/configs中添加采集配置
+5、可根据实际情况在${cluster}.yml中的调整加载的采集配置
 ```
 
 
@@ -137,6 +184,8 @@ ACL SETUSER exporter +client +ping +info +config|get +cluster|info +slowlog +lat
 ### 3.1.2、部署exporter
 
 ```bash
+# 根据前面创建的监控账号，修改数据库exporter的yaml中的监控账号密码
+# 部署exporter
 kubectl apply -f exporter/mysqld-exporter
 kubectl apply -f exporter/postgres-exporter
 kubectl apply -f exporter/redis-exporter
@@ -155,19 +204,25 @@ kubectl apply -f exporter/dcgm-exporter
 ## 3.3、Kafka监控
 
 ```bash
+# 根据实际情况修改kafka servers地址和用户密码
+kubectl apply -f exporter/kafka-exporter
 ```
 
 
 
 ## 3.4、Elasticsearch监控
 
-
+```bash
+# 根据实际情况修改elasticsearch地址和用户密码
+kubectl apply -f exporter/elasticsearch-exporter
+```
 
 
 
 ## 3.5、云服务
 
-
+```bash
+```
 
 
 
@@ -183,5 +238,13 @@ curl -X 'POST' 'https://devops.kubeop.com/api/v1/monitor/targets' \
   "labels": {"application": "infra"},
   "module": "node-exporter"
 }'
+```
+
+
+
+# 5、使用prometheus-adapter
+
+```bash
+# 修改prometheus-adapter/prometheusAdapter-configMap.yaml配置文件，将cluster修改为当前部署集群的cluster标签的值
 ```
 

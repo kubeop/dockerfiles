@@ -1,7 +1,7 @@
 FROM kubeop/debian:12
 LABEL maintainer="Sonic Ma <sonic.ma@outlook.com>"
 
-ENV JAVA_VERSION=jdk-11.0.24+8
+ARG JAVA_VERSION=11.0.28+6
 ENV JAVA_HOME="/usr/local/openjdk"
 ENV PATH=${JAVA_HOME}/bin:${PATH}
 
@@ -21,10 +21,10 @@ RUN set -eux; \
       arch="$(dpkg --print-architecture)"; arch="${arch##*-}"; \
       case "${arch}" in \
         aarch64|arm64) \
-          BINARY_URL='https://github.com/adoptium/temurin11-binaries/releases/download/jdk-11.0.25%2B9/OpenJDK11U-jre_aarch64_linux_hotspot_11.0.25_9.tar.gz'; \
+          BINARY_URL="https://github.com/adoptium/temurin11-binaries/releases/download/jdk-$(echo ${JAVA_VERSION} | sed 's/+/%2B/g')/OpenJDK11U-jre_aarch64_linux_hotspot_$(echo ${JAVA_VERSION} | sed 's/+/_/g').tar.gz"; \
           ;; \
         amd64|i386:x86-64) \
-          BINARY_URL='https://github.com/adoptium/temurin11-binaries/releases/download/jdk-11.0.25%2B9/OpenJDK11U-jre_x64_linux_hotspot_11.0.25_9.tar.gz'; \
+          BINARY_URL="https://github.com/adoptium/temurin11-binaries/releases/download/jdk-$(echo ${JAVA_VERSION} | sed 's/+/%2B/g')/OpenJDK11U-jre_x64_linux_hotspot_$(echo ${JAVA_VERSION} | sed 's/+/_/g').tar.gz"; \
           ;; \
         *) \
           echo "Unsupported arch: ${arch}"; \

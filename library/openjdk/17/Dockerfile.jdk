@@ -1,7 +1,7 @@
 FROM kubeop/debian:12
 LABEL maintainer="Sonic Ma <sonic.ma@outlook.com>"
 
-ENV JAVA_VERSION=jdk-17.0.12+7
+ARG JAVA_VERSION=17.0.16+8
 ENV JAVA_HOME="/usr/local/openjdk"
 ENV PATH=${JAVA_HOME}/bin:${PATH}
 
@@ -21,10 +21,10 @@ RUN set -eux; \
       arch="$(dpkg --print-architecture)"; arch="${arch##*-}"; \
       case "${arch}" in \
         aarch64|arm64) \
-          BINARY_URL='https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.13%2B11/OpenJDK17U-jdk_aarch64_linux_hotspot_17.0.13_11.tar.gz'; \
+          BINARY_URL="https://github.com/adoptium/temurin17-binaries/releases/download/jdk-$(echo ${JAVA_VERSION} | sed 's/+/%2B/g')/OpenJDK17U-jdk_aarch64_linux_hotspot_$(echo ${JAVA_VERSION} | sed 's/+/_/g').tar.gz"; \
           ;; \
         amd64|i386:x86-64) \
-          BINARY_URL='https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.13%2B11/OpenJDK17U-jdk_x64_linux_hotspot_17.0.13_11.tar.gz'; \
+          BINARY_URL="https://github.com/adoptium/temurin17-binaries/releases/download/jdk-$(echo ${JAVA_VERSION} | sed 's/+/%2B/g')/OpenJDK17U-jdk_x64_linux_hotspot_$(echo ${JAVA_VERSION} | sed 's/+/_/g').tar.gz"; \
           ;; \
         *) \
           echo "Unsupported arch: ${arch}"; \

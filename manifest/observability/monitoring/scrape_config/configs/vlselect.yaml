@@ -1,8 +1,5 @@
 - job_name: 'vlselect'
   metrics_path: /metrics
-  basic_auth:
-    username: admin
-    password: changeme
   kubernetes_sd_configs:
   - role: endpoints
     follow_redirects: true

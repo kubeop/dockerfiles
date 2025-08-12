@@ -16,9 +16,10 @@ stringData:
         access: proxy
         isDefault: true
         url: 'http://vmselect.monitoring.svc.cluster.local:8481/select/0/prometheus'
-        basicAuth: true
-        basicAuthUser: admin
-        secureJsonData:
-          basicAuthPassword: changeme
+        # 使用域名访问时, 需要开启basicAuth
+        # basicAuth: true
+        # basicAuthUser: admin
+        # secureJsonData:
+        #   basicAuthPassword: changeme
         version: 1
         editable: false

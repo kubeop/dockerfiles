@@ -48,8 +48,9 @@ spec:
             - --promscrape.cluster.replicationFactor=2
             - --promscrape.cluster.memberNum=$(POD_NAME)
             - --remoteWrite.url=http://vminsert.monitoring.svc.cluster.local:8480/insert/0/prometheus/
-            - --remoteWrite.basicAuth.username=admin
-            - --remoteWrite.basicAuth.password=changeme
+            # 使用域名访问时, 需要开启basicAuth
+            # - --remoteWrite.basicAuth.username=admin
+            # - --remoteWrite.basicAuth.password=changeme
             - --remoteWrite.tmpDataPath=/tmpData
             - --envflag.enable=true
             - --envflag.prefix=VM_
