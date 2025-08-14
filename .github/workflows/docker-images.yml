@@ -20,6 +20,7 @@ jobs:
           - {name: "alpine", tag: "3.21", args: ""}
           - {name: "alpine", tag: "3.22", args: ""}
           - {name: "debian", tag: "12", args: ""}
+          - {name: "debian", tag: "13", args: ""}
 
     steps:
     - name: Checkout
