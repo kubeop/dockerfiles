@@ -141,11 +141,11 @@ spec:
         - name: jenkins-data
           mountPath: /data/jenkins
       - name: config-reload
-        image: registry.cn-hangzhou.aliyuncs.com/devops-system/k8s-sidecar:1.30.2
+        image: registry.cn-hangzhou.aliyuncs.com/devops-system/k8s-sidecar:1.30.7
         imagePullPolicy: IfNotPresent
         securityContext:
-            allowPrivilegeEscalation: false
-            readOnlyRootFilesystem: true
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
         env:
           - name: POD_NAME
             valueFrom:

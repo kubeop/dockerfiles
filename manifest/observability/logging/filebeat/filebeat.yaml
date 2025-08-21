@@ -21,7 +21,7 @@ spec:
       dnsPolicy: ClusterFirstWithHostNet
       containers:
       - name: filebeat
-        image: registry.cn-hangzhou.aliyuncs.com/devops-system/filebeat-wolfi:8.18.0
+        image: registry.cn-hangzhou.aliyuncs.com/devops-system/filebeat-wolfi:8.19.2
         args: [
           "-c", "/etc/filebeat.yml",
           "-e",
