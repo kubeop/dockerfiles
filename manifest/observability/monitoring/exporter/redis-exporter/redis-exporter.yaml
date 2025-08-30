@@ -33,7 +33,7 @@ spec:
     spec:
       containers:
       - name: redis-exporter
-        image: registry.cn-hangzhou.aliyuncs.com/devops-system/redis-exporter:v1.75.0
+        image: registry.cn-hangzhou.aliyuncs.com/devops-system/redis-exporter:v1.76.0
         imagePullPolicy: IfNotPresent
         args:
         - --web.listen-address=:9121

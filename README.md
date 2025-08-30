@@ -40,8 +40,8 @@
 | Maven   | kubeop/maven:3.9.11-java11  | registry.cn-hangzhou.aliyuncs.com/kubeop/maven:3.9.11-java11 |
 | Gradle  | kubeop/gradle:8.12.1-java8  | registry.cn-hangzhou.aliyuncs.com/kubeop/gradle:8.12.1-java8 |
 | Gradle  | kubeop/gradle:8.12.1-java11 | registry.cn-hangzhou.aliyuncs.com/kubeop/gradle:8.12.1-java11 |
-| Kubectl | kubeop/kubectl:v1.30.14     | registry.cn-hangzhou.aliyuncs.com/kubeop/kubectl:v1.30.14    |
-| Kubectl | kubeop/kubectl:v1.32.7      | registry.cn-hangzhou.aliyuncs.com/kubeop/kubectl:v1.32.7     |
+| Kubectl | kubeop/kubectl:v1.32.8      | registry.cn-hangzhou.aliyuncs.com/kubeop/kubectl:v1.32.8     |
+| Kubectl | kubeop/kubectl:v1.34.0      | registry.cn-hangzhou.aliyuncs.com/kubeop/kubectl:v1.34.0     |
 | Kubedog | kubeop/kubedog:0.13.0       | registry.cn-hangzhou.aliyuncs.com/kubeop/kubedog:0.13.0      |
 | Nginx   | kubeop/nginx:1.28.0         | registry.cn-hangzhou.aliyuncs.com/kubeop/nginx:1.28.0        |
 | Nginx   | kubeop/nginx:1.29.0         | registry.cn-hangzhou.aliyuncs.com/kubeop/nginx:1.29.0        |
