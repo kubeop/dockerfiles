@@ -1,4 +1,4 @@
-FROM kubeop/debian:12
+FROM kubeop/debian:13
 LABEL maintainer="Sonic Ma <sonic.ma@outlook.com>"
 
 ARG GOLANG_VERSION=1.24.6

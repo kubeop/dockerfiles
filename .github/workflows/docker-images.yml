@@ -65,6 +65,11 @@ jobs:
         tags: |
           kubeop/${{ matrix.images.name }}:${{ env.tag }}
           registry.cn-hangzhou.aliyuncs.com/kubeop/${{ matrix.images.name }}:${{ env.tag }}
+    - name: Run Trivy vulnerability scanner
+      uses: aquasecurity/trivy-action@0.28.0
+      with:
+        image-ref: kubeop/${{ matrix.images.name }}:${{ env.tag }}
+        severity: "CRITICAL,HIGH"
 
   build-base-images:
     needs:
@@ -139,6 +144,11 @@ jobs:
         tags: |
           kubeop/${{ matrix.images.name }}:${{ env.tag }}
           registry.cn-hangzhou.aliyuncs.com/kubeop/${{ matrix.images.name }}:${{ env.tag }}
+    - name: Run Trivy vulnerability scanner
+      uses: aquasecurity/trivy-action@0.28.0
+      with:
+        image-ref: kubeop/${{ matrix.images.name }}:${{ env.tag }}
+        severity: "CRITICAL,HIGH"
 
   build-app-images:
     needs:
@@ -204,6 +214,11 @@ jobs:
         tags: |
           kubeop/${{ matrix.images.name }}:${{ env.tag }}
           registry.cn-hangzhou.aliyuncs.com/kubeop/${{ matrix.images.name }}:${{ env.tag }}
+    - name: Run Trivy vulnerability scanner
+      uses: aquasecurity/trivy-action@0.28.0
+      with:
+        image-ref: kubeop/${{ matrix.images.name }}:${{ env.tag }}
+        severity: "CRITICAL,HIGH"
 
   python-apps:
     needs:
@@ -258,3 +273,8 @@ jobs:
         tags: |
           kubeop/${{ matrix.images.name }}:${{ env.tag }}
           registry.cn-hangzhou.aliyuncs.com/kubeop/${{ matrix.images.name }}:${{ env.tag }}
+    - name: Run Trivy vulnerability scanner
+      uses: aquasecurity/trivy-action@0.28.0
+      with:
+        image-ref: kubeop/${{ matrix.images.name }}:${{ env.tag }}
+        severity: "CRITICAL,HIGH"

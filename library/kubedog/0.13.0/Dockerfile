@@ -1,4 +1,4 @@
-FROM kubeop/debian:12
+FROM kubeop/debian:13
 LABEL maintainer="Sonic Ma <sonic.ma@outlook.com>"
 
 ARG KUBEDOG_VERSION=0.13.0
