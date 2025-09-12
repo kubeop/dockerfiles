@@ -5,33 +5,54 @@ groups:
     rules:
       - alert: DiskRunsOutOfSpaceIn3Days
         expr: |
-          vm_free_disk_space_bytes / ignoring(path)
+            sum(vm_free_disk_space_bytes) without(path) /
+            (
+              (rate(vm_rows_added_to_storage_total[1d]) - sum(rate(vm_deduplicated_samples_total[1d])) without (type)) * (
+                sum(vm_data_size_bytes{type!~"indexdb.*"}) without(type) /
+                sum(vm_rows{type!~"indexdb.*"}) without(type)
+              )
+              +
+              rate(vm_new_timeseries_created_total[1d]) * (
+                sum(vm_data_size_bytes{type="indexdb/file"}) /
+                sum(vm_rows{type="indexdb/file"})
+              )
+            ) < 3 * 24 * 3600 > 0
+        for: 30m
+        labels:
+          severity: P1
+        annotations:
+          description: "在当前的采集效率下, VM实例{{ $labels.job }}/{{ $labels.instance }}上的磁盘将在3天内耗尽"
+
+      - alert: NodeBecomesReadonlyIn3Days
+        expr: |
+          sum(vm_free_disk_space_bytes - vm_free_disk_space_limit_bytes) without(path) /
           (
-             (
-              rate(vm_rows_added_to_storage_total[1d]) -
-              ignoring(type) rate(vm_deduplicated_samples_total{type="merge"}[1d])
-             )
-            * scalar(
-              sum(vm_data_size_bytes{type!~"indexdb.*"}) /
-              sum(vm_rows{type!~"indexdb.*"})
-             )
+              (rate(vm_rows_added_to_storage_total[1d]) - sum(rate(vm_deduplicated_samples_total[1d])) without (type)) * (
+                sum(vm_data_size_bytes{type!~"indexdb.*"}) without(type) /
+                sum(vm_rows{type!~"indexdb.*"}) without(type)
+              )
+              +
+              rate(vm_new_timeseries_created_total[1d]) * (
+                sum(vm_data_size_bytes{type="indexdb/file"}) /
+                sum(vm_rows{type="indexdb/file"})
+              )
           ) < 3 * 24 * 3600 > 0
         for: 30m
         labels:
           severity: P2
         annotations:
-          description: "VM实例{{ $labels.job }}/{{ $labels.instance }}上的磁盘, 在当前的摄取率下, 将在3天内耗尽"
+          description: "在当前的采集效率下, VM实例{{ $labels.job }}/{{ $labels.instance }}将在3天内变成只读状态"
 
       - alert: DiskRunsOutOfSpace
         expr: |
-          sum(vm_data_size_bytes) by(cluster, instance) /
+          sum(vm_data_size_bytes) by(cluster, job, instance) /
           (
-           sum(vm_free_disk_space_bytes) by(cluster, instance) +
-           sum(vm_data_size_bytes) by(cluster, instance)
+           sum(vm_free_disk_space_bytes) by(cluster, job, instance) +
+           sum(vm_data_size_bytes) by(cluster, job, instance)
           ) > 0.8
         for: 30m
         labels:
-          severity: P2
+          severity: P1
         annotations:
           description: "VM实例{{ $labels.job }}/{{ $labels.instance }}的磁盘使用率超过80%, 可用磁盘少于20%可能会削弱序列合并进程和整体性能"
 
@@ -39,15 +60,14 @@ groups:
         expr: increase(vm_http_request_errors_total[5m]) > 0
         for: 15m
         labels:
-          severity: P3
-          show_at: dashboard
+          severity: P2
         annotations:
-          description: "VM实例{{ $labels.job }}/{{ $labels.instance }}/{{ $labels.path }}出现较多错误，请验证客户端发生的请求是否正确"
+          description: "VM实例{{ $labels.job }}/{{ $labels.instance }}/{{ $labels.path }}出现较多错误，请验证客户端的请求是否正确"
 
       - alert: RPCErrors
         expr: |
           (
-           sum(increase(vm_rpc_connection_errors_total[5m])) by(cluster, job, instance)
+           sum(increase(vm_rpc_connection_errors_total[5m])) by(cluster,job, instance)
            +
            sum(increase(vm_rpc_dial_errors_total[5m])) by(cluster, job, instance)
            +
@@ -55,93 +75,67 @@ groups:
           ) > 0
         for: 15m
         labels:
-          severity: P3
-          show_at: dashboard
+          severity: P2
         annotations:
-          description: "VM实例{{ $labels.job }}/{{ $labels.instance }}的RPC错误太多, 请检查集群之间配置、负载、网络"
-
-      - alert: RowsRejectedOnIngestion
-        expr: rate(vm_rows_ignored_total[5m]) > 0
-        for: 15m
-        labels:
-          severity: P3
-        annotations:
-          description: "VM实例{{ $labels.job }}/{{ $labels.instance }}因为{{ $labels.reason }}拒绝了数据摄取"
+          description: "VM实例{{ $labels.job }}/{{ $labels.instance }}的RPC错误太多, 请检查集群之间配置、负载、网络等"
 
       - alert: TooHighChurnRate
         expr: |
           (
-             sum(rate(vm_new_timeseries_created_total[5m]))
+             sum(rate(vm_new_timeseries_created_total[5m])) by(cluster, job)
              /
-             sum(rate(vm_rows_inserted_total[5m]))
+             sum(rate(vm_rows_inserted_total[5m])) by(cluster, job)
            ) > 0.1
         for: 15m
         labels:
-          severity: P3
+          severity: P2
         annotations:
-          description: "VM实例{{ $labels.job }}/{{ $labels.instance }}在最近15分钟的流失率超过10%, 触发时值为: {{ $value | humanizePercentage }}"
+          description: "VM实例{{ $labels.job }}/{{ $labels.instance }}在最近15分钟的流失率超过10%, 可能导致意外的 OOM 或查询速度缓慢, 触发时值为: {{ $value | humanizePercentage }}"
 
       - alert: TooHighChurnRate24h
         expr: |
-          sum(increase(vm_new_timeseries_created_total[24h]))
+          sum(increase(vm_new_timeseries_created_total[24h])) by(cluster, job)
           >
-          (sum(vm_cache_entries{type="storage/hour_metric_ids"})* 3)
+          (sum(vm_cache_entries{type="storage/hour_metric_ids"}) by(cluster, job) * 3)
         for: 15m
         labels:
-          severity: P3
+          severity: P2
         annotations:
-          description: "VM实例{{ $labels.job }}/{{ $labels.instance }}在过去24小时内创建的新序列数量过多"
+          description: "VM实例{{ $labels.job }}/{{ $labels.instance }}在最近24小时创建的新时间序列数量是当前活跃序列数量的 3 倍, 可能导致意外的 OOM 或查询速度缓慢"
 
       - alert: TooHighSlowInsertsRate
         expr: |
           (
-             sum(rate(vm_slow_row_inserts_total[5m]))
+             sum(rate(vm_slow_row_inserts_total[5m])) by(cluster, job)
              /
-             sum(rate(vm_rows_inserted_total[5m]))
+             sum(rate(vm_rows_inserted_total[5m])) by(cluster, job)
            ) > 0.05
         for: 15m
         labels:
-          severity: P3
-        annotations:
-          description: "VM实例{{ $labels.job }}/{{ $labels.instance }}出现过多较慢的数据插入, 可能资源已经耗尽"
-
-      - alert: ProcessNearFDLimits
-        expr: (process_max_fds - process_open_fds) < 100
-        for: 5m
-        labels:
           severity: P2
         annotations:
-          description: "VM实例{{ $labels.job }}/{{ $labels.instance }}在最近5分钟可用文件描述符数量小于100, 触发时值为: {{ $value }}"
-
-      - alert: LabelsLimitExceededOnIngestion
-        expr: sum(increase(vm_metrics_with_dropped_labels_total[5m])) by (cluster, instance) > 0
-        for: 15m
-        labels:
-          severity: P3
-        annotations:
-          description: "VM实例{{ $labels.job }}/{{ $labels.instance }}上摄取到的指标标签超出了-maxLabelsPerTimeseries限制"
+          description: "VM实例{{ $labels.job }}/{{ $labels.instance }}在最近15分钟的较慢数据插入率超过5%, 当前负载的资源可能已耗尽, 触发时值为: {{ $value | humanizePercentage }}"
 
       - alert: VminsertVmstorageConnectionIsSaturated
         expr: rate(vm_rpc_send_duration_seconds_total[5m]) > 0.9
         for: 15m
         labels:
-          severity: P3
-          show_at: dashboard
+          severity: P2
         annotations:
-          description: "VM实例{{ $labels.job }}/{{ $labels.instance }}和{{ $labels.addr }}上的vmstorage之间的连接饱和度超过90%"
+          description: "vminsert实例{{ $labels.job }}/{{ $labels.instance }}和vmstorage实例{{ $labels.addr }}之间的连接饱和度超过90%"
 
 groups:
   - name: vm-health
     rules:
       - alert: TooManyRestarts
-        expr: changes(process_start_time_seconds{job=~"victoriametrics.*|vmselect.*|vminsert.*|vmstorage.*|vmagent.*|vmalert.*|vmsingle.*"}[15m]) > 2
+        expr: changes(process_start_time_seconds{job=~".*(victoriametrics|vmselect|vminsert|vmstorage|vmagent|vmalert|vmsingle|vmalertmanager|vmauth|victorialogs|vlstorage|vlselect|vlinsert).*"}[15m]) > 2
         labels:
-          severity: P2
+          severity: P1
         annotations:
           description: "VM实例{{ $labels.job }}/{{ $labels.instance }}在最近15分钟重启超过2次, 触发时值为: {{ $value }}"
 
       - alert: ServiceDown
-        expr: up{job=~"victoriametrics.*|vmselect.*|vminsert.*|vmstorage.*|vmagent.*|vmalert.*|vmsingle.*"} == 0
+        expr: up{job=~".*(victoriametrics|vmselect|vminsert|vmstorage|vmagent|vmalert|vmsingle|vmalertmanager|vmauth|victorialogs|vlstorage|vlselect|vlinsert).*"} == 0
         for: 2m
         labels:
           severity: P1
@@ -152,15 +146,15 @@ groups:
         expr: (process_max_fds - process_open_fds) < 100
         for: 5m
         labels:
-          severity: P2
+          severity: P1
         annotations:
           description: "VM实例{{ $labels.job }}/{{ $labels.instance }}的文件描述符数量小于100, 触发时值为: {{ $value }}"
 
       - alert: TooHighMemoryUsage
-        expr: (process_resident_memory_anon_bytes / vm_available_memory_bytes) > 0.8
+        expr: (min_over_time(process_resident_memory_anon_bytes[10m]) / vm_available_memory_bytes) > 0.8
         for: 5m
         labels:
-          severity: P2
+          severity: P1
         annotations:
           description: "VM实例{{ $labels.job }}/{{ $labels.instance }}的内存使用率超过80%, 触发时值为: {{ $value | humanizePercentage}}"
 
@@ -168,25 +162,64 @@ groups:
         expr: rate(process_cpu_seconds_total[5m]) / process_cpu_cores_available > 0.9
         for: 5m
         labels:
-          severity: P2
+          severity: P1
         annotations:
           description: "VM实例{{ $labels.job }}/{{ $labels.instance }}的CPU使用率超过90%, 触发时值为: {{ $value | humanizePercentage}}"
 
-      - alert: TooManyLogs
-        expr: sum(increase(vm_log_messages_total{level="error"}[5m])) by (cluster, job, instance) > 0
+      - alert: TooHighGoroutineSchedulingLatency
+        expr: histogram_quantile(0.99, sum(rate(go_sched_latencies_seconds_bucket{job=~".*(victoriametrics|vmselect|vminsert|vmstorage|vmagent|vmalert|vmsingle|vmalertmanager|vmauth|victorialogs|vlstorage|vlselect|vlinsert).*"}[5m])) by (le, job, instance)) > 0.1
         for: 15m
         labels:
-          severity: P3
+          severity: P1
+        annotations:
+          description: "VM实例{{ $labels.job }}/{{ $labels.instance }}CPU资源不足超过15分钟, 通常是 CPU 资源不足或 CPU 节流的迹象, 触发时值为: {{ $value | humanizeDuration }}"
+
+      - alert: TooManyLogs
+        expr: sum(increase(vm_log_messages_total{level="error"}[5m])) without (app_version, location) > 0
+        for: 15m
+        labels:
+          severity: P2
         annotations:
           description: "VM实例{{ $labels.job }}/{{ $labels.instance }}最近15分钟有{{ $value }}条错误日志"
 
       - alert: TooManyTSIDMisses
-        expr: sum(rate(vm_missing_tsids_for_metric_id_total[5m])) by (cluster, job, instance) > 0
+        expr: rate(vm_missing_tsids_for_metric_id_total[5m]) > 0
         for: 10m
+        labels:
+          severity: P1
+        annotations:
+          description: "VM实例{{ $labels.job }}/{{ $labels.instance }}的 TSID 未命中率过高, 触发时值为: {{ $value }}"
+
+      - alert: ConcurrentInsertsHitTheLimit
+        expr: avg_over_time(vm_concurrent_insert_current[1m]) >= vm_concurrent_insert_capacity
+        for: 15m
         labels:
           severity: P2
         annotations:
-          description: "VM实例{{ $labels.job }}/{{ $labels.instance }}在查询期间TSID丢失率过高, 触发时值为: {{ $value }}"
+          description: "VM实例{{ $labels.job }}/{{ $labels.instance }}频繁达到并发插入限制, 该组件可能负载过高, 触发时值为: {{ $value }}"
+
+      - alert: IndexDBRecordsDrop
+        expr: increase(vm_indexdb_items_dropped_total[5m]) > 0
+        labels:
+          severity: P1
+        annotations:
+          description: "VM实例{{ $labels.job }}/{{ $labels.instance }}的 IndexDB 在数据采集过程中跳过了注册项目, 原因是 {{ $labels.reason }}"
+
+      - alert: RowsRejectedOnIngestion
+        expr: rate(vm_rows_ignored_total[5m]) > 0
+        for: 15m
+        labels:
+          severity: P2
+        annotations:
+          description: "VM实例{{ $labels.job }}/{{ $labels.instance }}上已采集数据由于{{ $labels.reason }}被拒绝"
+
+      - alert: TooHighQueryLoad
+        expr: increase(vm_concurrent_select_limit_timeout_total[5m]) > 0
+        for: 15m
+        labels:
+          severity: P2
+        annotations:
+          description: "VM实例{{ $labels.job }}/{{ $labels.instance }}的查询因超时而失败{{ $value }}次"
 
 groups:
   - name: vmagent
@@ -194,55 +227,66 @@ groups:
     concurrency: 2
     rules:
       - alert: PersistentQueueIsDroppingData
-        expr: sum(increase(vm_persistentqueue_bytes_dropped_total[5m])) by (cluster, job, instance) > 0
+        expr: sum(increase(vm_persistentqueue_bytes_dropped_total[5m])) without (path) > 0
         for: 10m
         labels:
-          severity: P2
+          severity: P1
         annotations:
           description: "VMAgent实例{{ $labels.job }}/{{ $labels.instance }}在过去10分钟从持久队列中删除了{{ $value | humanize1024 }}的数据"
 
       - alert: RejectedRemoteWriteDataBlocksAreDropped
-        expr: sum(increase(vmagent_remotewrite_packets_dropped_total[5m])) by (cluster, job, instance) > 0
+        expr: sum(increase(vmagent_remotewrite_packets_dropped_total[5m])) without (url) > 0
         for: 15m
         labels:
-          severity: P3
+          severity: P2
         annotations:
-          description: "VMAgent实例{{ $labels.job }}/{{ $labels.instance }}删除了被远程拒绝写入的数据块"
+          description: "VMAgent实例{{ $labels.job }}/{{ $labels.instance }}删除了被远程服务器拒绝写入的数据块"
 
       - alert: TooManyScrapeErrors
         expr: increase(vm_promscrape_scrapes_failed_total[5m]) > 0
         for: 15m
         labels:
-          severity: P3
+          severity: P2
         annotations:
           description: "VMAgent实例{{ $labels.job }}/{{ $labels.instance }}在最近15分钟有抓取失败的目标, 请及时处理"
 
+      - alert: ScrapePoolHasNoTargets
+        expr: sum(vm_promscrape_scrape_pool_targets) without (status, instance, pod) == 0
+        for: 30m
+        labels:
+          severity: P2
+        annotations:
+          description: "VMAgent实例{{ $labels.job }}的抓取池{{ $labels.scrape_job }}没有目标, 请检查配置"
+
       - alert: TooManyWriteErrors
         expr: |
-          (sum(increase(vm_ingestserver_request_errors_total[5m])) by (cluster, job, instance)
+          (sum(increase(vm_ingestserver_request_errors_total[5m])) without (name,net,type)
           +
-          sum(increase(vmagent_http_request_errors_total[5m])) by (cluster, job, instance)) > 0
+          sum(increase(vmagent_http_request_errors_total[5m])) without (path,protocol)) > 0
         for: 15m
         labels:
-          severity: P3
+          severity: P2
         annotations:
           description: "VMAgent实例{{ $labels.job }}/{{ $labels.instance }}在最近15分钟出现写入错误"
 
       - alert: TooManyRemoteWriteErrors
-        expr: sum(rate(vmagent_remotewrite_retries_count_total[5m])) by(cluster, job, instance, url) > 0
+        expr: rate(vmagent_remotewrite_retries_count_total[5m]) > 0
         for: 15m
         labels:
-          severity: P3
+          severity: P2
         annotations:
           description: "VMAgent实例{{ $labels.job }}/{{ $labels.instance }}无法通过远程协议将数据推送到远程存储{{ $labels.url }}, 请确保远程存储已启动并且可访问"
 
       - alert: RemoteWriteConnectionIsSaturated
         expr: |
-          sum(rate(vmagent_remotewrite_send_duration_seconds_total[5m])) by(cluster, job, instance, url) 
-          > 0.9 * max(vmagent_remotewrite_queues) by(job, instance, url)
+          (
+           rate(vmagent_remotewrite_send_duration_seconds_total[5m])
+           / 
+           vmagent_remotewrite_queues
+          ) > 0.9
         for: 15m
         labels:
-          severity: P3
+          severity: P2
         annotations:
           description: "VMAgent实例{{ $labels.job }}/{{ $labels.instance }}到{{ $labels.url }}的远程连接饱和度超过90%, 可通过-remoteWrite.queues参数调整"
 
@@ -250,7 +294,7 @@ groups:
         expr: rate(vm_persistentqueue_write_duration_seconds_total[5m]) > 0.9
         for: 15m
         labels:
-          severity: P3
+          severity: P2
         annotations:
           description: "VMAgent实例{{ $labels.job }}/{{ $labels.instance }}的持久队列写入饱和度超过90%, vmagent将无法跟上磁盘写入数据的刷新速度, 触发时值为: {{ $value | humanizePercentage }}"
 
@@ -258,21 +302,21 @@ groups:
         expr: rate(vm_persistentqueue_read_duration_seconds_total[5m]) > 0.9
         for: 15m
         labels:
-          severity: P3
+          severity: P2
         annotations:
           description: "VMAgent实例{{ $labels.job }}/{{ $labels.instance }}的持久队列读取饱和度超过90%, vmagent将无法跟上磁盘写入数据的刷新速度, 触发时值为: {{ $value | humanizePercentage }}"
 
       - alert: SeriesLimitHourReached
         expr: (vmagent_hourly_series_limit_current_series / vmagent_hourly_series_limit_max_series) > 0.9
         labels:
-          severity: P2
+          severity: P1
         annotations:
           description: "VMAgent实例{{ $labels.job }}/{{ $labels.instance }}的序列超过限制的90%，达到限制后新时间序列的样本将被删除, 可通过-remoteWrite.maxHourlySeries参数调整, 触发时值为: {{ $value | humanizePercentage }}"
 
       - alert: SeriesLimitDayReached
         expr: (vmagent_daily_series_limit_current_series / vmagent_daily_series_limit_max_series) > 0.9
         labels:
-          severity: P2
+          severity: P1
         annotations:
           description: "VMAgent实例{{ $labels.job }}/{{ $labels.instance }}的序列超过限制的90%，达到限制后新时间序列的样本将被删除, 可通过-remoteWrite.maxDailySeries参数调整, 触发时值为: {{ $value | humanizePercentage }}"
 
@@ -282,56 +326,22 @@ groups:
           or
           vmagent_relabel_config_last_reload_successful != 1
         labels:
-          severity: P3
+          severity: P2
         annotations:
           description: "VMAgent实例{{ $labels.job }}/{{ $labels.instance }}配置热重载失败, 请检查vmagent日志获取更详细的错误信息"
 
-  - name: vmalert
-    interval: 30s
-    rules:
-      - alert: ConfigurationReloadFailure
-        expr: vmalert_config_last_reload_successful != 1
+      - alert: StreamAggrFlushTimeout
+        expr: |
+          increase(vm_streamaggr_flush_timeouts_total[5m]) > 0
         labels:
           severity: P2
         annotations:
-          description: "VMAlert实例{{ $labels.job }}/{{ $labels.instance }}配置热重载失败, 请检查vmalert日志获取更详细的错误信息"
+          description: "VMAgent实例{{ $labels.job }}/{{ $labels.instance }}的流聚合器刷新超时, 请检查vmagent日志获取更详细的错误信息"
 
-      - alert: AlertingRulesError
-        expr: sum(increase(vmalert_alerting_rules_errors_total[5m])) without(alertname, id) > 0
-        for: 5m
+      - alert: StreamAggrDedupFlushTimeout
+        expr: |
+          increase(vm_streamaggr_dedup_flush_timeouts_total[5m]) > 0
         labels:
-          severity: P3
+          severity: P2
         annotations:
-          description: "VMAlert实例{{ $labels.job }}/{{ $labels.instance }}上规则组{{ $labels.group }}的告警规则执行失败"
-
-      - alert: RecordingRulesError
-        expr: sum(increase(vmalert_recording_rules_errors_total[5m])) without(recording, id) > 0
-        for: 5m
-        labels:
-          severity: P3
-        annotations:
-          description: "VMAlert实例{{ $labels.job }}/{{ $labels.instance }}上规则组{{ $labels.group }}的记录规则执行失败"
-
-      - alert: RecordingRulesNoData
-        expr: sum(vmalert_recording_rules_last_evaluation_samples) without(recording, id) < 1
-        for: 30m
-        labels:
-          severity: P4
-        annotations:
-          description: "VMAlert上的记录规则{{ $labels.group }}/{{ $labels.recording }}最近30分钟没有产生任何数据, 可能是配置错误或不正确的查询语句"
-
-      - alert: RemoteWriteErrors
-        expr: increase(vmalert_remotewrite_errors_total[5m]) > 0
-        for: 15m
-        labels:
-          severity: P3
-        annotations:
-          description: "VMAlert实例{{ $labels.job }}/{{ $labels.instance }}无法将指标或规则记录通过远程写入URL远程写入"
-
-      - alert: AlertmanagerErrors
-        expr: increase(vmalert_alerts_send_errors_total[5m]) > 0
-        for: 15m
-        labels:
-          severity: P3
-        annotations:
-          description: "VMAlert实例{{ $labels.job }}/{{ $labels.instance }}无法无法向{{ $labels.addr }}发送告警通知"
+          description: "VMAgent实例{{ $labels.job }}/{{ $labels.instance }}无法在配置的重复数据删除间隔内完成"

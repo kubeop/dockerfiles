@@ -17,11 +17,18 @@ data:
             type: container
             paths:
               - /var/log/containers/*${data.kubernetes.container.id}.log
+          multiline.pattern: '^\d{4}-\d{2}-\d{2}'
+          multiline.negate: true
+          multiline.match: after
 
     # 处理json日志
     processors:
+      - add_fields:
+          target: ""
+          fields:
+            cluster: "ops-pro"
       - drop_fields:
-          fields: ["agent","ecs","container","host","kubernetes.labels","kubernetes.node.labels"]
+          fields: ["agent","ecs","container","kubernetes.node.labels"]
     #   - decode_json_fields:
     #       fields: ["message"]
     #       target: ""
@@ -34,6 +41,6 @@ data:
       parameters:
         _msg_field: "message"
         _time_field: "@timestamp"
-        _stream_fields: "kubernetes.namespace,kubernetes.container.name"
+        _stream_fields: "cluster,kubernetes.namespace,kubernetes.container.name"
         ignore_fields: "log.offset,event.original,agent,ecs,input,container,host"
       compression_level: 1

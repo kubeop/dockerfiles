@@ -2,7 +2,7 @@ groups:
 - name: blackbox
   rules:
   - alert: BlackboxProbeFailed
-    expr: |-
+    expr: |
       probe_success == 0
     for: 1m
     labels:
@@ -11,7 +11,7 @@ groups:
       description: "实例{{ $labels.job }}/{{ $labels.instance }}拨测失败, 请检查网络或服务是否正常"
 
   - alert: BlackboxOneHourAvailability
-    expr: |-
+    expr: |
       sum_over_time(probe_success[1h])/count_over_time(probe_success[1h]) * 100 < 90
     for: 1m
     labels:
@@ -154,14 +154,3 @@ groups:
       severity: P2
     annotations:
       description: "Ingress实例{{ $labels.exported_namespace }}/{{ $labels.ingress }}在最近2分钟有超过50条5xx错误请求, 触发时值为: {{ $value }}"
-
-- name: openresty
-  rules:
-  - alert: OpenrestyTooMany500s
-    expr: |
-      sum(increase(openresty_http_requests_total{status=~"5.*",host!~"|_|127.0.0.1"}[2m])) by (cluster, job, host) > 50
-    for: 2m
-    labels:
-      severity: P2
-    annotations:
-      description: "Openresty域名{{ $labels.host }}在最近2分钟有超过50条5xx错误请求, 触发时值为: {{ $value }}"

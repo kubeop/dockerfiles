@@ -2,7 +2,7 @@ groups:
 - name: kafka
   rules:
   - alert: KafkaDown
-    expr: up{job=~"kafka-exporter"} == 0
+    expr: up{job="kafka-exporter"} == 0
     for: 1m
     labels:
       severity: P1
@@ -23,10 +23,68 @@ groups:
 - name: nacos
   rules:
   - alert: NacosDown
-    expr: |-
-      up{namespace=~"nacos"} == 0
+    expr: |
+      up{job="nacos-exporter"} == 0
     for: 15s
     labels:
       severity: P1
     annotations:
       description: "Nacos实例{{$labels.job}}/{{$labels.instance}}超过1分钟不可用"
+
+- name: elasticsearch
+  rules:
+  - alert: ElasticsearchClusterRed
+    expr: elasticsearch_cluster_health_status{color="red"} == 1
+    for: 0m
+    labels:
+      severity: P1
+    annotations:
+      description: "Elasticsearch集群状态为Red"
+
+  - alert: ElasticsearchHeapUsageTooHigh
+    expr: elasticsearch_jvm_memory_used_bytes{area="heap"} / elasticsearch_jvm_memory_max_bytes{area="heap"} > 0.9
+    for: 15m
+    labels:
+      severity: P3
+    annotations:
+      description: "Elasticsearch实例{{ $labels.job }}/{{ $labels.instance }}的堆内存使用率超过90%, 触发时值为: {{ $value | humanizePercentage }}"
+
+  - alert: ElasticsearchDiskOutOfSpace
+    expr: elasticsearch_filesystem_data_used_percent > 80
+    for: 10m
+    labels:
+      severity: P4
+    annotations:
+      description: "Elasticsearch实例{{ $labels.job }}/{{ $labels.instance }}的磁盘使用率超过90%, 触发时值为: {{ $value | humanize }}%"
+
+  - alert: ElasticsearchDiskOutOfSpace
+    expr: elasticsearch_filesystem_data_used_percent > 90
+    for: 5m
+    labels:
+      severity: P3
+    annotations:
+      description: "Elasticsearch实例{{ $labels.job }}/{{ $labels.instance }}的磁盘使用率超过90%, 触发时值为: {{ $value | humanize }}%"
+
+  - alert: ElasticsearchRelocatingShardsTooLong
+    expr: elasticsearch_cluster_health_relocating_shards > 0
+    for: 15m
+    labels:
+      severity: P4
+    annotations:
+      description: "Elasticsearch实例{{ $labels.job }}/{{ $labels.instance }}在最近15分钟有{{ $value }}个分片重新分配"
+
+  - alert: ElasticsearchUnassignedShards
+    expr: elasticsearch_cluster_health_unassigned_shards > 0
+    for: 1m
+    labels:
+      severity: P4
+    annotations:
+      description: "Elasticsearch实例{{ $labels.job }}/{{ $labels.instance }}上有{{ $value }}个分片未分配"
+
+  - alert: ElasticsearchPendingTasks
+    expr: elasticsearch_cluster_health_number_of_pending_tasks > 0
+    for: 15m
+    labels:
+      severity: P3
+    annotations:
+      description: "Elasticsearch实例{{ $labels.job }}/{{ $labels.instance }}上有{{ $value }}个待处理任务, 可能导致集群运行缓慢"
