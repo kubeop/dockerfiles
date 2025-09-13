@@ -7,7 +7,7 @@ groups:
     labels:
       severity: P1
     annotations:
-      description: "Mysql实例{{$labels.job}}/{{$labels.instance}}/{{$labels.application}}超过1分钟不可用"
+      description: "Mysql实例{{$labels.job}}/{{$labels.instance}}超过1分钟不可用"
 
   - alert: MysqlTooManyConnections
     expr: max_over_time(mysql_global_status_threads_connected[1m]) / mysql_global_variables_max_connections > 0.8
@@ -15,7 +15,7 @@ groups:
     labels:
       severity: P2
     annotations:
-      description: "Mysql实例{{$labels.job}}/{{$labels.instance}}/{{$labels.application}}连接数使用超过80%, 触发时值为: {{ $value | humanizePercentage }}"
+      description: "Mysql实例{{$labels.job}}/{{$labels.instance}}连接数使用超过80%, 触发时值为: {{ $value | humanizePercentage }}"
 
   - alert: MysqlSlaveIoThreadNotRunning
     expr: ( mysql_slave_status_slave_io_running and ON (instance) mysql_slave_status_master_server_id > 0 ) == 0
@@ -23,7 +23,7 @@ groups:
     labels:
       severity: P2
     annotations:
-      description: "Mysql实例{{$labels.job}}/{{$labels.instance}}/{{$labels.application}}从节点IO线程未运行"
+      description: "Mysql实例{{$labels.job}}/{{$labels.instance}}从节点IO线程未运行"
 
   - alert: MysqlSlaveSqlThreadNotRunning
     expr: ( mysql_slave_status_slave_sql_running and ON (instance) mysql_slave_status_master_server_id > 0) == 0
@@ -31,7 +31,7 @@ groups:
     labels:
       severity: P2
     annotations:
-      description: "Mysql实例{{$labels.job}}/{{$labels.instance}}/{{$labels.application}}从节点SQL线程未运行"
+      description: "Mysql实例{{$labels.job}}/{{$labels.instance}}从节点SQL线程未运行"
 
   - alert: MysqlSlaveReplicationLag
     expr: ( (mysql_slave_status_seconds_behind_master - mysql_slave_status_sql_delay) and ON (instance) mysql_slave_status_master_server_id > 0 ) > 30
@@ -39,7 +39,7 @@ groups:
     labels:
       severity: P2
     annotations:
-      description: "Mysql实例{{$labels.job}}/{{$labels.instance}}/{{$labels.application}}上的主从复制延迟超过30秒, 触发时值为: {{ $value }}s"
+      description: "Mysql实例{{$labels.job}}/{{$labels.instance}}上的主从复制延迟超过30秒, 触发时值为: {{ $value }}s"
 
   - alert: MysqlSlowQueries
     expr: increase(mysql_global_status_slow_queries[2m]) > 25
@@ -47,7 +47,7 @@ groups:
     labels:
       severity: P3
     annotations:
-      description: "Mysql实例{{$labels.job}}/{{$labels.instance}}/{{$labels.application}}上有较多的慢查询, 触发时值为: {{ $value }}"
+      description: "Mysql实例{{$labels.job}}/{{$labels.instance}}上有较多的慢查询, 触发时值为: {{ $value }}"
 
   - alert: MysqlRestarted
     expr: mysql_global_status_uptime < 60
@@ -55,7 +55,7 @@ groups:
     labels:
       severity: P4
     annotations:
-      description: "Mysql实例{{$labels.job}}/{{$labels.instance}}/{{$labels.application}}在最近1分钟有过重启"
+      description: "Mysql实例{{$labels.job}}/{{$labels.instance}}在最近1分钟有过重启"
 
 - name: postgresql
   rules:
@@ -65,7 +65,7 @@ groups:
     labels:
       severity: P1
     annotations:
-      description: "Postgresql实例{{$labels.job}}/{{$labels.instance}}/{{$labels.application}}超过1分钟不可用"
+      description: "Postgresql实例{{$labels.job}}/{{$labels.instance}}超过1分钟不可用"
 
   - alert: PostgresqlTooManyConnections
     expr: sum by (cluster, instance, job, server) (pg_stat_activity_count) > min by (cluster, instance, job, server) (pg_settings_max_connections * 0.8)
@@ -73,7 +73,7 @@ groups:
     labels:
       severity: P2
     annotations:
-      description: "Postgresql实例{{$labels.job}}/{{$labels.instance}}/{{$labels.application}}连接数使用超过80%, 触发时值为: {{ $value }}%"
+      description: "Postgresql实例{{$labels.job}}/{{$labels.instance}}连接数使用超过80%, 触发时值为: {{ $value }}%"
 
   - alert: PostgresqlDeadLocks
     expr: increase(pg_stat_database_deadlocks{datname!~"template.*|postgres"}[1m]) > 5
@@ -81,7 +81,7 @@ groups:
     labels:
       severity: P2
     annotations:
-      description: "Postgresql实例{{$labels.job}}/{{$labels.instance}}/{{$labels.application}}上出现死锁"
+      description: "Postgresql实例{{$labels.job}}/{{$labels.instance}}上出现死锁"
 
 - name: mongodb
   rules:
@@ -91,7 +91,7 @@ groups:
     labels:
       severity: P1
     annotations:
-      description: "Mongodb实例{{$labels.job}}/{{$labels.instance}}/{{$labels.application}}超过1分钟不可用"
+      description: "Mongodb实例{{$labels.job}}/{{$labels.instance}}超过1分钟不可用"
 
 - name: redis
   rules:
@@ -101,7 +101,7 @@ groups:
     labels:
       severity: P1
     annotations:
-      description: "Redis实例{{$labels.job}}/{{$labels.instance}}/{{$labels.application}}超过1分钟不可用"
+      description: "Redis实例{{$labels.job}}/{{$labels.instance}}超过1分钟不可用"
 
   - alert: RedisOutOfConfiguredMaxmemory
     expr: (redis_memory_used_bytes / redis_memory_max_bytes * 100 > 90) and  redis_memory_max_bytes != 0
@@ -109,7 +109,7 @@ groups:
     labels:
       severity: P2
     annotations:
-      description: "Redis实例{{$labels.job}}/{{$labels.instance}}/{{$labels.application}}内存使用超过90%, 触发时值为: {{ $value | humanize }}%"
+      description: "Redis实例{{$labels.job}}/{{$labels.instance}}内存使用超过90%, 触发时值为: {{ $value | humanize }}%"
 
   - alert: RedisTooManyConnections
     expr: redis_connected_clients / redis_config_maxclients * 100 > 90
@@ -117,7 +117,7 @@ groups:
     labels:
       severity: P2
     annotations:
-      description: "Redis实例{{$labels.job}}/{{$labels.instance}}/{{$labels.application}}连接数使用超过90%, 触发时值为: {{ $value | humanize }}%"
+      description: "Redis实例{{$labels.job}}/{{$labels.instance}}连接数使用超过90%, 触发时值为: {{ $value | humanize }}%"
 
   - alert: RedisRejectedConnections
     expr: increase(redis_rejected_connections_total[1m]) > 0
@@ -125,7 +125,7 @@ groups:
     labels:
       severity: P3
     annotations:
-      description: "Redis实例{{$labels.job}}/{{$labels.instance}}/{{$labels.application}}最近1分钟有{{$value}}个连接被拒绝"
+      description: "Redis实例{{$labels.job}}/{{$labels.instance}}最近1分钟有{{$value}}个连接被拒绝"
 
   - alert: RedisClusterFlapping
     expr: changes(redis_connected_slaves[1m]) > 1
@@ -133,62 +133,4 @@ groups:
     labels:
       severity: P2
     annotations:
-      description: "Redis实例{{$labels.job}}/{{$labels.instance}}/{{$labels.application}}副本与主节点连接状态变化频繁"
-
-- name: elasticsearch
-  rules:
-  - alert: ElasticsearchClusterRed
-    expr: elasticsearch_cluster_health_status{color="red"} == 1
-    for: 0m
-    labels:
-      severity: P1
-    annotations:
-      description: "Elasticsearch集群状态为Red"
-
-  - alert: ElasticsearchHeapUsageTooHigh
-    expr: elasticsearch_jvm_memory_used_bytes{area="heap"} / elasticsearch_jvm_memory_max_bytes{area="heap"} > 0.9
-    for: 15m
-    labels:
-      severity: P3
-    annotations:
-      description: "Elasticsearch实例{{ $labels.job }}/{{ $labels.instance }}的堆内存使用率超过90%, 触发时值为: {{ $value | humanizePercentage }}"
-
-  - alert: ElasticsearchDiskOutOfSpace
-    expr: elasticsearch_filesystem_data_used_percent > 80
-    for: 10m
-    labels:
-      severity: P4
-    annotations:
-      description: "Elasticsearch实例{{ $labels.job }}/{{ $labels.instance }}的磁盘使用率超过90%, 触发时值为: {{ $value | humanize }}%"
-
-  - alert: ElasticsearchDiskOutOfSpace
-    expr: elasticsearch_filesystem_data_used_percent > 90
-    for: 5m
-    labels:
-      severity: P3
-    annotations:
-      description: "Elasticsearch实例{{ $labels.job }}/{{ $labels.instance }}的磁盘使用率超过90%, 触发时值为: {{ $value | humanize }}%"
-
-  - alert: ElasticsearchRelocatingShardsTooLong
-    expr: elasticsearch_cluster_health_relocating_shards > 0
-    for: 15m
-    labels:
-      severity: P4
-    annotations:
-      description: "Elasticsearch实例{{ $labels.job }}/{{ $labels.instance }}在最近15分钟有{{ $value }}个分片重新分配"
-
-  - alert: ElasticsearchUnassignedShards
-    expr: elasticsearch_cluster_health_unassigned_shards > 0
-    for: 1m
-    labels:
-      severity: P4
-    annotations:
-      description: "Elasticsearch实例{{ $labels.job }}/{{ $labels.instance }}上有{{ $value }}个分片未分配"
-
-  - alert: ElasticsearchPendingTasks
-    expr: elasticsearch_cluster_health_number_of_pending_tasks > 0
-    for: 15m
-    labels:
-      severity: P3
-    annotations:
-      description: "Elasticsearch实例{{ $labels.job }}/{{ $labels.instance }}上有{{ $value }}个待处理任务, 可能导致集群运行缓慢"
+      description: "Redis实例{{$labels.job}}/{{$labels.instance}}副本与主节点连接状态变化频繁"

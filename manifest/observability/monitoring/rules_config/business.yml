@@ -19,7 +19,7 @@ groups:
 
   - alert: JavaHeapMemoryUsage
     expr: |
-      (sum by (cluster,namespace,job,service,application,pod,instance)(jvm_memory_used_bytes{job="jvm-exporter",area="heap",namespace!~"adcloud.*"}) / sum by (cluster,namespace,job,service,application,pod,instance)(jvm_memory_max_bytes{job="jvm-exporter",area="heap",namespace!~"adcloud.*"})) * 100 > 90
+      (sum by (cluster,namespace,job,service,pod,instance)(jvm_memory_used_bytes{job="jvm-exporter",area="heap"}) / sum by (cluster,namespace,job,service,pod,instance)(jvm_memory_max_bytes{job="jvm-exporter",area="heap"})) * 100 > 90
     for: 3m
     labels:
       severity: P3
