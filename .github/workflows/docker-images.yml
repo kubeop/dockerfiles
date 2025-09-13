@@ -79,8 +79,8 @@ jobs:
       fail-fast: false
       matrix:
         images:
-          - {name: "golang", tag: "1.24.6", args: ""}
-          - {name: "golang", tag: "1.25.0", args: ""}
+          - {name: "golang", tag: "1.24.7", args: ""}
+          - {name: "golang", tag: "1.25.1", args: ""}
           - {name: "openjdk", tag: "8", args: "jdk"}
           - {name: "openjdk", tag: "8", args: "jre"}
           - {name: "openjdk", tag: "11", args: "jdk"}
@@ -89,17 +89,16 @@ jobs:
           - {name: "openjdk", tag: "17", args: "jre"}
           - {name: "openjdk", tag: "21", args: "jdk"}
           - {name: "openjdk", tag: "21", args: "jre"}
-          - {name: "docker", tag: "27.5.1", args: ""}
-          - {name: "docker", tag: "28.3.3", args: ""}
-          - {name: "kubectl", tag: "v1.32.8", args: ""}
-          - {name: "kubectl", tag: "v1.34.0", args: ""}
+          - {name: "docker", tag: "28.4.0", args: ""}
+          - {name: "kubectl", tag: "v1.32.9", args: ""}
+          - {name: "kubectl", tag: "v1.34.1", args: ""}
           - {name: "kubedog", tag: "0.13.0", args: ""}
           - {name: "nginx", tag: "1.28.0", args: ""}
-          - {name: "nginx", tag: "1.29.0", args: ""}
+          - {name: "nginx", tag: "1.29.1", args: ""}
           - {name: "nodejs", tag: "18.20.8", args: ""}
-          - {name: "nodejs", tag: "20.19.4", args: ""}
-          - {name: "nodejs", tag: "22.18.0", args: ""}
-          - {name: "nodejs", tag: "24.5.0", args: ""}
+          - {name: "nodejs", tag: "20.19.5", args: ""}
+          - {name: "nodejs", tag: "22.19.0", args: ""}
+          - {name: "nodejs", tag: "24.8.0", args: ""}
 
     steps:
     - name: Checkout
@@ -161,15 +160,15 @@ jobs:
         images:
           - {name: "python", tag: "3.11.13", args: ""}
           - {name: "python", tag: "3.12.11", args: ""}
-          - {name: "python", tag: "3.13.6", args: ""}
+          - {name: "python", tag: "3.13.7", args: ""}
           - {name: "jenkins", tag: "2.516.2", args: ""}
           - {name: "maven", tag: "3.9.11", args: "java8"}
           - {name: "maven", tag: "3.9.11", args: "java11"}
-          - {name: "gradle", tag: "8.12.1", args: "java8"}
-          - {name: "gradle", tag: "8.12.1", args: "java11"}
-          - {name: "tomcat", tag: "9.0.105", args: ""}
-          - {name: "tomcat", tag: "10.1.41", args: ""}
-          - {name: "tomcat", tag: "11.0.7", args: ""}
+          - {name: "gradle", tag: "8.14.3", args: "java8"}
+          - {name: "gradle", tag: "8.14.3", args: "java11"}
+          - {name: "tomcat", tag: "9.0.106", args: ""}
+          - {name: "tomcat", tag: "10.1.46", args: ""}
+          - {name: "tomcat", tag: "11.0.9", args: ""}
 
     steps:
     - name: Checkout

@@ -39,7 +39,7 @@ spec:
             topologyKey: "kubernetes.io/hostname"
       initContainers:
       - name: volume-mount-hack
-        image: registry.cn-hangzhou.aliyuncs.com/kubeop/alpine:3.21
+        image: registry.cn-hangzhou.aliyuncs.com/kubeop/alpine:3.22
         command:
         - sh
         - -c
@@ -49,7 +49,7 @@ spec:
           mountPath: /nexus-data
       containers:
       - name: nexus3
-        image: registry.cn-hangzhou.aliyuncs.com/devops-system/nexus3:3.78.2
+        image: registry.cn-hangzhou.aliyuncs.com/devops-system/nexus3:3.84.0
         imagePullPolicy: IfNotPresent
         securityContext:
           runAsUser: 200

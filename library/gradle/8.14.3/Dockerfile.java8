@@ -1,7 +1,7 @@
 FROM kubeop/openjdk:8-jdk
 LABEL maintainer="Sonic Ma <sonic.ma@outlook.com>"
 
-ARG GRADLE_VERSION=8.12.1
+ARG GRADLE_VERSION=8.14.3
 ARG user=jenkins
 ARG group=jenkins
 ARG uid=1000

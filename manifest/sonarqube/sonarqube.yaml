@@ -89,7 +89,7 @@ spec:
             topologyKey: "kubernetes.io/hostname"
       initContainers:
         - name: init-sysctl
-          image: registry.cn-hangzhou.aliyuncs.com/kubeop/alpine:3.21
+          image: registry.cn-hangzhou.aliyuncs.com/kubeop/alpine:3.22
           imagePullPolicy: IfNotPresent
           securityContext:
             privileged: true
@@ -101,7 +101,7 @@ spec:
             - name: init-sysctl
               mountPath: /tmp/scripts/
         - name: init-fs
-          image:  registry.cn-hangzhou.aliyuncs.com/kubeop/alpine:3.21
+          image:  registry.cn-hangzhou.aliyuncs.com/kubeop/alpine:3.22
           imagePullPolicy: IfNotPresent
           securityContext:
             privileged: true
@@ -128,7 +128,7 @@ spec:
               name: tmp-dir
       containers:
         - name: sonarqube-lts
-          image: registry.cn-hangzhou.aliyuncs.com/devops-system/sonarqube:25.3.0.104237-community
+          image: registry.cn-hangzhou.aliyuncs.com/devops-system/sonarqube:25.9.0.112764-community
           imagePullPolicy: IfNotPresent
           ports:
             - name: http

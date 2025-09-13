@@ -66,7 +66,7 @@ spec:
               topologyKey: "kubernetes.io/hostname"
       initContainers:
       - name: config
-        image: registry.cn-hangzhou.aliyuncs.com/kubeop/alpine:3.21
+        image: registry.cn-hangzhou.aliyuncs.com/kubeop/alpine:3.22
         command: ['/bin/sh', '-c', 'cp /tmp/config/rabbitmq.conf /config/rabbitmq.conf && ls -l /config/ && cp /tmp/config/enabled_plugins /etc/rabbitmq/enabled_plugins']
         volumeMounts:
         - name: config
@@ -78,7 +78,7 @@ spec:
           mountPath: /etc/rabbitmq/
       containers:
       - name: rabbitmq
-        image: registry.cn-hangzhou.aliyuncs.com/devops-system/rabbitmq:4.1.0-management
+        image: registry.cn-hangzhou.aliyuncs.com/devops-system/rabbitmq:4.1.4-management
         env:
         - name: POD_NAME
           valueFrom:

@@ -67,7 +67,7 @@ spec:
       terminationGracePeriodSeconds: 300
       containers:
       - name: kafka
-        image: registry.cn-hangzhou.aliyuncs.com/devops-system/kafka:4.0.0
+        image: registry.cn-hangzhou.aliyuncs.com/devops-system/kafka:4.1.0
         imagePullPolicy: IfNotPresent
         ports:
         - name: broker

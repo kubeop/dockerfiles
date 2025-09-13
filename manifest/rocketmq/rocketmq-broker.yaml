@@ -166,7 +166,7 @@ spec:
     spec:
       containers:
         - name: broker
-          image: registry.cn-hangzhou.aliyuncs.com/devops-system/rocketmq:5.3.2
+          image: registry.cn-hangzhou.aliyuncs.com/devops-system/rocketmq:5.3.3
           imagePullPolicy: IfNotPresent
           command: [ "/bin/sh" ]
           args: [ "-c", "./mqbroker -c /home/rocketmq/conf/$(POD_NAME)" ]

@@ -48,7 +48,7 @@ spec:
     spec:
       containers:
         - name: nameserver
-          image: registry.cn-hangzhou.aliyuncs.com/devops-system/rocketmq:5.3.2
+          image: registry.cn-hangzhou.aliyuncs.com/devops-system/rocketmq:5.3.3
           imagePullPolicy: "IfNotPresent"
           command: [ "/bin/sh" ]
           args: [ "-c", "./mqnamesrv -c /home/rocketmq/config/namesrv.p" ]

@@ -106,7 +106,7 @@ spec:
             -XX:MaxHeapSize=256M -Drocketmq.namesrv.addr=rocketmq-nameserver:9876
             -Drocketmq.config.loginRequired=true
             -Drocketmq.config.dataPath=/rocketmq-dashboard/config
-        image: registry.cn-hangzhou.aliyuncs.com/devops-system/rocketmq-dashboard:2.0.1
+        image: registry.cn-hangzhou.aliyuncs.com/devops-system/rocketmq-dashboard:2.1.0
         imagePullPolicy: IfNotPresent
         name: dashboard
         ports:
