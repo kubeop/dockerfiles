@@ -1,4 +1,4 @@
-FROM kubeop/debian:12
+FROM kubeop/debian:13
 LABEL maintainer="Sonic Ma <sonic.ma@outlook.com>"
 
 ARG PYTHON_VERSION=3.11.13
@@ -75,7 +75,8 @@ RUN set -eux; \
                 --no-cache-dir \
                 --no-compile \
                 'setuptools==65.5.1' \
-                wheel \
+                # https://github.com/docker-library/python/issues/1023
+                'wheel<0.46' \
         ; \
         pip3 --version; \
         pip3 config set global.index-url https://mirrors.ustc.edu.cn/pypi/simple; \

@@ -1,4 +1,4 @@
-FROM kubeop/debian:12
+FROM kubeop/debian:13
 LABEL maintainer="Sonic Ma <sonic.ma@outlook.com>"
 
 ARG JAVA_VERSION=17.0.16+8

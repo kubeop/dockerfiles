@@ -1,4 +1,4 @@
-FROM kubeop/debian:12
+FROM kubeop/debian:13
 LABEL maintainer="Sonic Ma <sonic.ma@outlook.com>"
 
 ARG NODE_VERSION=24.8.0
