@@ -35,6 +35,7 @@ RUN set -eux; \
         nproc="$(nproc)"; \
         EXTRA_CFLAGS="$(dpkg-buildflags --get CFLAGS)"; \
         LDFLAGS="$(dpkg-buildflags --get LDFLAGS)"; \
+        arch="$(dpkg --print-architecture)"; arch="${arch##*-}"; \
 # https://docs.python.org/3.12/howto/perf_profiling.html
 # https://github.com/docker-library/python/pull/1000#issuecomment-2597021615
 	case "$arch" in \
