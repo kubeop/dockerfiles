@@ -88,7 +88,7 @@ spec:
             - name: NACOS_AUTH_IDENTITY_VALUE
               value: "KwBgUt9CQGa5SK2g1RliIdvsbN1kG3P5"
             - name: MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE
-              value: "*"
+              value: "prometheus"
             - name: JVM_XMS
               value: "5g"
             - name: JVM_XMX
