@@ -28,12 +28,23 @@ spec:
           image: registry.cn-hangzhou.aliyuncs.com/kubeop/docker:28-dind
           imagePullPolicy: Always
           args:
+            - --registry-mirror=https://docker.gh-proxy.com
+            - --registry-mirror=https://jkf6gc4u.mirror.aliyuncs.com
+            - --registry-mirror=https://docker.zhai.cm
             - --registry-mirror=https://docker.1ms.run
-            - --registry-mirror=https://docker.mybacc.com
-            - --registry-mirror=https://dytt.online
-            - --registry-mirror=https://lispy.org
-            - --registry-mirror=https://hub1.nat.tf
-            - --registry-mirror=https://hub2.nat.tf
+            - --registry-mirror=https://dockerproxy.net
+            - --registry-mirror=https://docker.1panel.live
+            - --registry-mirror=https://hub.rat.dev
+            - --registry-mirror=https://dockerproxy.net
+            - --registry-mirror=https://image.cloudlayer.icu
+            - --registry-mirror=https://docker-registry.nmqu.com
+            - --registry-mirror=https://hub.amingg.com
+            - --registry-mirror=https://docker.amingg.com
+            - --registry-mirror=https://docker.hlmirror.com
+            - --registry-mirror=https://docker.kejilion.pro
+            - --registry-mirror=https://docker.apiba.cn
+            - --registry-mirror=https://proxy.vvvv.ee
+            - --registry-mirror=https://docker.fnnas.com
             - --insecure-registry=registry.kubeop.com
             - --bip=192.168.100.1/24
             - --data-root=/data/docker

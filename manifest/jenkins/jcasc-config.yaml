@@ -75,7 +75,7 @@ data:
             instanceCap: 20
             instanceCapStr: "20"
             label: "sonar"
-            nodeSelector: "role=jenkins,member=slave"
+            nodeSelector: "jenkins=true,member=slave"
             showRawYaml: false
             yamlMergeStrategy: "override"
             volumes:
@@ -124,7 +124,7 @@ data:
             instanceCap: 20
             instanceCapStr: "20"
             label: "java"
-            nodeSelector: "role=jenkins,member=slave"
+            nodeSelector: "jenkins=true,member=slave"
             showRawYaml: false
             yamlMergeStrategy: "override"
             volumes:
@@ -166,7 +166,7 @@ data:
             instanceCap: 20
             instanceCapStr: "20"
             label: "java-11"
-            nodeSelector: "role=jenkins,member=slave"
+            nodeSelector: "jenkins=true,member=slave"
             showRawYaml: false
             yamlMergeStrategy: "override"
             volumes:
@@ -208,7 +208,7 @@ data:
             instanceCap: 20
             instanceCapStr: "20"
             label: "gradle"
-            nodeSelector: "role=jenkins,member=slave"
+            nodeSelector: "jenkins=true,member=slave"
             showRawYaml: false
             yamlMergeStrategy: "override"
             volumes:
@@ -250,7 +250,7 @@ data:
             instanceCap: 20
             instanceCapStr: "20"
             label: "golang"
-            nodeSelector: "role=jenkins,member=slave"
+            nodeSelector: "jenkins=true,member=slave"
             showRawYaml: false
             yamlMergeStrategy: "override"
             volumes:
@@ -292,7 +292,7 @@ data:
             instanceCap: 20
             instanceCapStr: "20"
             label: "nodejs"
-            nodeSelector: "role=jenkins,member=slave"
+            nodeSelector: "jenkins=true,member=slave"
             showRawYaml: false
             yamlMergeStrategy: "override"
             volumes:
@@ -334,7 +334,7 @@ data:
             instanceCap: 20
             instanceCapStr: "20"
             label: "nodejs-22"
-            nodeSelector: "role=jenkins,member=slave"
+            nodeSelector: "jenkins=true,member=slave"
             showRawYaml: false
             yamlMergeStrategy: "override"
             volumes:
@@ -376,7 +376,7 @@ data:
             instanceCap: 20
             instanceCapStr: "20"
             label: "docker"
-            nodeSelector: "role=jenkins,member=slave"
+            nodeSelector: "jenkins=true,member=slave"
             showRawYaml: false
             yamlMergeStrategy: "override"
             volumes:
@@ -420,7 +420,7 @@ data:
             instanceCap: 20
             instanceCapStr: "20"
             label: "kubectl"
-            nodeSelector: "role=jenkins,member=slave"
+            nodeSelector: "jenkins=true,member=slave"
             showRawYaml: false
             yamlMergeStrategy: "override"
             volumes:
@@ -462,7 +462,7 @@ data:
             instanceCap: 20
             instanceCapStr: "20"
             label: "kubedog"
-            nodeSelector: "role=jenkins,member=slave"
+            nodeSelector: "jenkins=true,member=slave"
             showRawYaml: false
             yamlMergeStrategy: "override"
             volumes:
@@ -504,7 +504,7 @@ data:
             instanceCap: 20
             instanceCapStr: "20"
             label: "ansible"
-            nodeSelector: "role=jenkins,member=slave"
+            nodeSelector: "jenkins=true,member=slave"
             showRawYaml: false
             yamlMergeStrategy: "override"
             volumes:

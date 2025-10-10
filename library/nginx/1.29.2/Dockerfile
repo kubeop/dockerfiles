@@ -1,11 +1,11 @@
-FROM kubeop/debian:12
+FROM kubeop/debian:13
 LABEL maintainer="Sonic Ma <sonic.ma@outlook.com>"
 
-ARG NGINX_VERSION=1.29.1
-ARG NJS_VERSION=0.9.1
-ARG NJS_RELEASE=1~bookworm
-ARG PKG_RELEASE=1~bookworm
-ARG DYNPKG_RELEASE=1~bookworm
+ARG NGINX_VERSION=1.29.2
+ARG NJS_VERSION=0.9.3
+ARG NJS_RELEASE=1~trixie
+ARG PKG_RELEASE=1~trixie
+ARG DYNPKG_RELEASE=1~trixie
 
 RUN set -eux; \
         apt-get update; \
@@ -36,7 +36,7 @@ RUN set -eux; \
             nginx-module-image-filter=${NGINX_VERSION}-${DYNPKG_RELEASE} \
             nginx-module-njs=${NGINX_VERSION}+${NJS_VERSION}-${NJS_RELEASE} \
         "; \
-        echo "deb [signed-by=$NGINX_GPGKEY_PATH] https://nginx.org/packages/mainline/debian/ bookworm nginx" >> /etc/apt/sources.list.d/nginx.list; \
+        echo "deb [signed-by=$NGINX_GPGKEY_PATH] https://nginx.org/packages/mainline/debian/ trixie nginx" >> /etc/apt/sources.list.d/nginx.list; \
         apt-get update; \
         apt-get install --no-install-recommends --no-install-suggests -y \
                         $nginxPackages \

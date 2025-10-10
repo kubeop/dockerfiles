@@ -79,8 +79,8 @@ jobs:
       fail-fast: false
       matrix:
         images:
-          - {name: "golang", tag: "1.24.7", args: ""}
-          - {name: "golang", tag: "1.25.1", args: ""}
+          - {name: "golang", tag: "1.24.8", args: ""}
+          - {name: "golang", tag: "1.25.2", args: ""}
           - {name: "openjdk", tag: "8", args: "jdk"}
           - {name: "openjdk", tag: "8", args: "jre"}
           - {name: "openjdk", tag: "11", args: "jdk"}
@@ -89,16 +89,16 @@ jobs:
           - {name: "openjdk", tag: "17", args: "jre"}
           - {name: "openjdk", tag: "21", args: "jdk"}
           - {name: "openjdk", tag: "21", args: "jre"}
-          - {name: "docker", tag: "28.4.0", args: ""}
+          - {name: "docker", tag: "28.5.1", args: ""}
           - {name: "kubectl", tag: "v1.32.9", args: ""}
           - {name: "kubectl", tag: "v1.34.1", args: ""}
           - {name: "kubedog", tag: "0.13.0", args: ""}
           - {name: "nginx", tag: "1.28.0", args: ""}
-          - {name: "nginx", tag: "1.29.1", args: ""}
+          - {name: "nginx", tag: "1.29.2", args: ""}
           - {name: "nodejs", tag: "18.20.8", args: ""}
           - {name: "nodejs", tag: "20.19.5", args: ""}
-          - {name: "nodejs", tag: "22.19.0", args: ""}
-          - {name: "nodejs", tag: "24.8.0", args: ""}
+          - {name: "nodejs", tag: "22.20.0", args: ""}
+          - {name: "nodejs", tag: "24.10.0", args: ""}
 
     steps:
     - name: Checkout
@@ -158,9 +158,10 @@ jobs:
       fail-fast: false
       matrix:
         images:
-          - {name: "python", tag: "3.11.13", args: ""}
-          - {name: "python", tag: "3.12.11", args: ""}
-          - {name: "python", tag: "3.13.7", args: ""}
+          - {name: "python", tag: "3.11.14", args: ""}
+          - {name: "python", tag: "3.12.12", args: ""}
+          - {name: "python", tag: "3.13.8", args: ""}
+          - {name: "python", tag: "3.14.0", args: ""}
           - {name: "jenkins", tag: "2.516.3", args: ""}
           - {name: "maven", tag: "3.9.11", args: "java8"}
           - {name: "maven", tag: "3.9.11", args: "java11"}

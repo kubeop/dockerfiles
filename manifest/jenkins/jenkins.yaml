@@ -25,10 +25,10 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
             - matchExpressions:
-              - key: role
+              - key: jenkins
                 operator: In
                 values:
-                - jenkins
+                - "true"
       serviceAccountName: "jenkins"
       enableServiceLinks: false
       initContainers:

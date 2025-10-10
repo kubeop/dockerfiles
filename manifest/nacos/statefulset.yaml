@@ -46,7 +46,7 @@ spec:
             subPath: peer-finder
       containers:
         - name: nacos
-          image: registry.cn-hangzhou.aliyuncs.com/devops-system/nacos-server:v3.0.3
+          image: registry.cn-hangzhou.aliyuncs.com/devops-system/nacos-server:v3.1.0
           imagePullPolicy: IfNotPresent
           resources:
             requests:

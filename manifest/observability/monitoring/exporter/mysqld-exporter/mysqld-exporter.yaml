@@ -44,7 +44,7 @@ spec:
     spec:
       containers:
       - name: mysqld-exporter
-        image: registry.cn-hangzhou.aliyuncs.com/devops-system/mysqld-exporter:v0.17.2
+        image: registry.cn-hangzhou.aliyuncs.com/devops-system/mysqld-exporter:v0.18.0
         imagePullPolicy: IfNotPresent
         args:
         - --web.listen-address=:9104

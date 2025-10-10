@@ -5,6 +5,8 @@ ARG NODE_VERSION=20.19.5
 ARG YARN_VERSION=1.22.22
 
 RUN set -eux; \
+      groupadd --gid 1000 node; \
+      useradd --uid 1000 --gid node --shell /bin/bash --create-home node; \
       arch="$(dpkg --print-architecture)"; arch="${arch##*-}"; \
       case "${arch}" in \
         amd64) \

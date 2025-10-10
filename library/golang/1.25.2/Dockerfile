@@ -1,7 +1,7 @@
 FROM kubeop/debian:13
 LABEL maintainer="Sonic Ma <sonic.ma@outlook.com>"
 
-ARG GOLANG_VERSION=1.25.1
+ARG GOLANG_VERSION=1.25.2
 
 ENV GO111MODULE=on
 ENV GOPROXY=https://goproxy.cn,direct

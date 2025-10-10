@@ -43,7 +43,7 @@ spec:
           name: exporter-metrics-config-map
       containers:
       - name: dcgm-exporter
-        image: registry.cn-hangzhou.aliyuncs.com/devops-system/dcgm-exporter:4.4.0-4.5.0-ubuntu22.04
+        image: registry.cn-hangzhou.aliyuncs.com/devops-system/dcgm-exporter:4.4.1-4.5.2-ubuntu22.04
         imagePullPolicy: IfNotPresent
         args:
         - -f
