@@ -65,3 +65,12 @@ kubectl apply -f logging/victorialogs/vlselect
 2、根据自己环境修改logging/filebeat/configmap.yaml配置
 ```
 
+
+
+## 2.2、配置安全上下文
+
+```shell
+semanage fcontext -a -t container_file_t "/var/lib/filebeat-data(/.*)?"
+estorecon -R /var/lib/filebeat-data
+```
+
