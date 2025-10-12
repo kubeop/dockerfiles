@@ -1,0 +1,80 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/name: vtinsert
+  name: vtinsert
+  namespace: tracing
+spec:
+  type: ClusterIP
+  ports:
+    - name: http
+      port: 10481
+      protocol: TCP
+      targetPort: http
+  selector:
+    app.kubernetes.io/name: vtinsert
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/name: vtinsert
+  name: vtinsert
+  namespace: tracing
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: vtinsert
+  replicas: 2
+  template:
+    metadata:
+      labels:
+       app.kubernetes.io/name: vtinsert
+    spec:
+      containers:
+        - name: vtinsert
+          image: registry.cn-hangzhou.aliyuncs.com/devops-system/victoria-traces:v0.2.0
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            runAsGroup: 1000
+            runAsNonRoot: true
+            runAsUser: 1000
+          args:
+            - --envflag.enable
+            - --http.shutdownDelay=15s
+            - --httpListenAddr=:10481
+            - --loggerFormat=json
+            - --storageNode=vtstorage-0.vtstorage.tracing.svc.cluster.local:10491
+            - --storageNode=vtstorage-1.vtstorage.tracing.svc.cluster.local:10491
+            - --storageNode=vtstorage-2.vtstorage.tracing.svc.cluster.local:10491
+          ports:
+            - name: http
+              containerPort: 10481
+          resources:
+            limits:
+              cpu: 4
+              memory: 8Gi
+            requests:
+              cpu: 4
+              memory: 8Gi
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /health
+              port: http
+              scheme: HTTP
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 5
+          livenessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 5
+            periodSeconds: 15
+            tcpSocket:
+              port: http
+            timeoutSeconds: 5
+      securityContext:
+        fsGroup: 1000
+      terminationGracePeriodSeconds: 30

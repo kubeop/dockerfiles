@@ -42,7 +42,7 @@ metadata:
 ...
 ```
 
-
+- 有些场景不支持验证，可以忽略上述步骤
 
 
 
@@ -71,6 +71,6 @@ kubectl apply -f logging/victorialogs/vlselect
 
 ```shell
 semanage fcontext -a -t container_file_t "/var/lib/filebeat-data(/.*)?"
-estorecon -R /var/lib/filebeat-data
+restorecon -R /var/lib/filebeat-data
 ```
 

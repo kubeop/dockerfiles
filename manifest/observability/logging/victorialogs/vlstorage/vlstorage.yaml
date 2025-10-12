@@ -56,8 +56,8 @@ spec:
             runAsGroup: 1000
             runAsNonRoot: true
             runAsUser: 1000
-          args: 
-            - --retentionPeriod=7d
+          args:
+            - --retentionPeriod=3
             - --storageDataPath=/storage
             - --envflag.enable
             - --httpListenAddr=:9491

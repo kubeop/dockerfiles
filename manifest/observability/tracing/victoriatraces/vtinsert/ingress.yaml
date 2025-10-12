@@ -1,0 +1,25 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  labels:
+    app.kubernetes.io/name: vtinsert
+  name: vtinsert
+  namespace: tracing
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+    - vtinsert.kubeop.com
+    secretName: kubeop.com-ssl
+  rules:
+    - host: vtinsert.kubeop.com
+      http:
+        paths:
+          - path: /insert
+            pathType: Prefix
+            backend:
+              service:
+                name: vtinsert
+                port:
+                  name: http
