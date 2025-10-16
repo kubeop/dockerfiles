@@ -33,7 +33,7 @@ spec:
       enableServiceLinks: false
       initContainers:
       - name: hack
-        image: registry.cn-hangzhou.aliyuncs.com/kubeop/jenkins:2.516.2
+        image: registry.cn-hangzhou.aliyuncs.com/kubeop/jenkins:2.528.1
         imagePullPolicy: Always
         securityContext:
           runAsGroup: 0
@@ -46,7 +46,7 @@ spec:
         - name: jenkins-data
           mountPath: /data/jenkins
       - name: init
-        image: registry.cn-hangzhou.aliyuncs.com/kubeop/jenkins:2.516.2
+        image: registry.cn-hangzhou.aliyuncs.com/kubeop/jenkins:2.528.1
         imagePullPolicy: Always
         securityContext:
           allowPrivilegeEscalation: false
@@ -67,7 +67,7 @@ spec:
           mountPath: /data/jenkins
       containers:
       - name: jenkins
-        image: registry.cn-hangzhou.aliyuncs.com/kubeop/jenkins:2.516.2
+        image: registry.cn-hangzhou.aliyuncs.com/kubeop/jenkins:2.528.1
         imagePullPolicy: Always
         securityContext:
           allowPrivilegeEscalation: false

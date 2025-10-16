@@ -36,3 +36,9 @@ scrape_config_files:
 - https://vmconfig.kubeop.com/scrape_config/configs/http-exporter.yml
 - https://vmconfig.kubeop.com/scrape_config/configs/tcp-exporter.yml
 - https://vmconfig.kubeop.com/scrape_config/configs/snmp-exporter.yml
+- https://vmconfig.kubeop.com/scrape_config/configs/vlinsert.yml
+- https://vmconfig.kubeop.com/scrape_config/configs/vlselect.yml
+- https://vmconfig.kubeop.com/scrape_config/configs/vlstorage.yml
+- https://vmconfig.kubeop.com/scrape_config/configs/vtinsert.yml
+- https://vmconfig.kubeop.com/scrape_config/configs/vtselect.yml
+- https://vmconfig.kubeop.com/scrape_config/configs/vtstorage.yml

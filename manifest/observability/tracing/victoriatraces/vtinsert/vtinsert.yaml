@@ -35,7 +35,7 @@ spec:
     spec:
       containers:
         - name: vtinsert
-          image: registry.cn-hangzhou.aliyuncs.com/devops-system/victoria-traces:v0.2.0
+          image: registry.cn-hangzhou.aliyuncs.com/devops-system/victoria-traces:v0.4.0
           imagePullPolicy: IfNotPresent
           securityContext:
             runAsGroup: 1000
