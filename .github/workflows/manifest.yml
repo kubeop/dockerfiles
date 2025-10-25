@@ -74,7 +74,7 @@ jobs:
 
         for key in "${!vmap[@]}"; do
             echo "$key: ${vmap[$key]}"
-            tag=$(grep -r "${repo}/${key}" manifest/ | awk -F "${repo}/${key}:" '{print $2}' | head -n 1)
+            tag=$(grep -r "${repo}/${key}:" manifest/ | awk -F "${repo}/${key}:" '{print $2}' | head -n 1)
             echo "tag: $tag"
             if [ -n "$tag" ]; then
                 echo "${vmap[$key]}:$tag: ${repo}/$key:$tag" >> images.yaml
