@@ -1,7 +1,7 @@
 FROM kubeop/debian:13
 LABEL maintainer="Sonic Ma <sonic.ma@outlook.com>"
 
-ARG NODE_VERSION=22.20.0
+ARG NODE_VERSION=22.21.0
 ARG YARN_VERSION=1.22.22
 
 RUN set -eux; \

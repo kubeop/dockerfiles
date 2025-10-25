@@ -50,7 +50,7 @@ spec:
             topologyKey: "kubernetes.io/hostname"
       containers:
       - name: redis
-        image: registry.cn-hangzhou.aliyuncs.com/devops-system/redis:7.4
+        image: registry.cn-hangzhou.aliyuncs.com/devops-system/redis:7
         imagePullPolicy: IfNotPresent
         args:
         - --requirepass PCamTwR4sQkM8T5VhBN2

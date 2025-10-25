@@ -85,7 +85,7 @@ data:
                 readOnly: false
             containers:
             - name: "sonar"
-              image: registry.cn-hangzhou.aliyuncs.com/devops-system/sonar-scanner-cli:11.4
+              image: registry.cn-hangzhou.aliyuncs.com/devops-system/sonar-scanner-cli:11.5
               envVars:
               - envVar:
                   key: "TZ"
@@ -260,7 +260,7 @@ data:
                 readOnly: false
             containers:
             - name: "golang"
-              image: registry.cn-hangzhou.aliyuncs.com/kubeop/golang:1.24.6
+              image: registry.cn-hangzhou.aliyuncs.com/kubeop/golang:1.25.3
               alwaysPullImage: false
               privileged: "false"
               command: "/bin/sh -c"
@@ -302,7 +302,7 @@ data:
                 readOnly: false
             containers:
             - name: "nodejs"
-              image: registry.cn-hangzhou.aliyuncs.com/kubeop/nodejs:20.19.4
+              image: registry.cn-hangzhou.aliyuncs.com/kubeop/nodejs:22.21.0
               alwaysPullImage: false
               privileged: "false"
               command: "/bin/sh -c"
@@ -343,8 +343,8 @@ data:
                 mountPath: "/data/jenkins"
                 readOnly: false
             containers:
-            - name: "nodejs-22"
-              image: registry.cn-hangzhou.aliyuncs.com/kubeop/nodejs:22.18.0
+            - name: "nodejs-24"
+              image: registry.cn-hangzhou.aliyuncs.com/kubeop/nodejs:24.10.0
               alwaysPullImage: false
               privileged: "false"
               command: "/bin/sh -c"
@@ -390,7 +390,7 @@ data:
                 readOnly: false
             containers:
             - name: "docker"
-              image: registry.cn-hangzhou.aliyuncs.com/kubeop/docker:28.3.3
+              image: registry.cn-hangzhou.aliyuncs.com/kubeop/docker:28.5.1
               alwaysPullImage: false
               privileged: "true"
               runAsUser: 1000
@@ -430,7 +430,7 @@ data:
                 readOnly: false
             containers:
             - name: "kubectl"
-              image: registry.cn-hangzhou.aliyuncs.com/kubeop/kubectl:v1.32.7
+              image: registry.cn-hangzhou.aliyuncs.com/kubeop/kubectl:v1.34.1
               alwaysPullImage: false
               privileged: "false"
               command: "/bin/sh -c"

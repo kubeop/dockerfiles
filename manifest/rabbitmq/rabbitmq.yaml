@@ -78,7 +78,7 @@ spec:
           mountPath: /etc/rabbitmq/
       containers:
       - name: rabbitmq
-        image: registry.cn-hangzhou.aliyuncs.com/devops-system/rabbitmq:4.1.4-management
+        image: registry.cn-hangzhou.aliyuncs.com/devops-system/rabbitmq:4.1-management
         env:
         - name: POD_NAME
           valueFrom:

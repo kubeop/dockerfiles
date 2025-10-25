@@ -50,7 +50,7 @@ spec:
             topologyKey: "kubernetes.io/hostname"
       containers:
       - name: mysql
-        image: registry.cn-hangzhou.aliyuncs.com/devops-system/mysql:8.4
+        image: registry.cn-hangzhou.aliyuncs.com/devops-system/mysql:8
         imagePullPolicy: IfNotPresent
         args:
           - --max-connections=200

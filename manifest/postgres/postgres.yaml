@@ -50,7 +50,7 @@ spec:
             topologyKey: "kubernetes.io/hostname"
       containers:
       - name: postgres
-        image: registry.cn-hangzhou.aliyuncs.com/devops-system/postgres:17.4
+        image: registry.cn-hangzhou.aliyuncs.com/devops-system/postgres:17
         imagePullPolicy: IfNotPresent
         args:
           - --max_connections=200

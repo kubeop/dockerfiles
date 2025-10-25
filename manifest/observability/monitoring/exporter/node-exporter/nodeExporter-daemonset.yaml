@@ -29,7 +29,7 @@ spec:
         - --collector.filesystem.mount-points-exclude=^/(dev|proc|sys|run/k3s/containerd/.+|var/lib/docker/.+|var/lib/kubelet/pods/.+)($|/)
         - --collector.netclass.ignored-devices=^(veth.*|[a-f0-9]{15})$
         - --collector.netdev.device-exclude=^(veth.*|[a-f0-9]{15})$
-        image: registry.cn-hangzhou.aliyuncs.com/devops-system/node-exporter:v1.9.1
+        image: registry.cn-hangzhou.aliyuncs.com/devops-system/node-exporter:v1.10.0
         name: node-exporter
         resources:
           limits:
