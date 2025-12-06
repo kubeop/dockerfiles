@@ -1,7 +1,7 @@
-FROM kubeop/python:3.11.14
+FROM kubeop/python:3.13.10
 LABEL maintainer="Sonic Ma <sonic.ma@outlook.com>"
 
-ARG ANSIBLE_VERSION=2.16.14
+ARG ANSIBLE_VERSION=2.20.0
 ARG user=jenkins
 ARG group=jenkins
 ARG uid=1000
@@ -21,7 +21,7 @@ RUN set -eux; \
         rm -rf /var/lib/apt/lists/*; \
         groupadd -g ${gid} ${group}; \
         useradd -u ${uid} -g ${gid} -l -m -s /bin/bash ${user}; \
-        pip3 install "ansible>=7.0.0,<10.0.0"; \
+        pip3 install "ansible-core==${ANSIBLE_VERSION}"; \
         pip3 install "netaddr>=0.10.1"; \
         ansible --version
 
