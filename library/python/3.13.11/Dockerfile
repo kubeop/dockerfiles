@@ -1,7 +1,7 @@
 FROM kubeop/debian:13
 LABEL maintainer="Sonic Ma <sonic.ma@outlook.com>"
 
-ARG PYTHON_VERSION=3.14.1
+ARG PYTHON_VERSION=3.13.11
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONIOENCODING=UTF-8
 
@@ -11,7 +11,6 @@ RUN set -eux; \
                 libbluetooth-dev \
                 libssl-dev \
                 libffi-dev \
-                libzstd-dev \
                 gcc \
                 tk-dev \
                 uuid-dev \
