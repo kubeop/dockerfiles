@@ -37,8 +37,8 @@
 | OpenJDK | kubeop/openjdk:8-jre        | registry.cn-hangzhou.aliyuncs.com/kubeop/openjdk:8-jre       |
 | Jenkins | kubeop/jenkins:2.528.3      | registry.cn-hangzhou.aliyuncs.com/kubeop/jenkins:2.528.3     |
 | Docker  | kubeop/docker:29.1.2        | registry.cn-hangzhou.aliyuncs.com/kubeop/docker:29.1.2       |
-| Maven   | kubeop/maven:3.9.11-java8   | registry.cn-hangzhou.aliyuncs.com/kubeop/maven:3.9.11-java8  |
-| Maven   | kubeop/maven:3.9.11-java11  | registry.cn-hangzhou.aliyuncs.com/kubeop/maven:3.9.11-java11 |
+| Maven   | kubeop/maven:3.9.12-java8   | registry.cn-hangzhou.aliyuncs.com/kubeop/maven:3.9.12-java8  |
+| Maven   | kubeop/maven:3.9.12-java11  | registry.cn-hangzhou.aliyuncs.com/kubeop/maven:3.9.12-java11 |
 | Gradle  | kubeop/gradle:8.14.3-java8  | registry.cn-hangzhou.aliyuncs.com/kubeop/gradle:8.14.3-java8 |
 | Gradle  | kubeop/gradle:8.14.3-java11 | registry.cn-hangzhou.aliyuncs.com/kubeop/gradle:8.14.3-java11 |
 | Kubectl | kubeop/kubectl:v1.33.7      | registry.cn-hangzhou.aliyuncs.com/kubeop/kubectl:v1.33.7     |
