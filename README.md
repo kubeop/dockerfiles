@@ -39,8 +39,14 @@
 | Docker  | kubeop/docker:29.1.2        | registry.cn-hangzhou.aliyuncs.com/kubeop/docker:29.1.2       |
 | Maven   | kubeop/maven:3.9.12-java8   | registry.cn-hangzhou.aliyuncs.com/kubeop/maven:3.9.12-java8  |
 | Maven   | kubeop/maven:3.9.12-java11  | registry.cn-hangzhou.aliyuncs.com/kubeop/maven:3.9.12-java11 |
+| Maven   | kubeop/maven:3.9.12-java17  | registry.cn-hangzhou.aliyuncs.com/kubeop/maven:3.9.12-java17 |
+| Maven   | kubeop/maven:3.9.12-java21  | registry.cn-hangzhou.aliyuncs.com/kubeop/maven:3.9.12-java21 |
+| Maven   | kubeop/maven:3.9.12-java25  | registry.cn-hangzhou.aliyuncs.com/kubeop/maven:3.9.12-java25 |
 | Gradle  | kubeop/gradle:8.14.3-java8  | registry.cn-hangzhou.aliyuncs.com/kubeop/gradle:8.14.3-java8 |
 | Gradle  | kubeop/gradle:8.14.3-java11 | registry.cn-hangzhou.aliyuncs.com/kubeop/gradle:8.14.3-java11 |
+| Gradle  | kubeop/gradle:8.14.3-java17 | registry.cn-hangzhou.aliyuncs.com/kubeop/gradle:8.14.3-java17 |
+| Gradle  | kubeop/gradle:8.14.3-java21 | registry.cn-hangzhou.aliyuncs.com/kubeop/gradle:8.14.3-java21 |
+| Gradle  | kubeop/gradle:8.14.3-java25 | registry.cn-hangzhou.aliyuncs.com/kubeop/gradle:8.14.3-java25 |
 | Kubectl | kubeop/kubectl:v1.33.7      | registry.cn-hangzhou.aliyuncs.com/kubeop/kubectl:v1.33.7     |
 | Kubectl | kubeop/kubectl:v1.34.3      | registry.cn-hangzhou.aliyuncs.com/kubeop/kubectl:v1.34.3     |
 | Kubedog | kubeop/kubedog:0.13.0       | registry.cn-hangzhou.aliyuncs.com/kubeop/kubedog:0.13.0      |
