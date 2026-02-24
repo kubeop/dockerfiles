@@ -80,8 +80,8 @@ jobs:
       matrix:
         images:
           - {name: "ansible", tag: "2.16.14", args: ""}
-          - {name: "ansible", tag: "2.19.6", args: ""}
-          - {name: "ansible", tag: "2.20.2", args: ""}
+          - {name: "ansible", tag: "2.19.7", args: ""}
+          - {name: "ansible", tag: "2.20.3", args: ""}
 
     steps:
     - name: Checkout
