@@ -17,8 +17,8 @@ jobs:
       fail-fast: false
       matrix:
         images:
-          - {name: "python", tag: "3.11.14", args: ""}
-          - {name: "python", tag: "3.12.12", args: ""}
+          - {name: "python", tag: "3.11.15", args: ""}
+          - {name: "python", tag: "3.12.13", args: ""}
           - {name: "python", tag: "3.13.12", args: ""}
           - {name: "python", tag: "3.14.3", args: ""}
 
@@ -66,7 +66,7 @@ jobs:
           kubeop/${{ matrix.images.name }}:${{ env.tag }}
           registry.cn-hangzhou.aliyuncs.com/kubeop/${{ matrix.images.name }}:${{ env.tag }}
     - name: Run Trivy vulnerability scanner
-      uses: aquasecurity/trivy-action@0.28.0
+      uses: aquasecurity/trivy-action@0.35.0
       with:
         image-ref: kubeop/${{ matrix.images.name }}:${{ env.tag }}
         severity: "CRITICAL,HIGH"
@@ -127,7 +127,7 @@ jobs:
           kubeop/${{ matrix.images.name }}:${{ env.tag }}
           registry.cn-hangzhou.aliyuncs.com/kubeop/${{ matrix.images.name }}:${{ env.tag }}
     - name: Run Trivy vulnerability scanner
-      uses: aquasecurity/trivy-action@0.28.0
+      uses: aquasecurity/trivy-action@0.35.0
       with:
         image-ref: kubeop/${{ matrix.images.name }}:${{ env.tag }}
         severity: "CRITICAL,HIGH"
