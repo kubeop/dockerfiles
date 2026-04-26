@@ -19,8 +19,8 @@ jobs:
         images:
           - {name: "python", tag: "3.11.15", args: ""}
           - {name: "python", tag: "3.12.13", args: ""}
-          - {name: "python", tag: "3.13.12", args: ""}
-          - {name: "python", tag: "3.14.3", args: ""}
+          - {name: "python", tag: "3.13.13", args: ""}
+          - {name: "python", tag: "3.14.4", args: ""}
 
     steps:
     - name: Checkout
@@ -80,8 +80,8 @@ jobs:
       matrix:
         images:
           - {name: "ansible", tag: "2.16.14", args: ""}
-          - {name: "ansible", tag: "2.19.7", args: ""}
-          - {name: "ansible", tag: "2.20.3", args: ""}
+          - {name: "ansible", tag: "2.19.9", args: ""}
+          - {name: "ansible", tag: "2.20.5", args: ""}
 
     steps:
     - name: Checkout
