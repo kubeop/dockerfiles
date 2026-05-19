@@ -79,8 +79,8 @@ RUN set -eux; \
                 'wheel<0.46' \
         ; \
         pip3 --version; \
-        pip3 config set global.index-url https://mirrors.ustc.edu.cn/pypi/simple; \
-        pip3 config set install.trusted-host https://mirrors.ustc.edu.cn  
+        pip3 config set global.index-url https://mirrors.aliyun.com/pypi/simple; \
+        pip3 config set install.trusted-host https://mirrors.aliyun.com
 
 # make some useful symlinks that are expected to exist ("/usr/local/bin/python" and friends)
 RUN set -eux; \
