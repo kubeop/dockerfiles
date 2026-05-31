@@ -1,0 +1,4 @@
+# Set Alias
+Cmnd_Alias  BUILDKIT  = /usr/local/bin/buildctl
+
+jenkins     ALL=(ALL) NOPASSWD: BUILDKIT
