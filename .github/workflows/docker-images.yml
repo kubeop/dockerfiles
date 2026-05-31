@@ -41,7 +41,7 @@ jobs:
           'openjdk': ['jdk', 'jre'],
           'buildkit': ['cli'],
           'maven': ['java8', 'java11', 'java17', 'java21', 'java25'],
-          'gradle': ['java8', 'java11', 'java17', 'java21', 'java25'],
+          'gradle': ['java17', 'java21', 'java25'],
         }
 
         output = {}
