@@ -26,7 +26,7 @@ jobs:
     - name: Generate matrix from library dirs
       id: set-matrix
       run: |
-        python3 - <<'PY'
+        python3 - <<'PY' >> $GITHUB_OUTPUT
         import json, os
 
         categories = {
@@ -69,7 +69,7 @@ jobs:
           print(f'{key}<<EOF')
           print(json.dumps(value, ensure_ascii=False))
           print('EOF')
-        PY >> $GITHUB_OUTPUT
+        PY
 
   build-os-images:
     needs:
