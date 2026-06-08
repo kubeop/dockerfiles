@@ -25,8 +25,8 @@
 | Debian  | kubeop/debian:13            | registry.cn-hangzhou.aliyuncs.com/kubeop/debian:13           |
 | Ubuntu  | kubeop/ubuntu:24.04         | registry.cn-hangzhou.aliyuncs.com/kubeop/ubuntu:24.04        |
 | Ubuntu  | kubeop/ubuntu:26.04         | registry.cn-hangzhou.aliyuncs.com/kubeop/ubuntu:26.04        |
-| Golang  | kubeop/golang:1.25.10       | registry.cn-hangzhou.aliyuncs.com/kubeop/golang:1.25.10      |
-| Golang  | kubeop/golang:1.26.3        | registry.cn-hangzhou.aliyuncs.com/kubeop/golang:1.26.3       |
+| Golang  | kubeop/golang:1.25.11       | registry.cn-hangzhou.aliyuncs.com/kubeop/golang:1.25.11      |
+| Golang  | kubeop/golang:1.26.4        | registry.cn-hangzhou.aliyuncs.com/kubeop/golang:1.26.4       |
 | OpenJDK | kubeop/openjdk:25-jdk       | registry.cn-hangzhou.aliyuncs.com/kubeop/openjdk:25-jdk      |
 | OpenJDK | kubeop/openjdk:25-jre       | registry.cn-hangzhou.aliyuncs.com/kubeop/openjdk:25-jre      |
 | OpenJDK | kubeop/openjdk:21-jdk       | registry.cn-hangzhou.aliyuncs.com/kubeop/openjdk:21-jdk      |
@@ -38,7 +38,7 @@
 | OpenJDK | kubeop/openjdk:8-jdk        | registry.cn-hangzhou.aliyuncs.com/kubeop/openjdk:8-jdk       |
 | OpenJDK | kubeop/openjdk:8-jre        | registry.cn-hangzhou.aliyuncs.com/kubeop/openjdk:8-jre       |
 | Jenkins | kubeop/jenkins:2.555.2      | registry.cn-hangzhou.aliyuncs.com/kubeop/jenkins:2.555.2     |
-| Docker  | kubeop/docker:29.5.2        | registry.cn-hangzhou.aliyuncs.com/kubeop/docker:29.5.2       |
+| Docker  | kubeop/docker:29.5.3        | registry.cn-hangzhou.aliyuncs.com/kubeop/docker:29.5.3       |
 | Maven   | kubeop/maven:3.9.16-java8   | registry.cn-hangzhou.aliyuncs.com/kubeop/maven:3.9.16-java8  |
 | Maven   | kubeop/maven:3.9.16-java11  | registry.cn-hangzhou.aliyuncs.com/kubeop/maven:3.9.16-java11 |
 | Maven   | kubeop/maven:3.9.16-java17  | registry.cn-hangzhou.aliyuncs.com/kubeop/maven:3.9.16-java17 |
@@ -59,7 +59,7 @@
 | Nginx   | kubeop/nginx:1.31.1         | registry.cn-hangzhou.aliyuncs.com/kubeop/nginx:1.31.1        |
 | NodeJs  | kubeop/nodejs:22.22.3       | registry.cn-hangzhou.aliyuncs.com/kubeop/nodejs:22.22.3      |
 | NodeJs  | kubeop/nodejs:24.16.0       | registry.cn-hangzhou.aliyuncs.com/kubeop/nodejs:24.16.0      |
-| NodeJs  | kubeop/nodejs:26.2.0        | registry.cn-hangzhou.aliyuncs.com/kubeop/nodejs:26.2.0       |
+| NodeJs  | kubeop/nodejs:26.3.0        | registry.cn-hangzhou.aliyuncs.com/kubeop/nodejs:26.3.0       |
 | Python  | kubeop/python:3.11.15       | registry.cn-hangzhou.aliyuncs.com/kubeop/python:3.11.15      |
 | Python  | kubeop/python:3.12.13       | registry.cn-hangzhou.aliyuncs.com/kubeop/python:3.12.13      |
 | Python  | kubeop/python:3.13.13       | registry.cn-hangzhou.aliyuncs.com/kubeop/python:3.13.13      |
