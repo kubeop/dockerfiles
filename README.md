@@ -37,7 +37,7 @@
 | OpenJDK | kubeop/openjdk:11-jre       | registry.cn-hangzhou.aliyuncs.com/kubeop/openjdk:11-jre      |
 | OpenJDK | kubeop/openjdk:8-jdk        | registry.cn-hangzhou.aliyuncs.com/kubeop/openjdk:8-jdk       |
 | OpenJDK | kubeop/openjdk:8-jre        | registry.cn-hangzhou.aliyuncs.com/kubeop/openjdk:8-jre       |
-| Jenkins | kubeop/jenkins:2.555.2      | registry.cn-hangzhou.aliyuncs.com/kubeop/jenkins:2.555.2     |
+| Jenkins | kubeop/jenkins:2.555.3      | registry.cn-hangzhou.aliyuncs.com/kubeop/jenkins:2.555.3     |
 | Docker  | kubeop/docker:29.5.3        | registry.cn-hangzhou.aliyuncs.com/kubeop/docker:29.5.3       |
 | Maven   | kubeop/maven:3.9.16-java8   | registry.cn-hangzhou.aliyuncs.com/kubeop/maven:3.9.16-java8  |
 | Maven   | kubeop/maven:3.9.16-java11  | registry.cn-hangzhou.aliyuncs.com/kubeop/maven:3.9.16-java11 |
@@ -52,8 +52,8 @@
 | Gradle  | kubeop/gradle:9.5.1-java17  | registry.cn-hangzhou.aliyuncs.com/kubeop/gradle:9.5.1-java17 |
 | Gradle  | kubeop/gradle:9.5.1-java21  | registry.cn-hangzhou.aliyuncs.com/kubeop/gradle:9.5.1-java21 |
 | Gradle  | kubeop/gradle:9.5.1-java25  | registry.cn-hangzhou.aliyuncs.com/kubeop/gradle:9.5.1-java25 |
-| Kubectl | kubeop/kubectl:v1.35.5      | registry.cn-hangzhou.aliyuncs.com/kubeop/kubectl:v1.35.5     |
-| Kubectl | kubeop/kubectl:v1.36.1      | registry.cn-hangzhou.aliyuncs.com/kubeop/kubectl:v1.36.1     |
+| Kubectl | kubeop/kubectl:v1.35.6      | registry.cn-hangzhou.aliyuncs.com/kubeop/kubectl:v1.35.6     |
+| Kubectl | kubeop/kubectl:v1.36.2      | registry.cn-hangzhou.aliyuncs.com/kubeop/kubectl:v1.36.2     |
 | Kubedog | kubeop/kubedog:0.13.0       | registry.cn-hangzhou.aliyuncs.com/kubeop/kubedog:0.13.0      |
 | Nginx   | kubeop/nginx:1.30.2         | registry.cn-hangzhou.aliyuncs.com/kubeop/nginx:1.30.2        |
 | Nginx   | kubeop/nginx:1.31.1         | registry.cn-hangzhou.aliyuncs.com/kubeop/nginx:1.31.1        |
