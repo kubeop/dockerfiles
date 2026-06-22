@@ -1,7 +1,7 @@
 FROM kubeop/debian:13
 LABEL maintainer="Sonic Ma <sonic.ma@outlook.com>"
 
-ARG NGINX_VERSION=1.30.2
+ARG NGINX_VERSION=1.30.3
 ARG NJS_VERSION=0.9.9
 ARG ACME_VERSION=0.4.1
 ARG NJS_RELEASE=1~trixie

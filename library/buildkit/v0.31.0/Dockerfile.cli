@@ -1,7 +1,7 @@
 FROM kubeop/debian:13
 LABEL maintainer="Sonic Ma <sonic.ma@outlook.com>"
 
-ARG BUILDKIT_VERSION=v0.30.0
+ARG BUILDKIT_VERSION=v0.31.0
 ARG user=jenkins
 ARG group=jenkins
 ARG uid=1000
