@@ -37,8 +37,8 @@
 | OpenJDK | kubeop/openjdk:11-jre       | registry.cn-hangzhou.aliyuncs.com/kubeop/openjdk:11-jre      |
 | OpenJDK | kubeop/openjdk:8-jdk        | registry.cn-hangzhou.aliyuncs.com/kubeop/openjdk:8-jdk       |
 | OpenJDK | kubeop/openjdk:8-jre        | registry.cn-hangzhou.aliyuncs.com/kubeop/openjdk:8-jre       |
-| Jenkins | kubeop/jenkins:2.555.3      | registry.cn-hangzhou.aliyuncs.com/kubeop/jenkins:2.555.3     |
-| Docker  | kubeop/docker:29.6.0        | registry.cn-hangzhou.aliyuncs.com/kubeop/docker:29.6.0       |
+| Jenkins | kubeop/jenkins:2.568.1      | registry.cn-hangzhou.aliyuncs.com/kubeop/jenkins:2.568.1     |
+| Docker  | kubeop/docker:29.6.1        | registry.cn-hangzhou.aliyuncs.com/kubeop/docker:29.6.1       |
 | Maven   | kubeop/maven:3.9.16-java8   | registry.cn-hangzhou.aliyuncs.com/kubeop/maven:3.9.16-java8  |
 | Maven   | kubeop/maven:3.9.16-java11  | registry.cn-hangzhou.aliyuncs.com/kubeop/maven:3.9.16-java11 |
 | Maven   | kubeop/maven:3.9.16-java17  | registry.cn-hangzhou.aliyuncs.com/kubeop/maven:3.9.16-java17 |
@@ -57,9 +57,9 @@
 | Kubedog | kubeop/kubedog:0.13.0       | registry.cn-hangzhou.aliyuncs.com/kubeop/kubedog:0.13.0      |
 | Nginx   | kubeop/nginx:1.30.3         | registry.cn-hangzhou.aliyuncs.com/kubeop/nginx:1.30.3        |
 | Nginx   | kubeop/nginx:1.31.2         | registry.cn-hangzhou.aliyuncs.com/kubeop/nginx:1.31.2        |
-| NodeJs  | kubeop/nodejs:22.23.0       | registry.cn-hangzhou.aliyuncs.com/kubeop/nodejs:22.23.0      |
-| NodeJs  | kubeop/nodejs:24.17.0       | registry.cn-hangzhou.aliyuncs.com/kubeop/nodejs:24.17.0      |
-| NodeJs  | kubeop/nodejs:26.3.1        | registry.cn-hangzhou.aliyuncs.com/kubeop/nodejs:26.3.1       |
+| NodeJs  | kubeop/nodejs:22.23.1       | registry.cn-hangzhou.aliyuncs.com/kubeop/nodejs:22.23.1      |
+| NodeJs  | kubeop/nodejs:24.18.0       | registry.cn-hangzhou.aliyuncs.com/kubeop/nodejs:24.18.0      |
+| NodeJs  | kubeop/nodejs:26.5.0        | registry.cn-hangzhou.aliyuncs.com/kubeop/nodejs:26.3.1       |
 | Python  | kubeop/python:3.11.15       | registry.cn-hangzhou.aliyuncs.com/kubeop/python:3.11.15      |
 | Python  | kubeop/python:3.12.13       | registry.cn-hangzhou.aliyuncs.com/kubeop/python:3.12.13      |
 | Python  | kubeop/python:3.13.14       | registry.cn-hangzhou.aliyuncs.com/kubeop/python:3.13.14      |
