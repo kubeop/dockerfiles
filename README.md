@@ -25,8 +25,8 @@
 | Debian  | kubeop/debian:13            | registry.cn-hangzhou.aliyuncs.com/kubeop/debian:13           |
 | Ubuntu  | kubeop/ubuntu:24.04         | registry.cn-hangzhou.aliyuncs.com/kubeop/ubuntu:24.04        |
 | Ubuntu  | kubeop/ubuntu:26.04         | registry.cn-hangzhou.aliyuncs.com/kubeop/ubuntu:26.04        |
-| Golang  | kubeop/golang:1.25.11       | registry.cn-hangzhou.aliyuncs.com/kubeop/golang:1.25.11      |
-| Golang  | kubeop/golang:1.26.4        | registry.cn-hangzhou.aliyuncs.com/kubeop/golang:1.26.4       |
+| Golang  | kubeop/golang:1.25.12       | registry.cn-hangzhou.aliyuncs.com/kubeop/golang:1.25.12      |
+| Golang  | kubeop/golang:1.26.5        | registry.cn-hangzhou.aliyuncs.com/kubeop/golang:1.26.5       |
 | OpenJDK | kubeop/openjdk:8-jdk        | registry.cn-hangzhou.aliyuncs.com/kubeop/openjdk:8-jdk       |
 | OpenJDK | kubeop/openjdk:8-jre        | registry.cn-hangzhou.aliyuncs.com/kubeop/openjdk:8-jre       |
 | OpenJDK | kubeop/openjdk:11-jdk       | registry.cn-hangzhou.aliyuncs.com/kubeop/openjdk:11-jdk      |
@@ -38,8 +38,8 @@
 | OpenJDK | kubeop/openjdk:25-jdk       | registry.cn-hangzhou.aliyuncs.com/kubeop/openjdk:25-jdk      |
 | OpenJDK | kubeop/openjdk:25-jre       | registry.cn-hangzhou.aliyuncs.com/kubeop/openjdk:25-jre      |
 | Jenkins | kubeop/jenkins:2.568.1      | registry.cn-hangzhou.aliyuncs.com/kubeop/jenkins:2.568.1     |
-| Docker  | kubeop/docker:29.6.1        | registry.cn-hangzhou.aliyuncs.com/kubeop/docker:29.6.1       |
-| Buildkit | kubeop/buildkit:v0.31.0-cli | registry.cn-hangzhou.aliyuncs.com/kubeop/buildkit:v0.31.0-cli |
+| Docker  | kubeop/docker:29.6.2        | registry.cn-hangzhou.aliyuncs.com/kubeop/docker:29.6.2       |
+| Buildkit | kubeop/buildkit:v0.31.2-cli | registry.cn-hangzhou.aliyuncs.com/kubeop/buildkit:v0.31.2-cli |
 | Maven   | kubeop/maven:3.9.16-java8   | registry.cn-hangzhou.aliyuncs.com/kubeop/maven:3.9.16-java8  |
 | Maven   | kubeop/maven:3.9.16-java11  | registry.cn-hangzhou.aliyuncs.com/kubeop/maven:3.9.16-java11 |
 | Maven   | kubeop/maven:3.9.16-java17  | registry.cn-hangzhou.aliyuncs.com/kubeop/maven:3.9.16-java17 |
@@ -68,6 +68,6 @@
 | Ansible | kubeop/ansible:2.16.14      | registry.cn-hangzhou.aliyuncs.com/kubeop/ansible:2.16.14     |
 | Ansible | kubeop/ansible:2.19.11      | registry.cn-hangzhou.aliyuncs.com/kubeop/ansible:2.19.11     |
 | Ansible | kubeop/ansible:2.20.7       | registry.cn-hangzhou.aliyuncs.com/kubeop/ansible:2.20.7      |
-| Tomcat  | kubeop/tomcat:9.0.118       | registry.cn-hangzhou.aliyuncs.com/kubeop/tomcat:9.0.118      |
-| Tomcat  | kubeop/tomcat:10.1.55       | registry.cn-hangzhou.aliyuncs.com/kubeop/tomcat:10.1.55      |
-| Tomcat  | kubeop/tomcat:11.0.22       | registry.cn-hangzhou.aliyuncs.com/kubeop/tomcat:11.0.22      |
+| Tomcat  | kubeop/tomcat:9             | registry.cn-hangzhou.aliyuncs.com/kubeop/tomcat:9            |
+| Tomcat  | kubeop/tomcat:10            | registry.cn-hangzhou.aliyuncs.com/kubeop/tomcat:10           |
+| Tomcat  | kubeop/tomcat:11            | registry.cn-hangzhou.aliyuncs.com/kubeop/tomcat:11           |
