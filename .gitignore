@@ -11,3 +11,5 @@
 # Vscode files
 .vscode
 
+# Python
+generate_readme.py
