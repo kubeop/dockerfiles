@@ -1,8 +1,8 @@
 FROM kubeop/debian:13
 LABEL maintainer="Sonic Ma <sonic.ma@outlook.com>"
 
-ARG DOCKER_VERSION=29.7.0
-ARG DOCKER_BUILDX_VERSION=0.36.0
+ARG DOCKER_VERSION=29.7.2
+ARG DOCKER_BUILDX_VERSION=0.36.1
 ARG user=jenkins
 ARG group=jenkins
 ARG uid=1000
