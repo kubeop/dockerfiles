@@ -1,10 +1,9 @@
 FROM alpine:3.24
 LABEL maintainer="Sonic Ma <sonic.ma@outlook.com>"
 
-ENV LANG="en_US.UTF-8" 
-ENV LANGUAGE="en_US:en" 
-ENV LC_ALL="en_US.UTF-8"
-ENV TZ="Asia/Shanghai"
+ENV LANG=C.UTF-8 \
+    LC_ALL=C.UTF-8 \
+    TZ=Asia/Shanghai
 
 RUN set -eux; \
         sed -i s@dl-cdn.alpinelinux.org@mirrors.ustc.edu.cn@g /etc/apk/repositories; \
@@ -23,6 +22,6 @@ RUN set -eux; \
             busybox-extras \
         ; \
         rm -rf /var/cache/apk/*; \
-        cp -rfv /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+        ln -snf "/usr/share/zoneinfo/${TZ}" /etc/localtime
 
 CMD ["/bin/bash"]
