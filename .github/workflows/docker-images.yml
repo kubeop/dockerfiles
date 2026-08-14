@@ -10,6 +10,10 @@ on:
       - 'library/**'
       - '.github/workflows/docker-images.yml'
 
+env:
+  DOCKERHUB_REPO: kubeop
+  TCR_REPO: ccr.ccs.tencentyun.com/kubeop
+
 jobs:
   prepare-matrix:
     runs-on: ubuntu-latest
@@ -96,12 +100,12 @@ jobs:
         username: ${{ secrets.DKH_USERNAME }}
         password: ${{ secrets.DKH_PASSWORD }}
 
-    - name: Login to ACR
+    - name: Login to TCR
       uses: docker/login-action@v4
       with:
-        registry: registry.cn-hangzhou.aliyuncs.com
-        username: ${{ secrets.ACR_USERNAME }}
-        password: ${{ secrets.ACR_PASSWORD }}
+        registry: ccr.ccs.tencentyun.com
+        username: ${{ secrets.TCR_USERNAME }}
+        password: ${{ secrets.TCR_PASSWORD }}
 
     - name: Set args
       run: |
@@ -121,8 +125,8 @@ jobs:
         file: library/${{ matrix.images.name }}/${{ matrix.images.tag }}/${{ env.file }}
         push: true
         tags: |
-          kubeop/${{ matrix.images.name }}:${{ env.tag }}
-          registry.cn-hangzhou.aliyuncs.com/kubeop/${{ matrix.images.name }}:${{ env.tag }}
+          ${{ env.DOCKERHUB_REPO }}/${{ matrix.images.name }}:${{ env.tag }}
+          ${{ env.ALIYUN_REPO }}/${{ matrix.images.name }}:${{ env.tag }}
     - name: Run Trivy vulnerability scanner
       uses: aquasecurity/trivy-action@0.35.0
       with:
@@ -155,12 +159,12 @@ jobs:
         username: ${{ secrets.DKH_USERNAME }}
         password: ${{ secrets.DKH_PASSWORD }}
 
-    - name: Login to ACR
+    - name: Login to TCR
       uses: docker/login-action@v4
       with:
-        registry: registry.cn-hangzhou.aliyuncs.com
-        username: ${{ secrets.ACR_USERNAME }}
-        password: ${{ secrets.ACR_PASSWORD }}
+        registry: ccr.ccs.tencentyun.com
+        username: ${{ secrets.TCR_USERNAME }}
+        password: ${{ secrets.TCR_PASSWORD }}
 
     - name: Set args
       run: |
@@ -180,8 +184,8 @@ jobs:
         file: library/${{ matrix.images.name }}/${{ matrix.images.tag }}/${{ env.file }}
         push: true
         tags: |
-          kubeop/${{ matrix.images.name }}:${{ env.tag }}
-          registry.cn-hangzhou.aliyuncs.com/kubeop/${{ matrix.images.name }}:${{ env.tag }}
+          ${{ env.DOCKERHUB_REPO }}/${{ matrix.images.name }}:${{ env.tag }}
+          ${{ env.ALIYUN_REPO }}/${{ matrix.images.name }}:${{ env.tag }}
 
   build-app-images:
     needs:
@@ -210,12 +214,12 @@ jobs:
         username: ${{ secrets.DKH_USERNAME }}
         password: ${{ secrets.DKH_PASSWORD }}
 
-    - name: Login to ACR
+    - name: Login to TCR
       uses: docker/login-action@v4
       with:
-        registry: registry.cn-hangzhou.aliyuncs.com
-        username: ${{ secrets.ACR_USERNAME }}
-        password: ${{ secrets.ACR_PASSWORD }}
+        registry: ccr.ccs.tencentyun.com
+        username: ${{ secrets.TCR_USERNAME }}
+        password: ${{ secrets.TCR_PASSWORD }}
 
     - name: Set args
       run: |
@@ -235,8 +239,8 @@ jobs:
         file: library/${{ matrix.images.name }}/${{ matrix.images.tag }}/${{ env.file }}
         push: true
         tags: |
-          kubeop/${{ matrix.images.name }}:${{ env.tag }}
-          registry.cn-hangzhou.aliyuncs.com/kubeop/${{ matrix.images.name }}:${{ env.tag }}
+          ${{ env.DOCKERHUB_REPO }}/${{ matrix.images.name }}:${{ env.tag }}
+          ${{ env.ALIYUN_REPO }}/${{ matrix.images.name }}:${{ env.tag }}
 
   python-images:
     needs:
@@ -264,12 +268,12 @@ jobs:
         username: ${{ secrets.DKH_USERNAME }}
         password: ${{ secrets.DKH_PASSWORD }}
 
-    - name: Login to ACR
+    - name: Login to TCR
       uses: docker/login-action@v4
       with:
-        registry: registry.cn-hangzhou.aliyuncs.com
-        username: ${{ secrets.ACR_USERNAME }}
-        password: ${{ secrets.ACR_PASSWORD }}
+        registry: ccr.ccs.tencentyun.com
+        username: ${{ secrets.TCR_USERNAME }}
+        password: ${{ secrets.TCR_PASSWORD }}
 
     - name: Set args
       run: |
@@ -289,8 +293,8 @@ jobs:
         file: library/${{ matrix.images.name }}/${{ matrix.images.tag }}/${{ env.file }}
         push: true
         tags: |
-          kubeop/${{ matrix.images.name }}:${{ env.tag }}
-          registry.cn-hangzhou.aliyuncs.com/kubeop/${{ matrix.images.name }}:${{ env.tag }}
+          ${{ env.DOCKERHUB_REPO }}/${{ matrix.images.name }}:${{ env.tag }}
+          ${{ env.ALIYUN_REPO }}/${{ matrix.images.name }}:${{ env.tag }}
     - name: Run Trivy vulnerability scanner
       uses: aquasecurity/trivy-action@0.35.0
       with:
@@ -323,12 +327,12 @@ jobs:
         username: ${{ secrets.DKH_USERNAME }}
         password: ${{ secrets.DKH_PASSWORD }}
 
-    - name: Login to ACR
+    - name: Login to TCR
       uses: docker/login-action@v4
       with:
-        registry: registry.cn-hangzhou.aliyuncs.com
-        username: ${{ secrets.ACR_USERNAME }}
-        password: ${{ secrets.ACR_PASSWORD }}
+        registry: ccr.ccs.tencentyun.com
+        username: ${{ secrets.TCR_USERNAME }}
+        password: ${{ secrets.TCR_PASSWORD }}
 
     - name: Set args
       run: |
@@ -348,8 +352,8 @@ jobs:
         file: library/${{ matrix.images.name }}/${{ matrix.images.tag }}/${{ env.file }}
         push: true
         tags: |
-          kubeop/${{ matrix.images.name }}:${{ env.tag }}
-          registry.cn-hangzhou.aliyuncs.com/kubeop/${{ matrix.images.name }}:${{ env.tag }}
+          ${{ env.DOCKERHUB_REPO }}/${{ matrix.images.name }}:${{ env.tag }}
+          ${{ env.ALIYUN_REPO }}/${{ matrix.images.name }}:${{ env.tag }}
     - name: Run Trivy vulnerability scanner
       uses: aquasecurity/trivy-action@0.35.0
       with:

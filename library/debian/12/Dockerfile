@@ -4,6 +4,8 @@ LABEL maintainer="Sonic Ma <sonic.ma@outlook.com>"
 ENV LANG=C.UTF-8 \
     TZ=Asia/Shanghai
 
+ARG APT_MIRROR=https://mirrors.aliyun.com
+
 RUN set -eux; \
         apt-get update; \
         DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
