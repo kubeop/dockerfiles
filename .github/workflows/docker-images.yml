@@ -126,7 +126,7 @@ jobs:
         push: true
         tags: |
           ${{ env.DOCKERHUB_REPO }}/${{ matrix.images.name }}:${{ env.tag }}
-          ${{ env.ALIYUN_REPO }}/${{ matrix.images.name }}:${{ env.tag }}
+          ${{ env.TCR_REPO }}/${{ matrix.images.name }}:${{ env.tag }}
     - name: Run Trivy vulnerability scanner
       uses: aquasecurity/trivy-action@0.35.0
       with:
@@ -185,7 +185,7 @@ jobs:
         push: true
         tags: |
           ${{ env.DOCKERHUB_REPO }}/${{ matrix.images.name }}:${{ env.tag }}
-          ${{ env.ALIYUN_REPO }}/${{ matrix.images.name }}:${{ env.tag }}
+          ${{ env.TCR_REPO }}/${{ matrix.images.name }}:${{ env.tag }}
 
   build-app-images:
     needs:
@@ -240,7 +240,7 @@ jobs:
         push: true
         tags: |
           ${{ env.DOCKERHUB_REPO }}/${{ matrix.images.name }}:${{ env.tag }}
-          ${{ env.ALIYUN_REPO }}/${{ matrix.images.name }}:${{ env.tag }}
+          ${{ env.TCR_REPO }}/${{ matrix.images.name }}:${{ env.tag }}
 
   python-images:
     needs:
@@ -294,7 +294,7 @@ jobs:
         push: true
         tags: |
           ${{ env.DOCKERHUB_REPO }}/${{ matrix.images.name }}:${{ env.tag }}
-          ${{ env.ALIYUN_REPO }}/${{ matrix.images.name }}:${{ env.tag }}
+          ${{ env.TCR_REPO }}/${{ matrix.images.name }}:${{ env.tag }}
     - name: Run Trivy vulnerability scanner
       uses: aquasecurity/trivy-action@0.35.0
       with:
@@ -353,7 +353,7 @@ jobs:
         push: true
         tags: |
           ${{ env.DOCKERHUB_REPO }}/${{ matrix.images.name }}:${{ env.tag }}
-          ${{ env.ALIYUN_REPO }}/${{ matrix.images.name }}:${{ env.tag }}
+          ${{ env.TCR_REPO }}/${{ matrix.images.name }}:${{ env.tag }}
     - name: Run Trivy vulnerability scanner
       uses: aquasecurity/trivy-action@0.35.0
       with:
