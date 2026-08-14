@@ -25,8 +25,8 @@
 | Debian  | kubeop/debian:13            | registry.cn-hangzhou.aliyuncs.com/kubeop/debian:13           |
 | Ubuntu  | kubeop/ubuntu:24.04         | registry.cn-hangzhou.aliyuncs.com/kubeop/ubuntu:24.04        |
 | Ubuntu  | kubeop/ubuntu:26.04         | registry.cn-hangzhou.aliyuncs.com/kubeop/ubuntu:26.04        |
-| Golang  | kubeop/golang:1.25.12       | registry.cn-hangzhou.aliyuncs.com/kubeop/golang:1.25.12      |
-| Golang  | kubeop/golang:1.26.5        | registry.cn-hangzhou.aliyuncs.com/kubeop/golang:1.26.5       |
+| Golang  | kubeop/golang:1.25.13       | registry.cn-hangzhou.aliyuncs.com/kubeop/golang:1.25.13      |
+| Golang  | kubeop/golang:1.26.6        | registry.cn-hangzhou.aliyuncs.com/kubeop/golang:1.26.6       |
 | OpenJDK | kubeop/openjdk:8-jdk        | registry.cn-hangzhou.aliyuncs.com/kubeop/openjdk:8-jdk       |
 | OpenJDK | kubeop/openjdk:8-jre        | registry.cn-hangzhou.aliyuncs.com/kubeop/openjdk:8-jre       |
 | OpenJDK | kubeop/openjdk:11-jdk       | registry.cn-hangzhou.aliyuncs.com/kubeop/openjdk:11-jdk      |
