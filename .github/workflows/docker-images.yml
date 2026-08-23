@@ -130,7 +130,7 @@ jobs:
           ${{ env.TCR_REPO }}/${{ env.NAMESPACE }}/${{ matrix.images.name }}:${{ env.tag }}
     
     - name: Run Trivy vulnerability scanner
-      uses: aquasecurity/trivy-action@0.36.0
+      uses: aquasecurity/trivy-action@v0.36.0
       with:
         image-ref: kubeop/${{ matrix.images.name }}:${{ env.tag }}
         severity: "CRITICAL,HIGH"
@@ -299,7 +299,7 @@ jobs:
           ${{ env.TCR_REPO }}/${{ env.NAMESPACE }}/${{ matrix.images.name }}:${{ env.tag }}
     
     - name: Run Trivy vulnerability scanner
-      uses: aquasecurity/trivy-action@0.36.0
+      uses: aquasecurity/trivy-action@v0.36.0
       with:
         image-ref: kubeop/${{ matrix.images.name }}:${{ env.tag }}
         severity: "CRITICAL,HIGH"
@@ -359,7 +359,7 @@ jobs:
           ${{ env.TCR_REPO }}/${{ env.NAMESPACE }}/${{ matrix.images.name }}:${{ env.tag }}
 
     - name: Run Trivy vulnerability scanner
-      uses: aquasecurity/trivy-action@0.36.0
+      uses: aquasecurity/trivy-action@v0.36.0
       with:
         image-ref: kubeop/${{ matrix.images.name }}:${{ env.tag }}
         severity: "CRITICAL,HIGH"
