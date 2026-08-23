@@ -12,7 +12,8 @@ on:
 
 env:
   DKH_REPO: kubeop
-  ACR_REPO: registry.cn-hangzhou.aliyuncs.com
+  TCR_REPO: hkccr.ccs.tencentyun.com
+  NAMESPACE: kubeop
 
 jobs:
   prepare-matrix:
@@ -25,7 +26,7 @@ jobs:
       python_app_images: ${{ steps.set-matrix.outputs.python_app_images }}
     steps:
     - name: Checkout
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
 
     - name: Generate matrix from library dirs
       id: set-matrix
@@ -86,7 +87,7 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
 
     - name: Set QEMU
       uses: docker/setup-qemu-action@v4
@@ -103,9 +104,9 @@ jobs:
     - name: Login to ACR
       uses: docker/login-action@v4
       with:
-        registry: registry.cn-hangzhou.aliyuncs.com
-        username: ${{ secrets.ACR_USERNAME }}
-        password: ${{ secrets.ACR_PASSWORD }}
+        registry: ${{ env.TCR_REPO }}
+        username: ${{ secrets.TCR_USERNAME }}
+        password: ${{ secrets.TCR_PASSWORD }}
 
     - name: Set args
       run: |
@@ -126,9 +127,10 @@ jobs:
         push: true
         tags: |
           ${{ env.DKH_REPO }}/${{ matrix.images.name }}:${{ env.tag }}
+          ${{ env.TCR_REPO }}/${{ env.NAMESPACE }}/${{ matrix.images.name }}:${{ env.tag }}
     
     - name: Run Trivy vulnerability scanner
-      uses: aquasecurity/trivy-action@0.35.0
+      uses: aquasecurity/trivy-action@0.36.0
       with:
         image-ref: kubeop/${{ matrix.images.name }}:${{ env.tag }}
         severity: "CRITICAL,HIGH"
@@ -145,7 +147,7 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
 
     - name: Set QEMU
       uses: docker/setup-qemu-action@v4
@@ -162,116 +164,9 @@ jobs:
     - name: Login to ACR
       uses: docker/login-action@v4
       with:
-        registry: registry.cn-hangzhou.aliyuncs.com
-        username: ${{ secrets.ACR_USERNAME }}
-        password: ${{ secrets.ACR_PASSWORD }}
-
-    - name: Set args
-      run: |
-        if [[ "${{ matrix.images.args }}" != "" ]]; then
-            echo "tag=${{ matrix.images.tag }}-${{ matrix.images.args }}" >> $GITHUB_ENV
-            echo "file=Dockerfile.${{ matrix.images.args }}" >> $GITHUB_ENV
-        else
-            echo "tag=${{ matrix.images.tag }}" >> $GITHUB_ENV
-            echo "file=Dockerfile" >> $GITHUB_ENV
-        fi
-
-    - name: Build and Push images
-      uses: docker/build-push-action@v7
-      with:
-        platforms: linux/amd64,linux/arm64
-        context: library/${{ matrix.images.name }}/${{ matrix.images.tag }}
-        file: library/${{ matrix.images.name }}/${{ matrix.images.tag }}/${{ env.file }}
-        push: true
-        tags: |
-          ${{ env.DKH_REPO }}/${{ matrix.images.name }}:${{ env.tag }}  
-
-  build-app-images:
-    needs:
-      - prepare-matrix
-      - build-os-images
-      - build-base-images
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        images: ${{ fromJson(needs.prepare-matrix.outputs.app_images) }}
-
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v6
-
-    - name: Set QEMU
-      uses: docker/setup-qemu-action@v4
-
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v4
-
-    - name: Login to DockerHub
-      uses: docker/login-action@v4
-      with:
-        username: ${{ secrets.DKH_USERNAME }}
-        password: ${{ secrets.DKH_PASSWORD }}
-
-    - name: Login to ACR
-      uses: docker/login-action@v4
-      with:
-        registry: registry.cn-hangzhou.aliyuncs.com
-        username: ${{ secrets.ACR_USERNAME }}
-        password: ${{ secrets.ACR_PASSWORD }}
-
-    - name: Set args
-      run: |
-        if [[ "${{ matrix.images.args }}" != "" ]]; then
-            echo "tag=${{ matrix.images.tag }}-${{ matrix.images.args }}" >> $GITHUB_ENV
-            echo "file=Dockerfile.${{ matrix.images.args }}" >> $GITHUB_ENV
-        else
-            echo "tag=${{ matrix.images.tag }}" >> $GITHUB_ENV
-            echo "file=Dockerfile" >> $GITHUB_ENV
-        fi
-
-    - name: Build and Push images
-      uses: docker/build-push-action@v7
-      with:
-        platforms: linux/amd64,linux/arm64
-        context: library/${{ matrix.images.name }}/${{ matrix.images.tag }}
-        file: library/${{ matrix.images.name }}/${{ matrix.images.tag }}/${{ env.file }}
-        push: true
-        tags: |
-          ${{ env.DKH_REPO }}/${{ matrix.images.name }}:${{ env.tag }}  
-
-  python-images:
-    needs:
-      - prepare-matrix
-      - build-os-images
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        images: ${{ fromJson(needs.prepare-matrix.outputs.python_images) }}
-
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v6
-
-    - name: Set QEMU
-      uses: docker/setup-qemu-action@v4
-
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v4
-
-    - name: Login to DockerHub
-      uses: docker/login-action@v4
-      with:
-        username: ${{ secrets.DKH_USERNAME }}
-        password: ${{ secrets.DKH_PASSWORD }}
-
-    - name: Login to ACR
-      uses: docker/login-action@v4
-      with:
-        registry: registry.cn-hangzhou.aliyuncs.com
-        username: ${{ secrets.ACR_USERNAME }}
-        password: ${{ secrets.ACR_PASSWORD }}
+        registry: ${{ env.TCR_REPO }}
+        username: ${{ secrets.TCR_USERNAME }}
+        password: ${{ secrets.TCR_PASSWORD }}
 
     - name: Set args
       run: |
@@ -292,9 +187,119 @@ jobs:
         push: true
         tags: |
           ${{ env.DKH_REPO }}/${{ matrix.images.name }}:${{ env.tag }}
+          ${{ env.TCR_REPO }}/${{ env.NAMESPACE }}/${{ matrix.images.name }}:${{ env.tag }}
+
+  build-app-images:
+    needs:
+      - prepare-matrix
+      - build-os-images
+      - build-base-images
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        images: ${{ fromJson(needs.prepare-matrix.outputs.app_images) }}
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v7
+
+    - name: Set QEMU
+      uses: docker/setup-qemu-action@v4
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v4
+
+    - name: Login to DockerHub
+      uses: docker/login-action@v4
+      with:
+        username: ${{ secrets.DKH_USERNAME }}
+        password: ${{ secrets.DKH_PASSWORD }}
+
+    - name: Login to ACR
+      uses: docker/login-action@v4
+      with:
+        registry: ${{ env.TCR_REPO }}
+        username: ${{ secrets.TCR_USERNAME }}
+        password: ${{ secrets.TCR_PASSWORD }}
+
+    - name: Set args
+      run: |
+        if [[ "${{ matrix.images.args }}" != "" ]]; then
+            echo "tag=${{ matrix.images.tag }}-${{ matrix.images.args }}" >> $GITHUB_ENV
+            echo "file=Dockerfile.${{ matrix.images.args }}" >> $GITHUB_ENV
+        else
+            echo "tag=${{ matrix.images.tag }}" >> $GITHUB_ENV
+            echo "file=Dockerfile" >> $GITHUB_ENV
+        fi
+
+    - name: Build and Push images
+      uses: docker/build-push-action@v7
+      with:
+        platforms: linux/amd64,linux/arm64
+        context: library/${{ matrix.images.name }}/${{ matrix.images.tag }}
+        file: library/${{ matrix.images.name }}/${{ matrix.images.tag }}/${{ env.file }}
+        push: true
+        tags: |
+          ${{ env.DKH_REPO }}/${{ matrix.images.name }}:${{ env.tag }}
+          ${{ env.TCR_REPO }}/${{ env.NAMESPACE }}/${{ matrix.images.name }}:${{ env.tag }} 
+
+  python-images:
+    needs:
+      - prepare-matrix
+      - build-os-images
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        images: ${{ fromJson(needs.prepare-matrix.outputs.python_images) }}
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v7
+
+    - name: Set QEMU
+      uses: docker/setup-qemu-action@v4
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v4
+
+    - name: Login to DockerHub
+      uses: docker/login-action@v4
+      with:
+        username: ${{ secrets.DKH_USERNAME }}
+        password: ${{ secrets.DKH_PASSWORD }}
+
+    - name: Login to ACR
+      uses: docker/login-action@v4
+      with:
+        registry: ${{ env.TCR_REPO }}
+        username: ${{ secrets.TCR_USERNAME }}
+        password: ${{ secrets.TCR_PASSWORD }}
+
+    - name: Set args
+      run: |
+        if [[ "${{ matrix.images.args }}" != "" ]]; then
+            echo "tag=${{ matrix.images.tag }}-${{ matrix.images.args }}" >> $GITHUB_ENV
+            echo "file=Dockerfile.${{ matrix.images.args }}" >> $GITHUB_ENV
+        else
+            echo "tag=${{ matrix.images.tag }}" >> $GITHUB_ENV
+            echo "file=Dockerfile" >> $GITHUB_ENV
+        fi
+
+    - name: Build and Push images
+      uses: docker/build-push-action@v7
+      with:
+        platforms: linux/amd64,linux/arm64
+        context: library/${{ matrix.images.name }}/${{ matrix.images.tag }}
+        file: library/${{ matrix.images.name }}/${{ matrix.images.tag }}/${{ env.file }}
+        push: true
+        tags: |
+          ${{ env.DKH_REPO }}/${{ matrix.images.name }}:${{ env.tag }}
+          ${{ env.TCR_REPO }}/${{ env.NAMESPACE }}/${{ matrix.images.name }}:${{ env.tag }}
     
     - name: Run Trivy vulnerability scanner
-      uses: aquasecurity/trivy-action@0.35.0
+      uses: aquasecurity/trivy-action@0.36.0
       with:
         image-ref: kubeop/${{ matrix.images.name }}:${{ env.tag }}
         severity: "CRITICAL,HIGH"
@@ -311,7 +316,7 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
 
     - name: Set QEMU
       uses: docker/setup-qemu-action@v4
@@ -328,9 +333,9 @@ jobs:
     - name: Login to ACR
       uses: docker/login-action@v4
       with:
-        registry: registry.cn-hangzhou.aliyuncs.com
-        username: ${{ secrets.ACR_USERNAME }}
-        password: ${{ secrets.ACR_PASSWORD }}
+        registry: ${{ env.TCR_REPO }}
+        username: ${{ secrets.TCR_USERNAME }}
+        password: ${{ secrets.TCR_PASSWORD }}
 
     - name: Set args
       run: |
@@ -351,9 +356,10 @@ jobs:
         push: true
         tags: |
           ${{ env.DKH_REPO }}/${{ matrix.images.name }}:${{ env.tag }}
+          ${{ env.TCR_REPO }}/${{ env.NAMESPACE }}/${{ matrix.images.name }}:${{ env.tag }}
 
     - name: Run Trivy vulnerability scanner
-      uses: aquasecurity/trivy-action@0.35.0
+      uses: aquasecurity/trivy-action@0.36.0
       with:
         image-ref: kubeop/${{ matrix.images.name }}:${{ env.tag }}
         severity: "CRITICAL,HIGH"
