@@ -1,7 +1,7 @@
 FROM kubeop/debian:13
 LABEL maintainer="Sonic Ma <sonic.ma@outlook.com>"
 
-ARG JAVA_VERSION=8u502-b07
+ARG JAVA_VERSION=8u504-b01
 ENV JAVA_HOME="/usr/local/openjdk"
 ENV PATH=${JAVA_HOME}/bin:${PATH}
 
