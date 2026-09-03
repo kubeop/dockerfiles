@@ -37,7 +37,7 @@
 | OpenJDK | kubeop/openjdk:21-jre       | hkccr.ccs.tencentyun.com/kubeop/openjdk:21-jre               |
 | OpenJDK | kubeop/openjdk:25-jdk       | hkccr.ccs.tencentyun.com/kubeop/openjdk:25-jdk               |
 | OpenJDK | kubeop/openjdk:25-jre       | hkccr.ccs.tencentyun.com/kubeop/openjdk:25-jre               |
-| Jenkins | kubeop/jenkins:2.568.2      | hkccr.ccs.tencentyun.com/kubeop/jenkins:2.568.2              |
+| Jenkins | kubeop/jenkins:2.568.3      | hkccr.ccs.tencentyun.com/kubeop/jenkins:2.568.3              |
 | Docker  | kubeop/docker:29.7.2        | hkccr.ccs.tencentyun.com/kubeop/docker:29.7.2                |
 | Buildkit | kubeop/buildkit:v0.32.2-cli | hkccr.ccs.tencentyun.com/kubeop/buildkit:v0.32.2-cli         |
 | Maven   | kubeop/maven:3.9.16-java8   | hkccr.ccs.tencentyun.com/kubeop/maven:3.9.16-java8           |
