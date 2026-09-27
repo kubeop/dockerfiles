@@ -58,9 +58,9 @@
 | Kubedog | kubeop/kubedog:0.13.0       | hkccr.ccs.tencentyun.com/kubeop/kubedog:0.13.0               |
 | Nginx   | kubeop/nginx:1.30.5         | hkccr.ccs.tencentyun.com/kubeop/nginx:1.30.5                 |
 | Nginx   | kubeop/nginx:1.31.6         | hkccr.ccs.tencentyun.com/kubeop/nginx:1.31.6                 |
-| NodeJs  | kubeop/nodejs:22.23.2       | hkccr.ccs.tencentyun.com/kubeop/nodejs:22.23.2               |
+| NodeJs  | kubeop/nodejs:22.23.3       | hkccr.ccs.tencentyun.com/kubeop/nodejs:22.23.3               |
 | NodeJs  | kubeop/nodejs:24.21.0       | hkccr.ccs.tencentyun.com/kubeop/nodejs:24.21.0               |
-| NodeJs  | kubeop/nodejs:26.9.0        | hkccr.ccs.tencentyun.com/kubeop/nodejs:26.9.0                |
+| NodeJs  | kubeop/nodejs:26.10.0       | hkccr.ccs.tencentyun.com/kubeop/nodejs:26.10.0               |
 | Python  | kubeop/python:3.11.16       | hkccr.ccs.tencentyun.com/kubeop/python:3.11.16               |
 | Python  | kubeop/python:3.12.14       | hkccr.ccs.tencentyun.com/kubeop/python:3.12.14               |
 | Python  | kubeop/python:3.13.15       | hkccr.ccs.tencentyun.com/kubeop/python:3.13.15               |
