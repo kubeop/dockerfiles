@@ -1,7 +1,7 @@
-FROM kubeop/python:3.12.14
+FROM kubeop/python:3.13.16
 LABEL maintainer="Sonic Ma <sonic.ma@outlook.com>"
 
-ARG ANSIBLE_VERSION=2.19.12
+ARG ANSIBLE_VERSION=2.20.10
 ARG user=jenkins
 ARG group=jenkins
 ARG uid=1000

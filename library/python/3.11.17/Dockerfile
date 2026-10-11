@@ -1,7 +1,7 @@
 FROM kubeop/debian:13
 LABEL maintainer="Sonic Ma <sonic.ma@outlook.com>"
 
-ARG PYTHON_VERSION=3.14.7
+ARG PYTHON_VERSION=3.11.17
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONIOENCODING=UTF-8
 
@@ -111,6 +111,13 @@ RUN set -eux; \
         \
         export PYTHONDONTWRITEBYTECODE=1; \
         python3 --version; \
+        pip3 install \
+                --disable-pip-version-check \
+                --no-cache-dir \
+                --no-compile \
+                'setuptools==79.0.1' \
+                'wheel==0.46.3' \
+        ; \
         pip3 --version; \
         pip3 config set global.index-url https://mirrors.aliyun.com/pypi/simple; \
         pip3 config set install.trusted-host https://mirrors.aliyun.com

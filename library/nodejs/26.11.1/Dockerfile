@@ -1,7 +1,7 @@
 FROM kubeop/debian:13
 LABEL maintainer="Sonic Ma <sonic.ma@outlook.com>"
 
-ARG NODE_VERSION=26.10.0
+ARG NODE_VERSION=26.11.1
 
 RUN set -eux; \
       apt-get update; \

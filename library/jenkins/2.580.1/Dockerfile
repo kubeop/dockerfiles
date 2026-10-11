@@ -1,9 +1,9 @@
 FROM kubeop/openjdk:21-jdk
 LABEL maintainer="Sonic Ma <sonic.ma@outlook.com>"
 
-ARG JENKINS_VERSION=2.568.3
+ARG JENKINS_VERSION=2.580.1
 ARG PLUGIN_CLI_VERSION=2.15.0
-ARG GIT_LFS_VERSION=3.7.1
+ARG GIT_LFS_VERSION=3.8.0
 ARG user=jenkins
 ARG group=jenkins
 ARG uid=1000
