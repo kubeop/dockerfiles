@@ -1,7 +1,7 @@
-FROM kubeop/debian:13
+FROM kubeop/alpine:3.24
 LABEL maintainer="Sonic Ma <sonic.ma@outlook.com>"
 
-ARG DOCKER_VERSION=29.9.0
+ARG DOCKER_VERSION=29.9.1
 ARG DOCKER_BUILDX_VERSION=0.38.0
 ARG user=jenkins
 ARG group=jenkins
@@ -9,8 +9,8 @@ ARG uid=1000
 ARG gid=1000
 
 RUN set -eux; \
-      apt-get update; \
-      apt-get install -y --no-install-recommends \
+      apk upgrade --update; \
+      apk add --no-cache \
           btrfs-progs \
           e2fsprogs \
           iptables \
@@ -20,26 +20,25 @@ RUN set -eux; \
           xfsprogs \
           # DOCKER_HOST=ssh://... -- https://github.com/docker/cli/pull/1014
           openssh-client \
-          fuse-overlayfs \
-          dbus-user-session \
+          dbus \
           # pigz: https://github.com/moby/moby/pull/35697 (faster gzip implementation)
           pigz \
       ; \
-      rm -rf /var/lib/apt/lists/*; \
-      groupadd -g 2375 -r docker; \
-      groupadd -g ${gid} ${group}; \
-      useradd -u ${uid} -g ${gid} -l -m -s /bin/bash ${user}; \
-      gpasswd -a jenkins docker; \
-      newgrp docker; \
+      rm -rf /var/cache/apk/*; \
+      addgroup -g 2375 -S docker; \
+      addgroup -g ${gid} ${group}; \
+      adduser -u ${uid} -G ${group} -s /bin/bash -D ${user}; \
+      addgroup ${user} docker; \
       echo "${user}:165536:65536" >> /etc/subuid; \
       echo "${group}:165536:65536" >> /etc/subgid; \
-      arch="$(dpkg --print-architecture)"; arch="${arch##*-}"; \
+      [ -e /etc/nsswitch.conf ] && grep '^hosts: files dns' /etc/nsswitch.conf; \
+      arch="$(apk --print-arch)"; \
       case "${arch}" in \
-        aarch64|arm64) \
+        aarch64) \
           url="https://download.docker.com/linux/static/stable/aarch64/docker-${DOCKER_VERSION}.tgz"; \
           binary_url="https://github.com/docker/buildx/releases/download/v${DOCKER_BUILDX_VERSION}/buildx-v${DOCKER_BUILDX_VERSION}.linux-arm64"; \
           ;; \
-        amd64|i386:x86-64) \
+        x86_64) \
           url="https://download.docker.com/linux/static/stable/x86_64/docker-${DOCKER_VERSION}.tgz"; \
           binary_url="https://github.com/docker/buildx/releases/download/v${DOCKER_BUILDX_VERSION}/buildx-v${DOCKER_BUILDX_VERSION}.linux-amd64"; \
           ;; \
@@ -57,4 +56,4 @@ RUN set -eux; \
 
 COPY user-jenkins-exec-docker /etc/sudoers.d/user-jenkins-exec-docker
 
-USER jenkins
+USER ${user}
