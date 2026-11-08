@@ -48,7 +48,7 @@ jobs:
           'openjdk': ['jdk', 'jre'],
           'buildkit': ['cli'],
           'maven': ['java8', 'java11', 'java17', 'java21', 'java25'],
-          'gradle': ['java17', 'java21', 'java25'],
+          'gradle': ['java8', 'java11', 'java17', 'java21', 'java25'],
         }
 
         output = {}
@@ -65,11 +65,23 @@ jobs:
             if not tags:
               raise SystemExit(f'no tags found for {name}')
             for tag in tags:
-              if name in args_map:
-                for arg in args_map[name]:
-                  matrix.append({'name': name, 'tag': tag, 'args': arg})
-              else:
-                matrix.append({'name': name, 'tag': tag, 'args': ''})
+              tag_path = os.path.join(path, tag)
+              dockerfiles = {
+                f for f in os.listdir(tag_path)
+                if f == 'Dockerfile' or f.startswith('Dockerfile.')
+              }
+
+              args = []
+              if 'Dockerfile' in dockerfiles:
+                args.append('')
+              for arg in args_map.get(name, []):
+                if f'Dockerfile.{arg}' in dockerfiles:
+                  args.append(arg)
+              if not args:
+                raise SystemExit(f'no matching Dockerfile for {name}:{tag}')
+
+              for arg in args:
+                matrix.append({'name': name, 'tag': tag, 'args': arg})
           output[output_name] = matrix
 
         for key, value in output.items():

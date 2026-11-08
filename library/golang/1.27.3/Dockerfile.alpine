@@ -21,10 +21,10 @@ RUN set -eux; \
         arch="$(apk --print-arch)"; \
         case "$arch" in \
             'x86_64') \
-                url="https://golang.google.cn/dl/go${GOLANG_VERSION}.linux-${arch}.tar.gz"; \
+                url="https://golang.google.cn/dl/go${GOLANG_VERSION}.linux-amd64.tar.gz"; \
                 ;; \
             'aarch64') \
-                url="https://golang.google.cn/dl/go${GOLANG_VERSION}.linux-${arch}.tar.gz"; \
+                url="https://golang.google.cn/dl/go${GOLANG_VERSION}.linux-arm64.tar.gz"; \
                 ;; \
             *) \
                 echo >&2 "error: unsupported architecture '$arch' (likely packaging update needed)"; exit 1 ;; \
